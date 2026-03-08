@@ -8,19 +8,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --ink: #1c1a17;
-      --paper: #f5f0e8;
-      --paper-warm: #ede7d9;
-      --muted: #8c8070;
-      --accent: #b5572a;
-      --thin: 300;
-      --serif: 'Cormorant Garamond', Georgia, serif;
-      --mono: 'DM Mono', monospace;
+      --ink: #1a1a1a;
+      --paper: #ffffff;
+      --paper-warm: #f7f6f3;
+      --muted: #888;
+      --accent: #2a5298;
+      --serif: 'Crimson Pro', Georgia, serif;
+      --sans: 'Source Sans 3', system-ui, sans-serif;
     }
 
     html { scroll-behavior: smooth; }
@@ -28,21 +27,10 @@
     body {
       background: var(--paper);
       color: var(--ink);
-      font-family: var(--serif);
-      font-weight: var(--thin);
+      font-family: var(--sans);
+      font-weight: 300;
       min-height: 100vh;
       overflow-x: hidden;
-    }
-
-    /* Subtle paper grain */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 1000;
-      opacity: 0.5;
     }
 
     #root { position: relative; }
@@ -78,9 +66,9 @@
     }
     .nav-name {
       font-size: 0.85rem;
-      font-family: var(--mono);
-      font-weight: 300;
-      letter-spacing: 0.08em;
+      font-family: var(--sans);
+      font-weight: 400;
+      letter-spacing: 0.06em;
       color: var(--muted);
       text-decoration: none;
     }
@@ -90,10 +78,10 @@
       list-style: none;
     }
     .nav-links a {
-      font-family: var(--mono);
-      font-size: 0.75rem;
+      font-family: var(--sans);
+      font-size: 0.8rem;
       font-weight: 300;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
       color: var(--muted);
       text-decoration: none;
       transition: color 0.2s;
@@ -106,6 +94,7 @@
     }
     .hero h1 {
       font-size: clamp(2.8rem, 7vw, 4.8rem);
+      font-family: var(--serif);
       font-weight: 300;
       line-height: 1.1;
       letter-spacing: -0.01em;
@@ -117,7 +106,9 @@
       color: var(--accent);
     }
     .hero-sub {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
+      font-family: var(--sans);
+      font-weight: 300;
       line-height: 1.7;
       color: var(--muted);
       max-width: 480px;
@@ -141,9 +132,9 @@
     section:first-of-type { border-top: none; }
 
     .section-label {
-      font-family: var(--mono);
+      font-family: var(--sans);
       font-size: 0.7rem;
-      font-weight: 300;
+      font-weight: 600;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--muted);
@@ -152,11 +143,22 @@
 
     /* About */
     .about-text {
-      font-size: 1.15rem;
+      font-size: 1.18rem;
+      font-family: var(--serif);
       line-height: 1.8;
       color: var(--ink);
     }
     .about-text p + p { margin-top: 1.2rem; }
+    .about-subhead {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+      margin-top: 2rem;
+    }
 
     /* Cards */
     .cards {
@@ -180,12 +182,14 @@
     .card-left { flex: 1; }
     .card-title {
       font-size: 1.1rem;
+      font-family: var(--serif);
       font-weight: 400;
       margin-bottom: 0.3rem;
     }
     .card-meta {
-      font-family: var(--mono);
+      font-family: var(--sans);
       font-size: 0.72rem;
+      font-weight: 300;
       color: var(--muted);
       letter-spacing: 0.04em;
     }
@@ -207,13 +211,15 @@
     }
     .now-block p {
       font-size: 1.1rem;
+      font-family: var(--serif);
       line-height: 1.8;
       color: var(--ink);
     }
     .now-block p + p { margin-top: 1rem; }
     .now-date {
-      font-family: var(--mono);
+      font-family: var(--sans);
       font-size: 0.7rem;
+      font-weight: 300;
       color: var(--muted);
       letter-spacing: 0.1em;
       margin-top: 1.5rem;
@@ -230,8 +236,9 @@
       align-items: center;
     }
     .footer-note {
-      font-family: var(--mono);
+      font-family: var(--sans);
       font-size: 0.7rem;
+      font-weight: 300;
       color: var(--muted);
       letter-spacing: 0.06em;
     }
@@ -240,8 +247,9 @@
       gap: 1.5rem;
     }
     .footer-links a {
-      font-family: var(--mono);
+      font-family: var(--sans);
       font-size: 0.7rem;
+      font-weight: 300;
       color: var(--muted);
       text-decoration: none;
       letter-spacing: 0.06em;
@@ -324,7 +332,7 @@ function App() {
         <div className="hero">
           <h1>Jacqueline<br/><em>Koerner</em></h1>
           <p className="hero-sub">
-            Product leader. Writer. Thinker about how things fit together — systems, teams, ideas.
+            Product and design leader. Systems thinker. Focused on client experience across complex platforms.
           </p>
         </div>
 
@@ -332,13 +340,22 @@ function App() {
           <div className="section-label">About</div>
           <div className="about-text">
             <p>
-              I'm a product director based somewhere between curiosity and craft. I've spent my career at the intersection of users, teams, and ideas worth building.
+              I'm a product and design leader with a background in wealth and asset management, focused on systems thinking and client experience across complex platforms. I thrive in discovery, using research methods and data to clarify direction, validate hypotheses, and drive strong business outcomes.
             </p>
+
+            <div className="about-subhead">Product Philosophy</div>
             <p>
-              I believe good product work is slow, attentive, and honest — like most things worth doing.
+              To evolve architecture meaningfully, the broader ecosystem must be understood. I look to workflows to uncover opportunity, exploring how accuracy, efficiency, and oversight interact. In the current era of AI, I'm particularly interested in translating unstructured data into rules engines that power flywheel dynamics.
             </p>
-            <p style={{color:'var(--muted)', fontStyle:'italic', fontSize:'1rem'}}>
-              ↳ Update this with your own bio.
+
+            <div className="about-subhead">Strategy and Focus</div>
+            <p>
+              My favorite product mantra is "the main thing is to keep the main thing the main thing." I value the discipline of saying no and doubling down on what a product or platform can do better than any other — while remaining attentive to selective opportunities for vertical integration that improve the end-to-end experience.
+            </p>
+
+            <div className="about-subhead">People and Leadership</div>
+            <p>
+              I grow others through curiosity, respect, and caring personally, with the goal of expanding individual autonomy and modeling behaviors that foster alignment. This approach enables thoughtfully interconnected work that is greater than the sum of its parts.
             </p>
           </div>
         </section>
@@ -399,7 +416,7 @@ function App() {
             <div className="footer-links">
               <a href="https://substack.com/home/post/p-187676112" target="_blank" rel="noopener noreferrer">Substack</a>
               <a href="https://jacquelinekoerner.figma.site" target="_blank" rel="noopener noreferrer">Figma</a>
-              <a href="mailto:hello@jacquelinekoerner.com">Email</a>
+              <a href="mailto:koernerjacqueline@gmail.com">Email</a>
             </div>
           </div>
         </div>
