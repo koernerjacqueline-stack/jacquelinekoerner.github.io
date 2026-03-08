@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Getting Online — Jacqueline Koerner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a1a;
+      --paper: #ffffff;
+      --paper-warm: #f7f6f3;
+      --muted: #888;
+      --accent: #2a5298;
+      --serif: 'Crimson Pro', Georgia, serif;
+      --sans: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .back {
+      display: inline-block;
+      margin: 2.5rem 0 0;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back:hover { color: var(--accent); }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-family: var(--serif);
+      font-weight: 300;
+      margin: 3rem 0 1.5rem;
+      line-height: 1.2;
+    }
+
+    .meta {
+      font-size: 0.72rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    .about-text {
+      font-size: 1.1rem;
+      font-family: var(--serif);
+      line-height: 1.8;
+    }
+    .about-text p + p { margin-top: 1.2rem; }
+
+    .about-subhead {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 2.5rem 0 0.5rem;
+    }
+
+    .map-wrap {
+      margin: 3rem 0;
+      padding: 2rem 0;
+      border-top: 1px solid rgba(28,26,23,0.1);
+      border-bottom: 1px solid rgba(28,26,23,0.1);
+    }
+    .map-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .map-caption {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 1rem;
+      font-family: var(--sans);
+    }
+
+    footer {
+      padding: 4rem 0 3rem;
+      border-top: 1px solid rgba(28,26,23,0.1);
+    }
+    .footer-note {
+      font-size: 0.7rem;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back">← Back to portfolio</a>
+
+    <h1>Getting Online</h1>
+    <p class="meta">Case study · Tiny experiments · March 2026</p>
+
+    <div class="about-text">
+      <p>
+        For big picture thinkers, step-by-step instructions are frustrating without the zoomed-out view first. You follow the steps, but you don't know where you are. You're executing commands without a map.
+      </p>
+
+      <div class="about-subhead">What I created, step by step — lost without a map</div>
+      <p>
+        I wanted to commit my portfolio updates to GitHub. I got: install Command Line Tools. Run git init. Add a remote. Stage files. Commit. Push. Each step worked (eventually), but I had no idea how they connected. Terminal vs. Cursor vs. GitHub — what was the point of each? I kept asking "where am I?" and "what does this button do?" The green progress bar, the inactive Commit button, the "open the gitlog" prompt. I was clicking and typing in the dark.
+      </p>
+
+      <div class="about-subhead">The map I only got when asking at the end</div>
+      <p>
+        I asked for the big picture. That's when I got the map — and finally understood. Cursor is where I edit. Git records changes on my Mac. GitHub holds the copy on the internet and serves the live site. <code>git push</code> is the bridge. Simple. But I had to ask.
+      </p>
+    </div>
+
+    <div class="map-wrap">
+      <img src="portfolio-git-system-map.png" alt="Diagram: Local (Cursor, folder, Git) connects via git push to Remote (GitHub repo, GitHub Pages). The live site is served at the bottom." />
+      <p class="map-caption">The system: edit locally → commit → push → live.</p>
+    </div>
+
+    <div class="about-text">
+      <p>
+        If you're a big picture thinker too: ask for the map first. The steps make sense once you know where you're going.
+      </p>
+    </div>
+
+    <footer>
+      <span class="footer-note">Jacqueline Koerner © 2026</span>
+    </footer>
+  </div>
+</body>
+</html>
