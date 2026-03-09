@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Split-Flap Display</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: #f3f3f3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .board {
+      background: #111;
+      padding: 28px 32px;
+      border-radius: 6px;
+      box-shadow:
+        0 2px 0 rgba(0,0,0,0.5),
+        0 16px 48px rgba(0,0,0,0.22),
+        0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .row {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+    .row:last-child { margin-bottom: 0; }
+
+    /* ── Tile ── */
+    .tile {
+      width: 80px;
+      height: 96px;
+      position: relative;
+      perspective: 600px;   /* 3-D context for child flaps */
+    }
+
+    /* Both halves are 48 px tall, positioned top/bottom */
+    .h-top, .h-bot {
+      position: absolute;
+      left: 0; right: 0;
+      height: 48px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Top half: align char so its TOP is at the container top → shows char upper half */
+    .h-top {
+      top: 0;
+      align-items: flex-start;
+      border-radius: 4px 4px 0 0;
+      background: linear-gradient(180deg, #282828, #1e1e1e);
+    }
+    /* Bottom half: align char so its BOTTOM is at the container bottom → shows char lower half */
+    .h-bot {
+      bottom: 0;
+      align-items: flex-end;
+      border-radius: 0 0 4px 4px;
+      background: linear-gradient(180deg, #1c1c1c, #242424);
+    }
+
+    /*
+      .f-out  = old character's bottom half — starts flat, folds backward (lifts away)
+      .f-in   = new character's bottom half — starts hidden (folded back), falls flat
+      Both sit at the bottom-half position of the tile.
+    */
+    .f-out, .f-in {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 48px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      border-radius: 0 0 4px 4px;
+      transform-origin: top center;
+      backface-visibility: hidden;
+      background: linear-gradient(180deg, #1c1c1c, #242424);
+    }
+
+    .f-out { z-index: 3; }
+    .f-in  { z-index: 4; transform: rotateX(90deg); } /* hidden by default */
+
+    /* Seam divider */
+    .seam {
+      position: absolute;
+      top: 48px; left: 0; right: 0;
+      height: 2px;
+      background: #111;
+      z-index: 10;
+    }
+
+    /* Character span — full tile height, clipped by parent overflow */
+    .ch {
+      font-family: 'Arial Black', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 50px;
+      font-weight: 900;
+      color: #f0f0f0;
+      line-height: 96px;   /* same as tile height → char centered at seam */
+      height: 96px;
+      width: 80px;
+      text-align: center;
+      user-select: none;
+      flex-shrink: 0;
+      letter-spacing: -1px;
+    }
+
+    /* Subtle top-edge glint */
+    .h-top::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.07), transparent);
+      border-radius: 4px 4px 0 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="board" id="board"></div>
+
+<script>
+  /* ── Layout ── */
+  const COLS  = 7;
+  const ROWS  = 4;
+  const LINES = [
+    '       ',
+    ' HELLO ',
+    ' WORLD ',
+    '       ',
+  ];
+
+  /* ── Build DOM ── */
+  const boardEl = document.getElementById('board');
+  const grid = [];
+
+  for (let r = 0; r < ROWS; r++) {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'row';
+    grid[r] = [];
+
+    for (let c = 0; c < COLS; c++) {
+      const tile = document.createElement('div');
+      tile.className = 'tile';
+      tile.innerHTML = `
+        <div class="h-bot"><span class="ch"> </span></div>
+        <div class="h-top"><span class="ch"> </span></div>
+        <div class="f-out"><span class="ch"> </span></div>
+        <div class="f-in" ><span class="ch"> </span></div>
+        <div class="seam"></div>`;
+
+      grid[r][c] = {
+        cur:   ' ',
+        topCh: tile.querySelector('.h-top .ch'),
+        botCh: tile.querySelector('.h-bot .ch'),
+        outEl: tile.querySelector('.f-out'),
+        outCh: tile.querySelector('.f-out .ch'),
+        inEl:  tile.querySelector('.f-in'),
+        inCh:  tile.querySelector('.f-in .ch'),
+      };
+      rowEl.appendChild(tile);
+    }
+    boardEl.appendChild(rowEl);
+  }
+
+  /* ── Single flip step (old char → new char) ── */
+  /*
+    Mechanism:
+      • Top half changes instantly to new char.
+      • f-out (old bottom, z3) folds backward (0° → −90°), revealing h-bot underneath.
+      • f-in  (new bottom, z4) falls forward (90° → 0°) into place.
+  */
+  function step(t, next) {
+    return new Promise(resolve => {
+      const prev = t.cur;
+      t.cur = next;
+
+      /* Cancel any running WAAPI animations so state is clean */
+      t.outEl.getAnimations().forEach(a => a.cancel());
+      t.inEl .getAnimations().forEach(a => a.cancel());
+
+      /* Snap elements to their pre-animation positions */
+      t.outEl.style.transform = '';             /* flat */
+      t.inEl .style.transform = 'rotateX(90deg)'; /* hidden */
+
+      /* Set content */
+      t.topCh.textContent = next;   /* top half shows new char immediately */
+      t.botCh.textContent = next;   /* h-bot background = new char */
+      t.outCh.textContent = prev;   /* out flap = old bottom (will fold away) */
+      t.inCh .textContent = next;   /* in  flap = new bottom (will fall in) */
+
+      requestAnimationFrame(() => {
+        const DUR = 110; /* ms per half-flip */
+
+        /* Old bottom lifts backward */
+        t.outEl.animate(
+          [{ transform: 'rotateX(0deg)' }, { transform: 'rotateX(-90deg)' }],
+          { duration: DUR, easing: 'ease-in', fill: 'forwards' }
+        );
+
+        /* New bottom falls forward — start just before out finishes for overlap */
+        setTimeout(() => {
+          const anim = t.inEl.animate(
+            [{ transform: 'rotateX(90deg)' }, { transform: 'rotateX(0deg)' }],
+            { duration: DUR, easing: 'ease-out', fill: 'forwards' }
+          );
+
+          anim.finished.then(() => {
+            /* Freeze transforms via inline styles, then cancel WAAPI */
+            t.outEl.style.transform = 'rotateX(-90deg)'; /* stay hidden */
+            t.inEl .style.transform = 'rotateX(0deg)';   /* stay flat  */
+            t.outEl.getAnimations().forEach(a => a.cancel());
+            t.inEl .getAnimations().forEach(a => a.cancel());
+            /* Sync outCh so it doesn't show stale char if it ever becomes visible */
+            t.outCh.textContent = next;
+            resolve();
+          });
+        }, DUR - 20); /* 20 ms overlap */
+      });
+    });
+  }
+
+  /* ── Animate one tile to a target character ── */
+  async function advance(row, col, target, delay) {
+    if (target === ' ') return;               /* blank tiles stay blank */
+
+    await new Promise(r => setTimeout(r, delay));
+
+    const t       = grid[row][col];
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const extras  = 4 + Math.floor(Math.random() * 4); /* 4–7 fast flips before target */
+
+    /* Build sequence: random padding chars + final target */
+    const seq = Array.from({ length: extras },
+      () => letters[Math.floor(Math.random() * letters.length)]
+    );
+    seq.push(target.toUpperCase());
+
+    for (let i = 0; i < seq.length; i++) {
+      await step(t, seq[i]);
+      const remaining = seq.length - 1 - i;
+      /* Decelerate as we approach the target */
+      const gap = remaining === 0 ? 0
+                : remaining === 1 ? 100
+                : remaining === 2 ? 50
+                :                   15;
+      await new Promise(r => setTimeout(r, gap));
+    }
+  }
+
+  /* ── Launch — column-by-column wave with slight row jitter ── */
+  setTimeout(() => {
+    for (let c = 0; c < COLS; c++) {
+      for (let r = 0; r < ROWS; r++) {
+        const ch    = (LINES[r] || '')[c] || ' ';
+        const delay = c * 160 + r * 20 + Math.random() * 40;
+        advance(r, c, ch, delay);
+      }
+    }
+  }, 400);
+</script>
+
+</body>
+</html>
