@@ -74,6 +74,15 @@
       from { clip-path: inset(0 100% 0 0); }
       to   { clip-path: inset(0 0%   0 0); }
     }
+    @keyframes stamp {
+      0%   { opacity: 0; transform: scale(1.18); }
+      55%  { opacity: 1; transform: scale(0.96); }
+      100% { opacity: 1; transform: scale(1.0); }
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
     .ink-letter {
       display: inline-block;
       animation: inkWrite 0.18s ease-out both;
@@ -181,17 +190,10 @@
       margin-bottom: 1rem;
     }
     .hero-photo {
-      width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      object-fit: cover;
-      object-position: center top;
-      flex-shrink: 0;
-      display: block;
-      transition: opacity 0.18s ease;
+      display: none;
     }
     .hero-name {
-      font-size: clamp(2rem, 5.5vw, 3.8rem);
+      font-size: clamp(2.4rem, 6.6vw, 4.56rem);
       font-family: var(--serif);
       line-height: 1.2;
     }
@@ -199,15 +201,20 @@
       font-weight: 600;
       font-style: normal;
       color: #1e3a6e;
-      animation: fadeUp 0.7s ease both;
-      animation-delay: 0.4s;
     }
     .hero-name-zen {
       font-weight: 300;
       font-style: normal;
       text-transform: uppercase;
       color: #744848;
-      animation: fadeIn 0.9s ease both;
+      animation: stamp 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+      animation-delay: 0.15s;
+    }
+    .cursor {
+      display: inline-block;
+      font-weight: 300;
+      animation: blink 0.7s step-end infinite;
+      margin-left: 2px;
     }
     .hero-desc {
       font-size: 1.1rem;
@@ -453,11 +460,12 @@ const data = {
 };
 
 function HeroSection({ mode }) {
-  const NAME = 'Jacqueline Koerner';
   const workDesc = 'Product and design leader. Systems thinker. Focused on client experience across complex platforms.';
   const zenDesc = 'Artist, reader, wanderer. Interests and creative pursuits, copy coming soon.';
-  const DESC_START = 2640;
+  const WORK_NAME = 'Jacqueline\nKoerner';
 
+  const [typedName, setTypedName] = useState('');
+  const [nameDone, setNameDone] = useState(false);
   const [typedText, setTypedText] = useState('');
   const [descReady, setDescReady] = useState(false);
   const startedRef = useRef(false);
@@ -466,28 +474,45 @@ function HeroSection({ mode }) {
     if (startedRef.current) return;
     startedRef.current = true;
     const t = setTimeout(() => {
-      setDescReady(true);
       let i = 0;
-      const iv = setInterval(() => {
+      const nameIv = setInterval(() => {
         i++;
-        setTypedText(workDesc.slice(0, i));
-        if (i >= workDesc.length) clearInterval(iv);
-      }, 30);
-    }, DESC_START);
+        setTypedName(WORK_NAME.slice(0, i));
+        if (i >= WORK_NAME.length) {
+          clearInterval(nameIv);
+          setNameDone(true);
+          setTimeout(() => {
+            setDescReady(true);
+            let j = 0;
+            const descIv = setInterval(() => {
+              j++;
+              setTypedText(workDesc.slice(0, j));
+              if (j >= workDesc.length) clearInterval(descIv);
+            }, 30);
+          }, 500);
+        }
+      }, 55);
+    }, 400);
     return () => clearTimeout(t);
   }, []);
+
+  const renderTypedName = () => {
+    const parts = typedName.split('\n');
+    return parts.map((part, i) => (
+      <React.Fragment key={i}>
+        {part}
+        {i < parts.length - 1 && <br/>}
+      </React.Fragment>
+    ));
+  };
 
   return (
     <div className="hero">
       <div className="hero-top">
-        <img
-          className="hero-photo"
-          src={mode === 'work' ? 'headshot-work.jpg' : 'headshot-zen.jpg'}
-          alt="Jacqueline Koerner"
-          onError={e => { e.target.style.display = 'none'; }}
-        />
         {mode === 'work' ? (
-          <h1 className="hero-name hero-name-work">Jacqueline<br/>Koerner</h1>
+          <h1 className="hero-name hero-name-work">
+            {renderTypedName()}{!nameDone && <span className="cursor">|</span>}
+          </h1>
         ) : (
           <h1 className="hero-name hero-name-zen">Jacqueline<br/>Koerner</h1>
         )}
