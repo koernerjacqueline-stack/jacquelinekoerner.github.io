@@ -11,8 +11,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <link rel="icon" id="favicon" type="image/svg+xml" href="favicon-work.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,800;1,9..144,300&family=Inter:wght@300;400&family=JetBrains+Mono:wght@300;400&family=Rock+Salt&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,800;1,9..144,300&family=Inter:wght@300;400&family=JetBrains+Mono:wght@300;400&family=Palette+Mosaic&family=Rock+Salt&display=swap" rel="stylesheet">
   <style>
     @font-face {
       font-family: 'InkHand';
@@ -107,12 +108,19 @@
       align-items: baseline;
     }
     .nav-name {
-      font-family: var(--serif);
       font-size: 1rem;
       font-style: normal;
-      font-weight: 300;
-      color: var(--muted);
+      font-weight: 400;
       text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    [data-mode="work"] .nav-name {
+      font-family: 'Crimson Pro', Georgia, serif;
+      color: #2e3d7e;
+    }
+    [data-mode="zen"] .nav-name {
+      font-family: 'Palette Mosaic', Georgia, serif;
+      color: #744848;
     }
     .nav-links {
       display: flex;
@@ -279,6 +287,25 @@
       color: var(--muted);
       margin-bottom: 0.5rem;
       margin-top: 2.2rem;
+    }
+
+    /* Mode-specific section labels & subheads */
+    [data-mode="work"] .section-label,
+    [data-mode="work"] .about-subhead {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: #2e3d7e;
+    }
+    [data-mode="zen"] .section-label,
+    [data-mode="zen"] .about-subhead {
+      font-family: 'Palette Mosaic', Georgia, serif;
+      font-size: 0.88rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      color: #744848;
     }
 
     /* Cards */
@@ -672,6 +699,8 @@ function App() {
   useEffect(() => {
     document.documentElement.setAttribute('data-mode', mode);
     localStorage.setItem('siteMode', mode);
+    const fav = document.getElementById('favicon');
+    if (fav) fav.href = `favicon-${mode}.svg`;
   }, [mode]);
 
   useEffect(() => {
