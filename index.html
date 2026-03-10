@@ -846,12 +846,12 @@ function App() {
       </nav>
 
       <div className="container">
-        <HeroSection mode={mode} onHeroComplete={() => setHeroComplete(true)} />
-
         <SketchAnim key={`sk1-${mode}`} id="sk1" viewBox="0 0 600 600" ratio="1/1" label="Grid Study I"
           heroComplete={heroComplete}
           filterEl={mode === 'zen' ? <filter id="sk-f1" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".08" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
           buildFn={mode === 'work' ? buildGridWork : buildGrid} />
+
+        <HeroSection mode={mode} onHeroComplete={() => setHeroComplete(true)} />
 
         <section id="about" className="scroll-reveal">
           <div className="section-label">About</div>
