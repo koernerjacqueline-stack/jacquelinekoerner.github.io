@@ -275,7 +275,7 @@
 
 <div class="container">
   <div class="caption">
-    <span class="caption-note">Hover near a face to lead it.</span>
+    <span class="caption-note">Move your cursor to lead them.</span>
     <span class="caption-tag">KOI — 04</span>
   </div>
 </div>
@@ -288,17 +288,20 @@
     siteCursor.style.top  = e.clientY + 'px';
   });
 
-  const ns     = 'http://www.w3.org/2000/svg';
-  const svgEl  = document.getElementById('koi-svg');
-  const fish1  = document.getElementById('fish1');
+  const ns    = 'http://www.w3.org/2000/svg';
+  const svgEl = document.getElementById('koi-svg');
+  const fish1 = document.getElementById('fish1');
 
-  // ── Clone fish1 → fish2, fish3 ──
-  const fish2 = fish1.cloneNode(true); fish2.id = 'fish2';
-  const fish3 = fish1.cloneNode(true); fish3.id = 'fish3';
-  fish2.setAttribute('opacity', '0.46');
-  fish3.setAttribute('opacity', '0.22');
-  svgEl.appendChild(fish2);
-  svgEl.appendChild(fish3);
+  // ── Clone fish1 → 9 total ──
+  const fishEls   = [fish1];
+  const OPACITIES = [1, 0.72, 0.58, 0.46, 0.36, 0.27, 0.21, 0.15, 0.10];
+  for (let i = 1; i < 9; i++) {
+    const clone = fish1.cloneNode(true);
+    clone.id = 'fish' + (i + 1);
+    clone.setAttribute('opacity', OPACITIES[i]);
+    svgEl.appendChild(clone);
+    fishEls.push(clone);
+  }
 
   // ── Populate scales in each fish ──
   const scaleRows = [
@@ -332,52 +335,79 @@
     });
   });
 
-  // ── Fish state ──
-  // Each fish has its own organic figure-8 path (lemniscate + zig-zag harmonics)
-  // cx/cy = path center in SVG space, rx/ry = radii
-  // z1f/z1a, z2f/z2a = harmonic frequency/amplitude for zig-zag character
-  // scale = fish size in SVG units, speed = rad/sec
   const SVG_W = 700, SVG_H = 490;
-  const FCX = 170, FCY = 253; // fish pivot (natural coords)
-  const HEAD_DIST = 201;      // natural-coord distance from pivot to head tip
+  const FCX = 170, FCY = 253;
+  const HEAD_DIST = 201; // fish-space units from pivot to head
 
+  // ── 9 fish spread across the canvas ──
+  // offsetX/Y: decaying blend offset so fish glide back onto organic path after following
   const FISHES = [
-    {
-      el: fish1, scale: 0.28,
-      cx: 340, cy: 238, rx: 176, ry: 116,
-      speed: 0.13, phase: 0,
-      z1f: 3.1, z1a: 0.09, z2f: 3.7, z2a: 0.08,
-      t: 0, x: 0, y: 0, angle: 0,
-      following: 0, cd: 0   // following = countdown, cd = post-follow cooldown
-    },
-    {
-      el: fish2, scale: 0.25,
-      cx: 362, cy: 252, rx: 154, ry: 98,
-      speed: 0.11, phase: 2.15,
-      z1f: 2.85, z1a: 0.07, z2f: 4.15, z2a: 0.10,
-      t: 0, x: 0, y: 0, angle: 0,
-      following: 0, cd: 0
-    },
-    {
-      el: fish3, scale: 0.21,
-      cx: 350, cy: 245, rx: 138, ry: 88,
-      speed: 0.17, phase: 4.45,
-      z1f: 3.55, z1a: 0.11, z2f: 3.25, z2a: 0.06,
-      t: 0, x: 0, y: 0, angle: 0,
-      following: 0, cd: 0
-    },
+    { el: fishEls[0], scale: 0.28,                          // top-left
+      cx: 195, cy: 155, rx: 110, ry: 70, speed: 0.13, phase: 0,
+      z1f: 3.1,  z1a: 0.16, z2f: 3.7,  z2a: 0.14,
+      zigFreq: 4.2, zigSpread: 0.72,
+      t: 0, x: 195, y: 155, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
+
+    { el: fishEls[1], scale: 0.25,                          // top-right
+      cx: 510, cy: 145, rx: 115, ry: 72, speed: 0.11, phase: 2.15,
+      z1f: 2.85, z1a: 0.14, z2f: 4.15, z2a: 0.17,
+      zigFreq: 3.8, zigSpread: 0.65,
+      t: 0, x: 510, y: 145, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
+
+    { el: fishEls[2], scale: 0.21,                          // center
+      cx: 350, cy: 245, rx: 148, ry: 90, speed: 0.17, phase: 4.45,
+      z1f: 3.55, z1a: 0.18, z2f: 3.25, z2a: 0.13,
+      zigFreq: 5.0, zigSpread: 0.82,
+      t: 0, x: 350, y: 245, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
+
+    { el: fishEls[3], scale: 0.24,                          // bottom-left
+      cx: 175, cy: 358, rx: 106, ry: 66, speed: 0.145, phase: 1.1,
+      z1f: 3.3,  z1a: 0.15, z2f: 3.9,  z2a: 0.11,
+      zigFreq: 4.5, zigSpread: 0.70,
+      t: 0, x: 175, y: 358, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
+
+    { el: fishEls[4], scale: 0.22,                          // bottom-right
+      cx: 528, cy: 350, rx: 108, ry: 66, speed: 0.19, phase: 3.3,
+      z1f: 2.7,  z1a: 0.13, z2f: 4.5,  z2a: 0.16,
+      zigFreq: 3.5, zigSpread: 0.88,
+      t: 0, x: 528, y: 350, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
+
+    { el: fishEls[5], scale: 0.20,                          // mid-left
+      cx: 272, cy: 195, rx: 135, ry: 82, speed: 0.15, phase: 5.6,
+      z1f: 3.8,  z1a: 0.17, z2f: 3.1,  z2a: 0.14,
+      zigFreq: 4.8, zigSpread: 0.68,
+      t: 0, x: 272, y: 195, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
+
+    { el: fishEls[6], scale: 0.23,                          // mid-right
+      cx: 438, cy: 310, rx: 138, ry: 84, speed: 0.12, phase: 0.75,
+      z1f: 3.0,  z1a: 0.19, z2f: 3.6,  z2a: 0.10,
+      zigFreq: 3.2, zigSpread: 0.92,
+      t: 0, x: 438, y: 310, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
+
+    { el: fishEls[7], scale: 0.19,                          // left-center
+      cx: 210, cy: 290, rx: 118, ry: 74, speed: 0.21, phase: 1.85,
+      z1f: 4.1,  z1a: 0.14, z2f: 2.9,  z2a: 0.18,
+      zigFreq: 5.5, zigSpread: 0.60,
+      t: 0, x: 210, y: 290, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
+
+    { el: fishEls[8], scale: 0.18,                          // right-center
+      cx: 482, cy: 202, rx: 128, ry: 78, speed: 0.23, phase: 3.9,
+      z1f: 2.6,  z1a: 0.20, z2f: 4.8,  z2a: 0.15,
+      zigFreq: 6.0, zigSpread: 0.78,
+      t: 0, x: 482, y: 202, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
   ];
 
   function getPos(f, t) {
     return {
-      x: f.cx + f.rx * Math.sin(t)         + f.rx * f.z1a * Math.sin(f.z1f * t),
-      y: f.cy + (f.ry / 2) * Math.sin(2*t) + f.ry * f.z2a * Math.cos(f.z2f * t)
+      x: f.cx + f.rx * Math.sin(t)           + f.rx * f.z1a * Math.sin(f.z1f * t),
+      y: f.cy + (f.ry / 2) * Math.sin(2 * t) + f.ry * f.z2a * Math.cos(f.z2f * t)
     };
   }
 
-  // Re-anchor phase so the figure-8 resumes near the fish's current position
+  // Re-anchor organic path phase to resume near current position.
+  // Stores offsetX/Y so the fish glides smoothly back rather than jumping.
   function reanchor(f) {
-    let best = f.phase, bestD = Infinity;
+    let best = 0, bestD = Infinity;
     for (let i = 0; i < 300; i++) {
       const ph = (i / 300) * Math.PI * 2;
       const p  = getPos(f, f.t + ph);
@@ -385,10 +415,15 @@
       if (d < bestD) { bestD = d; best = ph; }
     }
     f.phase = best;
+    const p0 = getPos(f, f.t + best);
+    f.offsetX = f.x - p0.x;
+    f.offsetY = f.y - p0.y;
   }
 
   // ── Cursor tracking in SVG space ──
   const cur = { x: -9999, y: -9999 };
+  let followingCount = 0;
+
   svgEl.addEventListener('mousemove', e => {
     const r = svgEl.getBoundingClientRect();
     cur.x = (e.clientX - r.left) / r.width  * SVG_W;
@@ -403,53 +438,69 @@
     prev = ts;
 
     FISHES.forEach(f => {
+      f.t += dt * f.speed;
       if (f.cd > 0) f.cd = Math.max(0, f.cd - dt);
-
       let px, py, angleDeg;
 
-      if (f.following > 0) {
-        // ── FOLLOW MODE: swim toward cursor ──
-        f.following -= dt;
-        f.t += dt * f.speed; // keep t advancing so reanchor lands close
+      // ── If cursor left, drop all followers immediately ──
+      if (f.following && cur.x === -9999) {
+        f.following = false;
+        followingCount--;
+        reanchor(f);
+        f.cd = 1.5 + Math.random();
+      }
 
-        const dx = cur.x - f.x, dy = cur.y - f.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const followSpeed = 90; // SVG units/sec
-        if (dist > 10) {
-          const move = Math.min(followSpeed * dt, dist - 10);
-          f.x += (dx / dist) * move;
-          f.y += (dy / dist) * move;
-          f.angle = Math.atan2(dy, dx) * 180 / Math.PI + 90;
-        }
-
-        // When follow period ends, re-anchor so figure-8 resumes smoothly
-        if (f.following <= 0) {
+      // ── Follow timer: natural fall-off after 3.5–6.5 sec ──
+      if (f.following) {
+        f.followTimer -= dt;
+        if (f.followTimer <= 0) {
+          f.following = false;
+          followingCount--;
           reanchor(f);
-          f.cd = 1.5; // brief cooldown before it can follow again
+          f.cd = 2.0 + Math.random() * 1.5;
         }
+      }
 
+      if (f.following) {
+        // ── FOLLOW: zig-zag toward cursor ──
+        const dx   = cur.x - f.x;
+        const dy   = cur.y - f.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 14) {
+          const toAngle     = Math.atan2(dy, dx);
+          const zigOffset   = Math.sin(f.t * f.zigFreq) * f.zigSpread;
+          const travelAngle = toAngle + zigOffset;
+          const move = Math.min(82 * dt, dist - 14);
+          f.x += Math.cos(travelAngle) * move;
+          f.y += Math.sin(travelAngle) * move;
+          f.angle = travelAngle * 180 / Math.PI + 90;
+        }
         px = f.x; py = f.y; angleDeg = f.angle;
 
       } else {
-        // ── NORMAL: organic figure-8 ──
-        f.t += dt * f.speed;
+        // ── ORGANIC: figure-8 with harmonic zig-zag ──
         const tt = f.t + f.phase;
-
         const p  = getPos(f, tt);
         const p2 = getPos(f, tt + 0.013);
+        // Decay blend offset so fish glides smoothly back from follow position
+        const decay = Math.exp(-1.5 * dt);
+        f.offsetX *= decay;
+        f.offsetY *= decay;
+        px = p.x + f.offsetX;
+        py = p.y + f.offsetY;
         angleDeg = Math.atan2(p2.y - p.y, p2.x - p.x) * 180 / Math.PI + 90;
+        f.x = px; f.y = py; f.angle = angleDeg;
 
-        f.x = p.x; f.y = p.y; f.angle = angleDeg;
-        px = p.x; py = p.y;
-
-        // ── Head proximity → start following ──
-        if (f.cd <= 0) {
+        // ── Head proximity trigger (max 5 followers at once) ──
+        if (f.cd <= 0 && cur.x !== -9999 && followingCount < 5) {
           const rad = angleDeg * Math.PI / 180;
           const hx  = f.x + HEAD_DIST * f.scale * Math.sin(rad);
           const hy  = f.y - HEAD_DIST * f.scale * Math.cos(rad);
           const ddx = cur.x - hx, ddy = cur.y - hy;
-          if (ddx * ddx + ddy * ddy < 22 * 22) {
-            f.following = 2.0; // follow for 2 seconds
+          if (ddx * ddx + ddy * ddy < 40 * 40) {
+            f.following = true;
+            f.followTimer = 3.5 + Math.random() * 3;
+            followingCount++;
           }
         }
       }
