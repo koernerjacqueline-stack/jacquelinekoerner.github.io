@@ -488,6 +488,7 @@ function HeroSection({ mode, onHeroComplete }) {
   const [typedName, setTypedName] = useState('');
   const [nameDone, setNameDone] = useState(false);
   const [typedText, setTypedText] = useState('');
+  const [typedZenText, setTypedZenText] = useState('');
   const [descReady, setDescReady] = useState(false);
   const [zenRevealed, setZenRevealed] = useState(0);
   const workStarted = useRef(false);
@@ -533,7 +534,15 @@ function HeroSection({ mode, onHeroComplete }) {
     });
     const last = ZEN_LETTERS[ZEN_LETTERS.length - 1];
     setTimeout(() => { onHeroComplete && onHeroComplete(); }, last.d + 300);
-    setTimeout(() => setDescReady(true), last.d + 900);
+    setTimeout(() => {
+      setDescReady(true);
+      let j = 0;
+      const descIv = setInterval(() => {
+        j++;
+        setTypedZenText(zenDesc.slice(0, j));
+        if (j >= zenDesc.length) clearInterval(descIv);
+      }, 45);
+    }, last.d + 900);
   }, [mode]);
 
   const renderTypedName = () => {
@@ -564,7 +573,7 @@ function HeroSection({ mode, onHeroComplete }) {
         )}
       </div>
       {mode === 'work' && descReady && <p className="hero-desc">{typedText}</p>}
-      {mode === 'zen' && descReady && <p className="hero-desc" style={{animation: 'fadeIn 1.2s ease both'}}>{zenDesc}</p>}
+      {mode === 'zen' && descReady && <p className="hero-desc">{typedZenText}</p>}
     </div>
   );
 }
