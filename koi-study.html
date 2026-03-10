@@ -2,21 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <script>(function(){var m=localStorage.getItem('siteMode')||'work';document.documentElement.setAttribute('data-mode',m);})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Koi Study — Jacqueline Koerner</title>
+  <link rel="icon" id="favicon" type="image/svg+xml" href="favicon-work.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=Inter:wght@300;400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --ink: #111111;
-      --paper: #ebebeb;
-      --muted: #909090;
-      --rule: rgba(0,0,0,0.1);
-      --serif: 'Fraunces', Georgia, serif;
-      --sans: 'Inter', system-ui, sans-serif;
-      --mono: 'JetBrains Mono', monospace;
+      --ink: #1a1a1a;
+      --paper: #ffffff;
+      --paper-warm: #ebebeb;
+      --muted: #888;
+      --accent: #2a5298;
+      --serif: 'Crimson Pro', Georgia, serif;
+      --sans: 'Source Sans 3', system-ui, sans-serif;
     }
 
     body {
@@ -25,8 +27,13 @@
       font-family: var(--sans);
       font-weight: 300;
       min-height: 100vh;
+      line-height: 1.7;
+      transition: background-color 0.5s ease;
     }
 
+    [data-mode="zen"] body { background: var(--paper-warm); }
+
+    /* Noise texture — preserved from original */
     body::after {
       content: '';
       position: fixed;
@@ -37,8 +44,9 @@
       z-index: 9999;
     }
 
+    /* Custom cursor */
     body { cursor: none; }
-    a { cursor: none; }
+    a, button { cursor: none; }
     #site-cursor {
       position: fixed;
       width: 8px;
@@ -52,44 +60,82 @@
     }
 
     .container {
-      max-width: 520px;
+      max-width: 680px;
       margin: 0 auto;
       padding: 0 2rem;
     }
 
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 2.5rem 0 0;
+    }
+
     .back {
       display: inline-block;
-      padding: 2.5rem 0 0;
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      font-weight: 300;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
       color: var(--muted);
       text-decoration: none;
       transition: color 0.2s;
     }
-    .back:hover { color: var(--ink); }
+    .back:hover { color: var(--accent); }
 
-    .header {
-      padding: 3rem 0 2.5rem;
-      border-bottom: 1px solid var(--rule);
+    .mode-switch {
+      display: flex;
+      background: rgba(0,0,0,0.06);
+      border-radius: 4px;
+      padding: 2px;
+      border: none;
+      cursor: pointer;
+      gap: 0;
+      font-family: inherit;
     }
+    .ms-opt {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 3px 10px;
+      border-radius: 3px;
+      transition: background 0.2s, color 0.2s;
+      background: none;
+      border: none;
+      cursor: none;
+    }
+    .ms-opt.active {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
     h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
       font-family: var(--serif);
-      font-size: clamp(2.4rem, 7vw, 3.6rem);
       font-weight: 300;
       font-style: italic;
-      line-height: 1.08;
-      margin-bottom: 0.7rem;
+      margin: 3rem 0 0.5rem;
+      line-height: 1.2;
     }
+
     .subtitle {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      font-weight: 300;
+      font-size: 1.1rem;
+      font-family: var(--serif);
+      font-style: italic;
       color: var(--muted);
-      letter-spacing: 0.12em;
+      margin-bottom: 0.5rem;
+    }
+
+    .meta {
+      font-size: 0.72rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3rem;
     }
 
     .koi-frame {
@@ -110,17 +156,15 @@
       align-items: baseline;
     }
     .caption-note {
-      font-family: var(--mono);
-      font-size: 0.58rem;
+      font-family: var(--sans);
+      font-size: 0.72rem;
       font-weight: 300;
       color: var(--muted);
-      letter-spacing: 0.08em;
-      line-height: 1.9;
-      font-style: italic;
+      letter-spacing: 0.06em;
     }
     .caption-tag {
-      font-family: var(--mono);
-      font-size: 0.58rem;
+      font-family: var(--sans);
+      font-size: 0.72rem;
       font-weight: 300;
       color: var(--muted);
       letter-spacing: 0.08em;
@@ -134,11 +178,17 @@
 <div id="site-cursor"></div>
 
 <div class="container">
-  <a href="index.html" class="back">← jk</a>
-  <div class="header">
-    <h1>Koi Study</h1>
-    <div class="subtitle">Ink drawing — 04</div>
+  <div class="top-bar">
+    <a href="index.html" class="back">← Back to portfolio</a>
+    <button class="mode-switch" id="mode-btn" aria-label="Toggle work/zen mode">
+      <span class="ms-opt" data-m="work">work</span>
+      <span class="ms-opt" data-m="zen">zen</span>
+    </button>
   </div>
+
+  <h1>Koi Study</h1>
+  <p class="subtitle">An ink study in nine movements</p>
+  <p class="meta">Design · 2026</p>
 </div>
 
 <div class="koi-frame">
@@ -281,7 +331,29 @@
 </div>
 
 <script>
-  // ── Site cursor ──
+  /* ── Mode toggle ── */
+  (function() {
+    var html = document.documentElement;
+    var btn  = document.getElementById('mode-btn');
+
+    function setMode(m) {
+      html.setAttribute('data-mode', m);
+      localStorage.setItem('siteMode', m);
+      btn.querySelectorAll('.ms-opt').forEach(function(el) {
+        el.classList.toggle('active', el.getAttribute('data-m') === m);
+      });
+      var fav = document.getElementById('favicon');
+      if (fav) fav.href = 'favicon-' + m + '.svg';
+    }
+
+    setMode(html.getAttribute('data-mode') || 'work');
+
+    btn.addEventListener('click', function() {
+      setMode(html.getAttribute('data-mode') === 'work' ? 'zen' : 'work');
+    });
+  })();
+
+  /* ── Site cursor ── */
   const siteCursor = document.getElementById('site-cursor');
   document.addEventListener('mousemove', e => {
     siteCursor.style.left = e.clientX + 'px';
@@ -292,7 +364,7 @@
   const svgEl = document.getElementById('koi-svg');
   const fish1 = document.getElementById('fish1');
 
-  // ── Clone fish1 → 9 total ──
+  /* ── Clone fish1 → 9 total ── */
   const fishEls   = [fish1];
   const OPACITIES = [1, 0.72, 0.58, 0.46, 0.36, 0.27, 0.21, 0.15, 0.10];
   for (let i = 1; i < 9; i++) {
@@ -303,7 +375,7 @@
     fishEls.push(clone);
   }
 
-  // ── Populate scales in each fish ──
+  /* ── Populate scales in each fish ── */
   const scaleRows = [
     {cx:170, y:142, n:3, rw:20, rh:8,  a:0.26},
     {cx:170, y:162, n:4, rw:20, rh:9,  a:0.25},
@@ -337,60 +409,59 @@
 
   const SVG_W = 700, SVG_H = 490;
   const FCX = 170, FCY = 253;
-  const HEAD_DIST = 201; // fish-space units from pivot to head
+  const HEAD_DIST = 201;
 
-  // ── 9 fish spread across the canvas ──
-  // offsetX/Y: decaying blend offset so fish glide back onto organic path after following
+  /* ── 9 fish spread across the canvas ── */
   const FISHES = [
-    { el: fishEls[0], scale: 0.28,                          // top-left
+    { el: fishEls[0], scale: 0.28,
       cx: 195, cy: 155, rx: 110, ry: 70, speed: 0.13, phase: 0,
       z1f: 3.1,  z1a: 0.16, z2f: 3.7,  z2a: 0.14,
       zigFreq: 4.2, zigSpread: 0.72,
       t: 0, x: 195, y: 155, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
 
-    { el: fishEls[1], scale: 0.25,                          // top-right
+    { el: fishEls[1], scale: 0.25,
       cx: 510, cy: 145, rx: 115, ry: 72, speed: 0.11, phase: 2.15,
       z1f: 2.85, z1a: 0.14, z2f: 4.15, z2a: 0.17,
       zigFreq: 3.8, zigSpread: 0.65,
       t: 0, x: 510, y: 145, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
 
-    { el: fishEls[2], scale: 0.21,                          // center
+    { el: fishEls[2], scale: 0.21,
       cx: 350, cy: 245, rx: 148, ry: 90, speed: 0.17, phase: 4.45,
       z1f: 3.55, z1a: 0.18, z2f: 3.25, z2a: 0.13,
       zigFreq: 5.0, zigSpread: 0.82,
       t: 0, x: 350, y: 245, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
 
-    { el: fishEls[3], scale: 0.24,                          // bottom-left
+    { el: fishEls[3], scale: 0.24,
       cx: 175, cy: 358, rx: 106, ry: 66, speed: 0.145, phase: 1.1,
       z1f: 3.3,  z1a: 0.15, z2f: 3.9,  z2a: 0.11,
       zigFreq: 4.5, zigSpread: 0.70,
       t: 0, x: 175, y: 358, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
 
-    { el: fishEls[4], scale: 0.22,                          // bottom-right
+    { el: fishEls[4], scale: 0.22,
       cx: 528, cy: 350, rx: 108, ry: 66, speed: 0.19, phase: 3.3,
       z1f: 2.7,  z1a: 0.13, z2f: 4.5,  z2a: 0.16,
       zigFreq: 3.5, zigSpread: 0.88,
       t: 0, x: 528, y: 350, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
 
-    { el: fishEls[5], scale: 0.20,                          // mid-left
+    { el: fishEls[5], scale: 0.20,
       cx: 272, cy: 195, rx: 135, ry: 82, speed: 0.15, phase: 5.6,
       z1f: 3.8,  z1a: 0.17, z2f: 3.1,  z2a: 0.14,
       zigFreq: 4.8, zigSpread: 0.68,
       t: 0, x: 272, y: 195, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
 
-    { el: fishEls[6], scale: 0.23,                          // mid-right
+    { el: fishEls[6], scale: 0.23,
       cx: 438, cy: 310, rx: 138, ry: 84, speed: 0.12, phase: 0.75,
       z1f: 3.0,  z1a: 0.19, z2f: 3.6,  z2a: 0.10,
       zigFreq: 3.2, zigSpread: 0.92,
       t: 0, x: 438, y: 310, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
 
-    { el: fishEls[7], scale: 0.19,                          // left-center
+    { el: fishEls[7], scale: 0.19,
       cx: 210, cy: 290, rx: 118, ry: 74, speed: 0.21, phase: 1.85,
       z1f: 4.1,  z1a: 0.14, z2f: 2.9,  z2a: 0.18,
       zigFreq: 5.5, zigSpread: 0.60,
       t: 0, x: 210, y: 290, angle: 0, following: false, followTimer: 0, cd: 0, offsetX: 0, offsetY: 0 },
 
-    { el: fishEls[8], scale: 0.18,                          // right-center
+    { el: fishEls[8], scale: 0.18,
       cx: 482, cy: 202, rx: 128, ry: 78, speed: 0.23, phase: 3.9,
       z1f: 2.6,  z1a: 0.20, z2f: 4.8,  z2a: 0.15,
       zigFreq: 6.0, zigSpread: 0.78,
@@ -404,8 +475,6 @@
     };
   }
 
-  // Re-anchor organic path phase to resume near current position.
-  // Stores offsetX/Y so the fish glides smoothly back rather than jumping.
   function reanchor(f) {
     let best = 0, bestD = Infinity;
     for (let i = 0; i < 300; i++) {
@@ -420,7 +489,7 @@
     f.offsetY = f.y - p0.y;
   }
 
-  // ── Cursor tracking in SVG space ──
+  /* ── Cursor tracking in SVG space ── */
   const cur = { x: -9999, y: -9999 };
   let followingCount = 0;
 
@@ -431,7 +500,7 @@
   });
   svgEl.addEventListener('mouseleave', () => { cur.x = cur.y = -9999; });
 
-  // ── Animation loop ──
+  /* ── Animation loop ── */
   let prev = null;
   function swim(ts) {
     const dt = prev ? Math.min((ts - prev) / 1000, 0.05) : 0.016;
@@ -442,7 +511,6 @@
       if (f.cd > 0) f.cd = Math.max(0, f.cd - dt);
       let px, py, angleDeg;
 
-      // ── If cursor left, drop all followers immediately ──
       if (f.following && cur.x === -9999) {
         f.following = false;
         followingCount--;
@@ -450,7 +518,6 @@
         f.cd = 1.5 + Math.random();
       }
 
-      // ── Follow timer: natural fall-off after 3.5–6.5 sec ──
       if (f.following) {
         f.followTimer -= dt;
         if (f.followTimer <= 0) {
@@ -462,7 +529,6 @@
       }
 
       if (f.following) {
-        // ── FOLLOW: zig-zag toward cursor ──
         const dx   = cur.x - f.x;
         const dy   = cur.y - f.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -478,11 +544,9 @@
         px = f.x; py = f.y; angleDeg = f.angle;
 
       } else {
-        // ── ORGANIC: figure-8 with harmonic zig-zag ──
         const tt = f.t + f.phase;
         const p  = getPos(f, tt);
         const p2 = getPos(f, tt + 0.013);
-        // Decay blend offset so fish glides smoothly back from follow position
         const decay = Math.exp(-1.5 * dt);
         f.offsetX *= decay;
         f.offsetY *= decay;
@@ -491,7 +555,6 @@
         angleDeg = Math.atan2(p2.y - p.y, p2.x - p.x) * 180 / Math.PI + 90;
         f.x = px; f.y = py; f.angle = angleDeg;
 
-        // ── Head proximity trigger (max 5 followers at once) ──
         if (f.cd <= 0 && cur.x !== -9999 && followingCount < 5) {
           const rad = angleDeg * Math.PI / 180;
           const hx  = f.x + HEAD_DIST * f.scale * Math.sin(rad);
