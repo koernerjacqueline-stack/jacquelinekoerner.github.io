@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Koi Study — Jacqueline Koerner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=Inter:wght@300;400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #111111;
+      --paper: #ebebeb;
+      --muted: #909090;
+      --rule: rgba(0,0,0,0.1);
+      --serif: 'Fraunces', Georgia, serif;
+      --sans: 'Inter', system-ui, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.045;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    body { cursor: none; }
+    a { cursor: none; }
+    #site-cursor {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: var(--ink);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      left: -20px; top: -20px;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .back {
+      display: inline-block;
+      padding: 2.5rem 0 0;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back:hover { color: var(--ink); }
+
+    .header {
+      padding: 3rem 0 2.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 7vw, 3.6rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.08;
+      margin-bottom: 0.7rem;
+    }
+    .subtitle {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .koi-frame {
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .koi-frame svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .caption {
+      padding: 1.4rem 0 5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .caption-note {
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      line-height: 1.9;
+      font-style: italic;
+    }
+    .caption-tag {
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      opacity: 0.55;
+      white-space: nowrap;
+      margin-left: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+<div id="site-cursor"></div>
+
+<div class="container">
+  <a href="index.html" class="back">← jk</a>
+  <div class="header">
+    <h1>Koi Study</h1>
+    <div class="subtitle">Ink drawing — 04</div>
+  </div>
+</div>
+
+<div class="koi-frame">
+  <svg id="koi-svg" viewBox="0 0 700 490" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="ink-tex" x="-14%" y="-14%" width="128%" height="128%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.032 0.018" numOctaves="3" seed="17" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="wash-blur" x="-10%" y="-10%" width="120%" height="120%">
+        <feGaussianBlur stdDeviation="2.8"/>
+      </filter>
+    </defs>
+
+    <!-- ── FISH TEMPLATE (fish 1, darkest) ── -->
+    <!-- JS clones this to create fish 2 and 3 with different opacity -->
+    <g id="fish1">
+
+      <!-- Wash fills -->
+      <g class="koi-wash" filter="url(#wash-blur)">
+        <path d="M 170,52 C 195,62 215,88 215,120 C 238,158 248,200 248,245 C 248,298 234,360 212,405 C 200,428 186,444 178,454 L 162,454 C 154,444 140,428 128,405 C 106,360 92,298 92,245 C 92,200 102,158 125,120 C 125,88 145,62 170,52 Z"
+              fill="rgba(14,10,4,0.09)" stroke="none"/>
+        <path d="M 124,138 C 108,140 86,148 68,162 C 52,176 44,196 48,214 C 52,230 64,240 80,238 C 98,234 114,218 122,198 C 130,178 128,154 124,138 Z"
+              fill="rgba(14,10,4,0.07)" stroke="none"/>
+        <path d="M 216,138 C 232,140 254,148 272,162 C 288,176 296,196 292,214 C 288,230 276,240 260,238 C 242,234 226,218 218,198 C 210,178 212,154 216,138 Z"
+              fill="rgba(14,10,4,0.07)" stroke="none"/>
+        <path d="M 104,320 C 88,316 70,320 58,334 C 48,346 54,362 68,364 C 82,366 100,356 104,340 C 106,330 106,324 104,320 Z"
+              fill="rgba(14,10,4,0.06)" stroke="none"/>
+        <path d="M 236,320 C 252,316 270,320 282,334 C 292,346 286,362 272,364 C 258,366 240,356 236,340 C 234,330 234,324 236,320 Z"
+              fill="rgba(14,10,4,0.06)" stroke="none"/>
+        <path d="M 162,454 C 148,462 126,474 102,488 C 80,500 60,510 44,514 C 54,504 68,490 78,476 C 90,460 96,444 100,434 C 110,438 128,446 144,452 C 152,454 158,454 162,454 Z"
+              fill="rgba(14,10,4,0.08)" stroke="none"/>
+        <path d="M 178,454 C 192,462 214,474 238,488 C 260,500 280,510 296,514 C 286,504 272,490 262,476 C 250,460 244,444 240,434 C 230,438 212,446 196,452 C 188,454 182,454 178,454 Z"
+              fill="rgba(14,10,4,0.08)" stroke="none"/>
+      </g>
+
+      <!-- Ink strokes -->
+      <g class="koi-ink" filter="url(#ink-tex)">
+        <!-- Body bleed -->
+        <path d="M 170,52 C 195,62 215,88 215,120 C 238,158 248,200 248,245 C 248,298 234,360 212,405 C 200,428 186,444 178,454"
+              fill="none" stroke="rgba(14,10,4,0.13)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 170,52 C 145,62 125,88 125,120 C 102,158 92,200 92,245 C 92,298 106,360 128,405 C 140,428 154,444 162,454"
+              fill="none" stroke="rgba(14,10,4,0.13)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Body main -->
+        <path d="M 170,52 C 195,62 215,88 215,120 C 238,158 248,200 248,245 C 248,298 234,360 212,405 C 200,428 186,444 178,454"
+              fill="none" stroke="rgba(14,10,4,0.93)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 170,52 C 145,62 125,88 125,120 C 102,158 92,200 92,245 C 92,298 106,360 128,405 C 140,428 154,444 162,454"
+              fill="none" stroke="rgba(14,10,4,0.93)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Gills -->
+        <path d="M 125,118 C 118,128 116,142 118,160" fill="none" stroke="rgba(14,10,4,0.50)" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M 215,118 C 222,128 224,142 222,160" fill="none" stroke="rgba(14,10,4,0.50)" stroke-width="1.4" stroke-linecap="round"/>
+        <!-- Mouth -->
+        <path d="M 158,58 L 170,54 L 182,58" fill="none" stroke="rgba(14,10,4,0.76)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Barbels -->
+        <path d="M 165,50 C 154,44 144,40 138,36" fill="none" stroke="rgba(14,10,4,0.68)" stroke-width="1.1" stroke-linecap="round"/>
+        <path d="M 175,50 C 186,44 196,40 202,36" fill="none" stroke="rgba(14,10,4,0.68)" stroke-width="1.1" stroke-linecap="round"/>
+        <!-- Eyes -->
+        <circle cx="140" cy="82" r="5.2" fill="rgba(14,10,4,0.90)"/>
+        <circle cx="200" cy="82" r="5.2" fill="rgba(14,10,4,0.90)"/>
+        <circle cx="138.5" cy="80.2" r="1.6" fill="rgba(255,248,238,0.5)"/>
+        <circle cx="198.5" cy="80.2" r="1.6" fill="rgba(255,248,238,0.5)"/>
+        <!-- Dorsal -->
+        <path d="M 190,175 C 192,155 195,140 195,128 C 196,118 194,115 190,120 C 188,128 186,148 184,170"
+              fill="none" stroke="rgba(14,10,4,0.72)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="190" y1="174" x2="190" y2="135" stroke="rgba(14,10,4,0.26)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="188" y1="171" x2="191" y2="128" stroke="rgba(14,10,4,0.26)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="185" y1="169" x2="193" y2="121" stroke="rgba(14,10,4,0.26)" stroke-width="0.85" stroke-linecap="round"/>
+        <!-- Pec left -->
+        <path d="M 124,138 C 108,140 86,148 68,162 C 52,176 44,196 48,214 C 52,230 64,240 80,238 C 98,234 114,218 122,198 C 130,178 128,154 124,138 Z"
+              fill="none" stroke="rgba(14,10,4,0.80)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="124" y1="138" x2="52"  y2="168" stroke="rgba(14,10,4,0.22)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="124" y1="138" x2="46"  y2="192" stroke="rgba(14,10,4,0.22)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="124" y1="138" x2="50"  y2="212" stroke="rgba(14,10,4,0.22)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="124" y1="138" x2="64"  y2="234" stroke="rgba(14,10,4,0.22)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="124" y1="138" x2="84"  y2="238" stroke="rgba(14,10,4,0.22)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="124" y1="138" x2="106" y2="234" stroke="rgba(14,10,4,0.22)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="124" y1="138" x2="120" y2="216" stroke="rgba(14,10,4,0.22)" stroke-width="0.85" stroke-linecap="round"/>
+        <!-- Pec right -->
+        <path d="M 216,138 C 232,140 254,148 272,162 C 288,176 296,196 292,214 C 288,230 276,240 260,238 C 242,234 226,218 218,198 C 210,178 212,154 216,138 Z"
+              fill="none" stroke="rgba(14,10,4,0.80)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="216" y1="138" x2="288" y2="168" stroke="rgba(14,10,4,0.22)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="216" y1="138" x2="294" y2="192" stroke="rgba(14,10,4,0.22)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="216" y1="138" x2="290" y2="212" stroke="rgba(14,10,4,0.22)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="216" y1="138" x2="276" y2="234" stroke="rgba(14,10,4,0.22)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="216" y1="138" x2="256" y2="238" stroke="rgba(14,10,4,0.22)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="216" y1="138" x2="234" y2="234" stroke="rgba(14,10,4,0.22)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="216" y1="138" x2="220" y2="216" stroke="rgba(14,10,4,0.22)" stroke-width="0.85" stroke-linecap="round"/>
+        <!-- Pelvic left (outside body) -->
+        <path d="M 104,320 C 88,316 70,320 58,334 C 48,346 54,362 68,364 C 82,366 100,356 104,340 C 106,330 106,324 104,320 Z"
+              fill="none" stroke="rgba(14,10,4,0.68)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="104" y1="330" x2="60"  y2="334" stroke="rgba(14,10,4,0.20)" stroke-width="0.8" stroke-linecap="round"/>
+        <line x1="104" y1="330" x2="50"  y2="348" stroke="rgba(14,10,4,0.20)" stroke-width="0.8" stroke-linecap="round"/>
+        <line x1="104" y1="330" x2="62"  y2="363" stroke="rgba(14,10,4,0.20)" stroke-width="0.8" stroke-linecap="round"/>
+        <line x1="104" y1="330" x2="82"  y2="366" stroke="rgba(14,10,4,0.20)" stroke-width="0.8" stroke-linecap="round"/>
+        <!-- Pelvic right (outside body) -->
+        <path d="M 236,320 C 252,316 270,320 282,334 C 292,346 286,362 272,364 C 258,366 240,356 236,340 C 234,330 234,324 236,320 Z"
+              fill="none" stroke="rgba(14,10,4,0.68)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="236" y1="330" x2="280" y2="334" stroke="rgba(14,10,4,0.20)" stroke-width="0.8" stroke-linecap="round"/>
+        <line x1="236" y1="330" x2="290" y2="348" stroke="rgba(14,10,4,0.20)" stroke-width="0.8" stroke-linecap="round"/>
+        <line x1="236" y1="330" x2="278" y2="363" stroke="rgba(14,10,4,0.20)" stroke-width="0.8" stroke-linecap="round"/>
+        <line x1="236" y1="330" x2="258" y2="366" stroke="rgba(14,10,4,0.20)" stroke-width="0.8" stroke-linecap="round"/>
+        <!-- Tail bleed -->
+        <path d="M 162,454 C 148,462 126,474 102,488 C 80,500 60,510 44,514 C 54,504 68,490 78,476 C 90,460 96,444 100,434 C 110,438 128,446 144,452 C 152,454 158,454 162,454 Z"
+              fill="none" stroke="rgba(14,10,4,0.12)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 178,454 C 192,462 214,474 238,488 C 260,500 280,510 296,514 C 286,504 272,490 262,476 C 250,460 244,444 240,434 C 230,438 212,446 196,452 C 188,454 182,454 178,454 Z"
+              fill="none" stroke="rgba(14,10,4,0.12)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Tail main -->
+        <path d="M 162,454 C 148,462 126,474 102,488 C 80,500 60,510 44,514 C 54,504 68,490 78,476 C 90,460 96,444 100,434 C 110,438 128,446 144,452 C 152,454 158,454 162,454 Z"
+              fill="none" stroke="rgba(14,10,4,0.88)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 178,454 C 192,462 214,474 238,488 C 260,500 280,510 296,514 C 286,504 272,490 262,476 C 250,460 244,444 240,434 C 230,438 212,446 196,452 C 188,454 182,454 178,454 Z"
+              fill="none" stroke="rgba(14,10,4,0.88)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Tail rays -->
+        <line x1="170" y1="454" x2="48"  y2="512" stroke="rgba(14,10,4,0.18)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="170" y1="454" x2="72"  y2="494" stroke="rgba(14,10,4,0.18)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="170" y1="454" x2="96"  y2="476" stroke="rgba(14,10,4,0.18)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="170" y1="454" x2="120" y2="462" stroke="rgba(14,10,4,0.18)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="170" y1="454" x2="148" y2="456" stroke="rgba(14,10,4,0.18)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="170" y1="454" x2="192" y2="456" stroke="rgba(14,10,4,0.18)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="170" y1="454" x2="220" y2="462" stroke="rgba(14,10,4,0.18)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="170" y1="454" x2="244" y2="476" stroke="rgba(14,10,4,0.18)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="170" y1="454" x2="268" y2="494" stroke="rgba(14,10,4,0.18)" stroke-width="0.85" stroke-linecap="round"/>
+        <line x1="170" y1="454" x2="292" y2="512" stroke="rgba(14,10,4,0.18)" stroke-width="0.85" stroke-linecap="round"/>
+        <!-- Lateral line -->
+        <path d="M 170,90 C 172,180 168,280 168,440"
+              fill="none" stroke="rgba(14,10,4,0.24)" stroke-width="1.0" stroke-linecap="round"
+              stroke-dasharray="3 7"/>
+        <!-- Scales (populated by JS) -->
+        <g class="fish-scales"></g>
+      </g>
+
+    </g><!-- /fish1 -->
+  </svg>
+</div>
+
+<div class="container">
+  <div class="caption">
+    <span class="caption-note">Hover near a face to lead it.</span>
+    <span class="caption-tag">KOI — 04</span>
+  </div>
+</div>
+
+<script>
+  // ── Site cursor ──
+  const siteCursor = document.getElementById('site-cursor');
+  document.addEventListener('mousemove', e => {
+    siteCursor.style.left = e.clientX + 'px';
+    siteCursor.style.top  = e.clientY + 'px';
+  });
+
+  const ns     = 'http://www.w3.org/2000/svg';
+  const svgEl  = document.getElementById('koi-svg');
+  const fish1  = document.getElementById('fish1');
+
+  // ── Clone fish1 → fish2, fish3 ──
+  const fish2 = fish1.cloneNode(true); fish2.id = 'fish2';
+  const fish3 = fish1.cloneNode(true); fish3.id = 'fish3';
+  fish2.setAttribute('opacity', '0.46');
+  fish3.setAttribute('opacity', '0.22');
+  svgEl.appendChild(fish2);
+  svgEl.appendChild(fish3);
+
+  // ── Populate scales in each fish ──
+  const scaleRows = [
+    {cx:170, y:142, n:3, rw:20, rh:8,  a:0.26},
+    {cx:170, y:162, n:4, rw:20, rh:9,  a:0.25},
+    {cx:170, y:183, n:5, rw:20, rh:9,  a:0.24},
+    {cx:170, y:204, n:6, rw:20, rh:10, a:0.23},
+    {cx:170, y:224, n:7, rw:20, rh:10, a:0.22},
+    {cx:170, y:244, n:7, rw:20, rh:10, a:0.21},
+    {cx:170, y:264, n:7, rw:20, rh:10, a:0.20},
+    {cx:170, y:284, n:6, rw:20, rh:10, a:0.19},
+    {cx:170, y:304, n:6, rw:20, rh:9,  a:0.18},
+    {cx:170, y:323, n:5, rw:20, rh:9,  a:0.17},
+    {cx:170, y:342, n:5, rw:20, rh:8,  a:0.16},
+    {cx:170, y:360, n:4, rw:20, rh:8,  a:0.15},
+  ];
+
+  document.querySelectorAll('.fish-scales').forEach(g => {
+    scaleRows.forEach(row => {
+      for (let i = 0; i < row.n; i++) {
+        const x  = row.cx - (row.n - 1) * row.rw / 2 + i * row.rw;
+        const rx = row.rw / 2;
+        const p  = document.createElementNS(ns, 'path');
+        p.setAttribute('d', `M ${x - rx},${row.y} A ${rx},${row.rh} 0 0,0 ${x + rx},${row.y}`);
+        p.setAttribute('fill', 'none');
+        p.setAttribute('stroke', `rgba(14,10,4,${row.a})`);
+        p.setAttribute('stroke-width', '0.95');
+        p.setAttribute('stroke-linecap', 'round');
+        g.appendChild(p);
+      }
+    });
+  });
+
+  // ── Fish state ──
+  // Each fish has its own organic figure-8 path (lemniscate + zig-zag harmonics)
+  // cx/cy = path center in SVG space, rx/ry = radii
+  // z1f/z1a, z2f/z2a = harmonic frequency/amplitude for zig-zag character
+  // scale = fish size in SVG units, speed = rad/sec
+  const SVG_W = 700, SVG_H = 490;
+  const FCX = 170, FCY = 253; // fish pivot (natural coords)
+  const HEAD_DIST = 201;      // natural-coord distance from pivot to head tip
+
+  const FISHES = [
+    {
+      el: fish1, scale: 0.28,
+      cx: 340, cy: 238, rx: 176, ry: 116,
+      speed: 0.13, phase: 0,
+      z1f: 3.1, z1a: 0.09, z2f: 3.7, z2a: 0.08,
+      t: 0, x: 0, y: 0, angle: 0,
+      following: 0, cd: 0   // following = countdown, cd = post-follow cooldown
+    },
+    {
+      el: fish2, scale: 0.25,
+      cx: 362, cy: 252, rx: 154, ry: 98,
+      speed: 0.11, phase: 2.15,
+      z1f: 2.85, z1a: 0.07, z2f: 4.15, z2a: 0.10,
+      t: 0, x: 0, y: 0, angle: 0,
+      following: 0, cd: 0
+    },
+    {
+      el: fish3, scale: 0.21,
+      cx: 350, cy: 245, rx: 138, ry: 88,
+      speed: 0.17, phase: 4.45,
+      z1f: 3.55, z1a: 0.11, z2f: 3.25, z2a: 0.06,
+      t: 0, x: 0, y: 0, angle: 0,
+      following: 0, cd: 0
+    },
+  ];
+
+  function getPos(f, t) {
+    return {
+      x: f.cx + f.rx * Math.sin(t)         + f.rx * f.z1a * Math.sin(f.z1f * t),
+      y: f.cy + (f.ry / 2) * Math.sin(2*t) + f.ry * f.z2a * Math.cos(f.z2f * t)
+    };
+  }
+
+  // Re-anchor phase so the figure-8 resumes near the fish's current position
+  function reanchor(f) {
+    let best = f.phase, bestD = Infinity;
+    for (let i = 0; i < 300; i++) {
+      const ph = (i / 300) * Math.PI * 2;
+      const p  = getPos(f, f.t + ph);
+      const d  = (p.x - f.x) ** 2 + (p.y - f.y) ** 2;
+      if (d < bestD) { bestD = d; best = ph; }
+    }
+    f.phase = best;
+  }
+
+  // ── Cursor tracking in SVG space ──
+  const cur = { x: -9999, y: -9999 };
+  svgEl.addEventListener('mousemove', e => {
+    const r = svgEl.getBoundingClientRect();
+    cur.x = (e.clientX - r.left) / r.width  * SVG_W;
+    cur.y = (e.clientY - r.top)  / r.height * SVG_H;
+  });
+  svgEl.addEventListener('mouseleave', () => { cur.x = cur.y = -9999; });
+
+  // ── Animation loop ──
+  let prev = null;
+  function swim(ts) {
+    const dt = prev ? Math.min((ts - prev) / 1000, 0.05) : 0.016;
+    prev = ts;
+
+    FISHES.forEach(f => {
+      if (f.cd > 0) f.cd = Math.max(0, f.cd - dt);
+
+      let px, py, angleDeg;
+
+      if (f.following > 0) {
+        // ── FOLLOW MODE: swim toward cursor ──
+        f.following -= dt;
+        f.t += dt * f.speed; // keep t advancing so reanchor lands close
+
+        const dx = cur.x - f.x, dy = cur.y - f.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const followSpeed = 90; // SVG units/sec
+        if (dist > 10) {
+          const move = Math.min(followSpeed * dt, dist - 10);
+          f.x += (dx / dist) * move;
+          f.y += (dy / dist) * move;
+          f.angle = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+        }
+
+        // When follow period ends, re-anchor so figure-8 resumes smoothly
+        if (f.following <= 0) {
+          reanchor(f);
+          f.cd = 1.5; // brief cooldown before it can follow again
+        }
+
+        px = f.x; py = f.y; angleDeg = f.angle;
+
+      } else {
+        // ── NORMAL: organic figure-8 ──
+        f.t += dt * f.speed;
+        const tt = f.t + f.phase;
+
+        const p  = getPos(f, tt);
+        const p2 = getPos(f, tt + 0.013);
+        angleDeg = Math.atan2(p2.y - p.y, p2.x - p.x) * 180 / Math.PI + 90;
+
+        f.x = p.x; f.y = p.y; f.angle = angleDeg;
+        px = p.x; py = p.y;
+
+        // ── Head proximity → start following ──
+        if (f.cd <= 0) {
+          const rad = angleDeg * Math.PI / 180;
+          const hx  = f.x + HEAD_DIST * f.scale * Math.sin(rad);
+          const hy  = f.y - HEAD_DIST * f.scale * Math.cos(rad);
+          const ddx = cur.x - hx, ddy = cur.y - hy;
+          if (ddx * ddx + ddy * ddy < 22 * 22) {
+            f.following = 2.0; // follow for 2 seconds
+          }
+        }
+      }
+
+      const waggle = 2.4 * Math.sin(f.t * 7.8);
+      f.el.setAttribute('transform',
+        `translate(${px.toFixed(1)},${py.toFixed(1)}) ` +
+        `rotate(${(angleDeg + waggle).toFixed(1)}) ` +
+        `scale(${f.scale}) ` +
+        `translate(${-FCX},${-FCY})`
+      );
+    });
+
+    requestAnimationFrame(swim);
+  }
+
+  requestAnimationFrame(swim);
+</script>
+</body>
+</html>
