@@ -575,6 +575,79 @@ function buildVert(g) {
   requestAnimationFrame(() => grp.querySelectorAll('path').forEach(p => p.style.strokeDashoffset = '0'));
 }
 
+function buildGridWork(g) {
+  const rnd = makeRnd(42);
+  // Graph paper background — appears instantly
+  const bg = svgEl('g', {});
+  for (let x = 0; x <= 600; x += 20) {
+    const line = svgEl('line', { x1:x, y1:0, x2:x, y2:600,
+      stroke: x % 100 === 0 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.05)',
+      'stroke-width': x % 100 === 0 ? '0.7' : '0.4' });
+    bg.appendChild(line);
+  }
+  for (let y = 0; y <= 600; y += 20) {
+    const line = svgEl('line', { x1:0, y1:y, x2:600, y2:y,
+      stroke: y % 100 === 0 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.05)',
+      'stroke-width': y % 100 === 0 ? '0.7' : '0.4' });
+    bg.appendChild(line);
+  }
+  g.appendChild(bg);
+  // Precise clean rectangles — same grid layout, no noise
+  const grp = svgEl('g', {});
+  for (let r = 0; r < 14; r++) for (let c = 0; c < 14; c++) {
+    const cx = 57 + c*38, cy = 57 + r*38;
+    const w = rnd(14,22), h = rnd(14,22);
+    const x0 = f(cx - w/2), y0 = f(cy - h/2);
+    const x1 = f(cx + w/2), y1 = f(cy + h/2);
+    const p = svgEl('path', { d:`M${x0},${y0} L${x1},${y0} L${x1},${y1} L${x0},${y1} Z`,
+      fill:'none', stroke:`rgba(30,58,110,${f(rnd(.3,.75))})`,
+      'stroke-width':f(rnd(.9,2.2)), 'stroke-linecap':'square', 'stroke-linejoin':'miter' });
+    prep(p, Math.round((w+h)*2+1), f(rnd(.5,1.0)), f((r*14+c)*.02));
+    grp.appendChild(p);
+  }
+  g.appendChild(grp);
+  requestAnimationFrame(() => grp.querySelectorAll('path').forEach(p => p.style.strokeDashoffset = '0'));
+}
+
+function buildWavesWork(g) {
+  const rnd = makeRnd(99);
+  const grp = svgEl('g', {});
+  for (let i = 0; i < 18; i++) {
+    const y = 40 + (i/17)*370, amp=rnd(4,14), fr=rnd(.008,.016), ph=rnd(0,Math.PI*2);
+    // Perfect smooth sine — sample every 4px, no noise
+    let d = `M 30,${f(y + Math.sin(30*fr+ph)*amp)}`;
+    for (let x = 34; x <= 770; x += 4) d += ` L${x},${f(y + Math.sin(x*fr+ph)*amp)}`;
+    const p = svgEl('path', { d, fill:'none', stroke:`rgba(20,20,20,${f(rnd(.2,.55))})`,
+      'stroke-width':f(rnd(.7,2.0)), 'stroke-linecap':'round', 'stroke-linejoin':'round' });
+    prep(p, 760, f(rnd(3.5,5.5)), f(i*.28));
+    grp.appendChild(p);
+  }
+  g.appendChild(grp);
+  requestAnimationFrame(() => grp.querySelectorAll('path').forEach(p => p.style.strokeDashoffset = '0'));
+}
+
+function buildVertWork(g) {
+  const rnd = makeRnd(777);
+  const grp = svgEl('g', {});
+  for (let r = 0; r < 6; r++) for (let s = 0; s < 26; s++) {
+    const x = 44 + s*(512/26);
+    const y0 = 60 + r*70;
+    const n = Math.floor(rnd(2,4));
+    for (let k = 0; k < n; k++) {
+      const px = x + k*2.2;
+      const barH = 42 + rnd(0,16);
+      const y1 = y0 + barH;
+      const p = svgEl('path', { d:`M${f(px)},${f(y0)} L${f(px)},${f(y1)}`,
+        fill:'none', stroke:`rgba(30,58,110,${f(rnd(.3,.75))})`,
+        'stroke-width':f(rnd(2.2,5.5)), 'stroke-linecap':'square' });
+      prep(p, barH, f(rnd(.4,.9)), f((r*26+s)*.04+k*.01));
+      grp.appendChild(p);
+    }
+  }
+  g.appendChild(grp);
+  requestAnimationFrame(() => grp.querySelectorAll('path').forEach(p => p.style.strokeDashoffset = '0'));
+}
+
 function Card({ title, meta, url }) {
   const inner = (
     <div className="card">
@@ -645,9 +718,9 @@ function App() {
       <div className="container">
         <HeroSection mode={mode} />
 
-        <SketchAnim id="sk1" viewBox="0 0 600 600" ratio="1/1" label="Grid Study I"
-          filterEl={<filter id="sk-f1" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".08" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="G"/></filter>}
-          buildFn={buildGrid} />
+        <SketchAnim key={`sk1-${mode}`} id="sk1" viewBox="0 0 600 600" ratio="1/1" label="Grid Study I"
+          filterEl={mode === 'zen' ? <filter id="sk-f1" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".08" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
+          buildFn={mode === 'work' ? buildGridWork : buildGrid} />
 
         <section id="about" className="scroll-reveal">
           <div className="section-label">About</div>
@@ -693,9 +766,9 @@ function App() {
           </section>
         )}
 
-        <SketchAnim id="sk2" viewBox="0 0 800 450" ratio="16/9" label="Undulation"
-          filterEl={<filter id="sk-f2" x="-2%" y="-2%" width="104%" height="104%"><feTurbulence type="fractalNoise" baseFrequency=".035 .06" numOctaves="4" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G"/></filter>}
-          buildFn={buildWaves} />
+        <SketchAnim key={`sk2-${mode}`} id="sk2" viewBox="0 0 800 450" ratio="16/9" label="Undulation"
+          filterEl={mode === 'zen' ? <filter id="sk-f2" x="-2%" y="-2%" width="104%" height="104%"><feTurbulence type="fractalNoise" baseFrequency=".035 .06" numOctaves="4" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
+          buildFn={mode === 'work' ? buildWavesWork : buildWaves} />
 
         <section id="design" className="scroll-reveal">
           <div className="section-label">Design Work</div>
@@ -707,9 +780,9 @@ function App() {
           </p>
         </section>
 
-        <SketchAnim id="sk3" viewBox="0 0 600 600" ratio="4/3" label="Vertical Field"
-          filterEl={<filter id="sk-f3" x="-4%" y="-4%" width="108%" height="108%"><feTurbulence type="turbulence" baseFrequency=".02 .08" numOctaves="5" seed="12" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>}
-          buildFn={buildVert} />
+        <SketchAnim key={`sk3-${mode}`} id="sk3" viewBox="0 0 600 600" ratio="4/3" label="Vertical Field"
+          filterEl={mode === 'zen' ? <filter id="sk-f3" x="-4%" y="-4%" width="108%" height="108%"><feTurbulence type="turbulence" baseFrequency=".02 .08" numOctaves="5" seed="12" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
+          buildFn={mode === 'work' ? buildVertWork : buildVert} />
 
         <section id="now" className="scroll-reveal">
           <div className="section-label">Now</div>
