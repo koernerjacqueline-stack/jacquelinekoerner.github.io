@@ -218,7 +218,7 @@
       color: var(--muted);
       max-width: 520px;
     }
-    [data-mode="zen"] .hero-desc { font-style: normal; }
+    [data-mode="zen"] .hero-desc { font-style: normal; font-family: var(--sans); }
 
     /* Custom site cursor */
     body { cursor: none; }
@@ -487,9 +487,9 @@ function HeroSection({ mode }) {
           onError={e => { e.target.style.display = 'none'; }}
         />
         {mode === 'work' ? (
-          <h1 className="hero-name hero-name-work">{NAME}</h1>
+          <h1 className="hero-name hero-name-work">Jacqueline<br/>Koerner</h1>
         ) : (
-          <h1 className="hero-name hero-name-zen">{NAME}</h1>
+          <h1 className="hero-name hero-name-zen">Jacqueline<br/>Koerner</h1>
         )}
       </div>
       {mode === 'work' && descReady && <p className="hero-desc">{typedText}</p>}
