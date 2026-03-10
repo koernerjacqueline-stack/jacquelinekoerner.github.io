@@ -3,18 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Split-Flap Display</title>
+  <title>Split-flap display — Jacqueline Koerner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a1a;
+      --paper: #ffffff;
+      --paper-warm: #f7f6f3;
+      --muted: #888;
+      --accent: #2a5298;
+      --serif: 'Crimson Pro', Georgia, serif;
+      --sans: 'Source Sans 3', system-ui, sans-serif;
+    }
 
     body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
       min-height: 100vh;
-      background: #f3f3f3;
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .back {
+      display: inline-block;
+      margin: 2.5rem 0 0;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back:hover { color: var(--accent); }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-family: var(--serif);
+      font-weight: 300;
+      margin: 3rem 0 0.5rem;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .meta {
+      font-size: 0.72rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    .about-text {
+      font-size: 1.1rem;
+      font-family: var(--serif);
+      line-height: 1.8;
+    }
+    .about-text p + p { margin-top: 1.2rem; }
+
+    .about-subhead {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 2.5rem 0 0.5rem;
+    }
+
+    .board-wrap {
+      margin: 3rem 0;
+      padding: 2rem 0;
+      border-top: 1px solid rgba(28,26,23,0.1);
+      border-bottom: 1px solid rgba(28,26,23,0.1);
       display: flex;
-      align-items: center;
       justify-content: center;
     }
 
+    /* ── Split-flap board ── */
     .board {
       background: #111;
       padding: 28px 32px;
@@ -32,15 +115,13 @@
     }
     .row:last-child { margin-bottom: 0; }
 
-    /* ── Tile ── */
     .tile {
       width: 80px;
       height: 96px;
       position: relative;
-      perspective: 600px;   /* 3-D context for child flaps */
+      perspective: 600px;
     }
 
-    /* Both halves are 48 px tall, positioned top/bottom */
     .h-top, .h-bot {
       position: absolute;
       left: 0; right: 0;
@@ -50,14 +131,12 @@
       justify-content: center;
     }
 
-    /* Top half: align char so its TOP is at the container top → shows char upper half */
     .h-top {
       top: 0;
       align-items: flex-start;
       border-radius: 4px 4px 0 0;
       background: linear-gradient(180deg, #282828, #1e1e1e);
     }
-    /* Bottom half: align char so its BOTTOM is at the container bottom → shows char lower half */
     .h-bot {
       bottom: 0;
       align-items: flex-end;
@@ -65,11 +144,6 @@
       background: linear-gradient(180deg, #1c1c1c, #242424);
     }
 
-    /*
-      .f-out  = old character's bottom half — starts flat, folds backward (lifts away)
-      .f-in   = new character's bottom half — starts hidden (folded back), falls flat
-      Both sit at the bottom-half position of the tile.
-    */
     .f-out, .f-in {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -85,9 +159,8 @@
     }
 
     .f-out { z-index: 3; }
-    .f-in  { z-index: 4; transform: rotateX(90deg); } /* hidden by default */
+    .f-in  { z-index: 4; transform: rotateX(90deg); }
 
-    /* Seam divider */
     .seam {
       position: absolute;
       top: 48px; left: 0; right: 0;
@@ -96,13 +169,12 @@
       z-index: 10;
     }
 
-    /* Character span — full tile height, clipped by parent overflow */
     .ch {
       font-family: 'Arial Black', 'Helvetica Neue', Arial, sans-serif;
       font-size: 50px;
       font-weight: 900;
       color: #f0f0f0;
-      line-height: 96px;   /* same as tile height → char centered at seam */
+      line-height: 96px;
       height: 96px;
       width: 80px;
       text-align: center;
@@ -111,7 +183,6 @@
       letter-spacing: -1px;
     }
 
-    /* Subtle top-edge glint */
     .h-top::after {
       content: '';
       position: absolute;
@@ -124,8 +195,28 @@
   </style>
 </head>
 <body>
+  <div class="container">
+    <a href="index.html" class="back">← Back to portfolio</a>
 
-<div class="board" id="board"></div>
+    <h1>Split-flap display</h1>
+    <p class="subtitle">An airport departure board, rendered in code</p>
+    <p class="meta">Design · March 2026</p>
+
+    <div class="board-wrap">
+      <div class="board" id="board"></div>
+    </div>
+
+    <div class="about-text">
+      <p>
+        Split-flap displays, the kind you'd find in train stations and airports, use mechanical tiles that flip through characters to land on each letter. The satisfying clatter of the flaps cycling through was once the sound of departure.
+      </p>
+      <p>
+        This is a recreation built with Claude Code and Cursor. Each tile animates through a short random sequence before settling, approximating the staggered, column-by-column wave of a real board updating.
+      </p>
+    </div>
+
+    <div style="height: 6rem;"></div>
+  </div>
 
 <script>
   /* ── Layout ── */
@@ -172,41 +263,30 @@
   }
 
   /* ── Single flip step (old char → new char) ── */
-  /*
-    Mechanism:
-      • Top half changes instantly to new char.
-      • f-out (old bottom, z3) folds backward (0° → −90°), revealing h-bot underneath.
-      • f-in  (new bottom, z4) falls forward (90° → 0°) into place.
-  */
   function step(t, next) {
     return new Promise(resolve => {
       const prev = t.cur;
       t.cur = next;
 
-      /* Cancel any running WAAPI animations so state is clean */
       t.outEl.getAnimations().forEach(a => a.cancel());
       t.inEl .getAnimations().forEach(a => a.cancel());
 
-      /* Snap elements to their pre-animation positions */
-      t.outEl.style.transform = '';             /* flat */
-      t.inEl .style.transform = 'rotateX(90deg)'; /* hidden */
+      t.outEl.style.transform = '';
+      t.inEl .style.transform = 'rotateX(90deg)';
 
-      /* Set content */
-      t.topCh.textContent = next;   /* top half shows new char immediately */
-      t.botCh.textContent = next;   /* h-bot background = new char */
-      t.outCh.textContent = prev;   /* out flap = old bottom (will fold away) */
-      t.inCh .textContent = next;   /* in  flap = new bottom (will fall in) */
+      t.topCh.textContent = next;
+      t.botCh.textContent = next;
+      t.outCh.textContent = prev;
+      t.inCh .textContent = next;
 
       requestAnimationFrame(() => {
-        const DUR = 110; /* ms per half-flip */
+        const DUR = 110;
 
-        /* Old bottom lifts backward */
         t.outEl.animate(
           [{ transform: 'rotateX(0deg)' }, { transform: 'rotateX(-90deg)' }],
           { duration: DUR, easing: 'ease-in', fill: 'forwards' }
         );
 
-        /* New bottom falls forward — start just before out finishes for overlap */
         setTimeout(() => {
           const anim = t.inEl.animate(
             [{ transform: 'rotateX(90deg)' }, { transform: 'rotateX(0deg)' }],
@@ -214,31 +294,28 @@
           );
 
           anim.finished.then(() => {
-            /* Freeze transforms via inline styles, then cancel WAAPI */
-            t.outEl.style.transform = 'rotateX(-90deg)'; /* stay hidden */
-            t.inEl .style.transform = 'rotateX(0deg)';   /* stay flat  */
+            t.outEl.style.transform = 'rotateX(-90deg)';
+            t.inEl .style.transform = 'rotateX(0deg)';
             t.outEl.getAnimations().forEach(a => a.cancel());
             t.inEl .getAnimations().forEach(a => a.cancel());
-            /* Sync outCh so it doesn't show stale char if it ever becomes visible */
             t.outCh.textContent = next;
             resolve();
           });
-        }, DUR - 20); /* 20 ms overlap */
+        }, DUR - 20);
       });
     });
   }
 
   /* ── Animate one tile to a target character ── */
   async function advance(row, col, target, delay) {
-    if (target === ' ') return;               /* blank tiles stay blank */
+    if (target === ' ') return;
 
     await new Promise(r => setTimeout(r, delay));
 
     const t       = grid[row][col];
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const extras  = 4 + Math.floor(Math.random() * 4); /* 4–7 fast flips before target */
+    const extras  = 4 + Math.floor(Math.random() * 4);
 
-    /* Build sequence: random padding chars + final target */
     const seq = Array.from({ length: extras },
       () => letters[Math.floor(Math.random() * letters.length)]
     );
@@ -247,7 +324,6 @@
     for (let i = 0; i < seq.length; i++) {
       await step(t, seq[i]);
       const remaining = seq.length - 1 - i;
-      /* Decelerate as we approach the target */
       const gap = remaining === 0 ? 0
                 : remaining === 1 ? 100
                 : remaining === 2 ? 50
