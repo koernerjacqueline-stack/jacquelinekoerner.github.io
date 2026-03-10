@@ -642,10 +642,11 @@ function svgEl(tag, attrs) {
   for (const k in attrs) e.setAttribute(k, attrs[k]);
   return e;
 }
+const SKETCH_DUR = 3; // global speed multiplier for all sketch animations
 function prep(el, len, dur, delay) {
   el.style.strokeDasharray = len;
   el.style.strokeDashoffset = len;
-  el.style.transition = `stroke-dashoffset ${dur}s cubic-bezier(.4,0,.2,1) ${delay}s`;
+  el.style.transition = `stroke-dashoffset ${dur * SKETCH_DUR}s cubic-bezier(.4,0,.2,1) ${delay}s`;
 }
 
 function graphPaper(g, w, h) {
@@ -791,7 +792,7 @@ function Card({ title, meta, url }) {
 function App() {
   const [mode, setMode] = useState(() => localStorage.getItem('siteMode') || 'work');
   const [fading, setFading] = useState(false);
-  const [heroComplete, setHeroComplete] = useState(false);
+  const [heroComplete, setHeroComplete] = useState(true);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-mode', mode);
@@ -818,7 +819,6 @@ function App() {
 
   const toggleMode = () => {
     setFading(true);
-    setHeroComplete(false);
     setTimeout(() => {
       setMode(m => m === 'work' ? 'zen' : 'work');
       setFading(false);
