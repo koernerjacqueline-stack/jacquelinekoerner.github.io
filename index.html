@@ -4,12 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Jacqueline Koerner</title>
+  <script>
+    /* Set mode before React renders to prevent flash */
+    document.documentElement.setAttribute('data-mode', localStorage.getItem('siteMode') || 'work');
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,800;1,9..144,300&family=Inter:wght@300;400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,800;1,9..144,300&family=Inter:wght@300;400&family=JetBrains+Mono:wght@300;400&family=Rock+Salt&display=swap" rel="stylesheet">
   <style>
+    @font-face {
+      font-family: 'InkHand';
+      src: url('InkHand.woff2') format('woff2'), url('InkHand.ttf') format('truetype');
+      font-weight: 400;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -22,6 +32,9 @@
       --mono: 'JetBrains Mono', monospace;
     }
 
+    [data-mode="work"] { --paper: #ffffff; }
+    [data-mode="zen"]  { --paper: #ebebeb; }
+
     html { scroll-behavior: smooth; }
 
     body {
@@ -31,6 +44,7 @@
       font-weight: 300;
       min-height: 100vh;
       overflow-x: hidden;
+      transition: background-color 0.5s ease;
     }
 
     /* Grain overlay */
@@ -55,9 +69,24 @@
       from { opacity: 0; }
       to { opacity: 1; }
     }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
+    @keyframes inkWrite {
+      from { clip-path: inset(0 100% 0 0); }
+      to   { clip-path: inset(0 0%   0 0); }
+    }
+    .ink-letter {
+      display: inline-block;
+      animation: inkWrite 0.18s ease-out both;
+    }
+
+    /* Scroll reveal */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .scroll-reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     /* Layout */
@@ -89,6 +118,7 @@
       display: flex;
       gap: 2rem;
       list-style: none;
+      align-items: baseline;
     }
     .nav-links a {
       font-family: var(--sans);
@@ -102,17 +132,52 @@
     }
     .nav-links a:hover { color: var(--ink); }
 
+    /* Mode toggle */
+    .mode-toggle {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: none;
+      border: 1px solid rgba(0,0,0,0.15);
+      padding: 0.2rem 0.5rem;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      border-radius: 2px;
+    }
+    .mode-toggle:hover { color: var(--ink); border-color: rgba(0,0,0,0.3); }
+
     /* Hero */
     .hero {
       padding: 7rem 0 5rem;
     }
-    .hero-name {
-      font-size: clamp(3rem, 8vw, 5.2rem);
-      font-family: var(--serif);
-      font-weight: 800;
-      line-height: 1.05;
+    .hero-top {
+      display: flex;
+      align-items: center;
+      gap: 1.4rem;
       margin-bottom: 1rem;
+    }
+    .hero-photo {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center 15%;
+      flex-shrink: 0;
+      display: block;
+    }
+    .hero-name {
+      font-size: clamp(2rem, 5.5vw, 3.8rem);
+      font-family: 'Rock Salt', cursive;
+      font-weight: 400;
+      line-height: 1.3;
       font-style: normal;
+    }
+    .hero-name-zen {
+      font-family: 'InkHand', cursive;
+      animation: fadeIn 0.9s ease both;
     }
     .hero-desc {
       font-size: 1.1rem;
@@ -124,21 +189,7 @@
       max-width: 520px;
     }
 
-    /* Typing cursor — vertical line */
-    .cursor {
-      display: inline-block;
-      width: 2px;
-      height: 0.82em;
-      background: var(--ink);
-      margin-left: 3px;
-      vertical-align: -0.08em;
-      flex-shrink: 0;
-    }
-    .cursor-idle {
-      animation: blink 0.55s step-end infinite;
-    }
-
-    /* Custom site cursor — black dot */
+    /* Custom site cursor */
     body { cursor: none; }
     a, button { cursor: none; }
     #site-cursor {
@@ -317,7 +368,7 @@
 </script>
 
 <script type="text/babel">
-const { useState, useEffect } = React;
+const { useState, useEffect, useRef } = React;
 
 const data = {
   writing: [
@@ -351,54 +402,56 @@ const data = {
   ],
 };
 
-function TypedHero() {
-  const nameFull = 'Jacqueline Koerner';
-  const descFull = 'Product and design leader. Systems thinker. Focused on client experience across complex platforms.';
+function HeroSection({ mode }) {
+  const NAME = 'Jacqueline Koerner';
+  const workDesc = 'Product and design leader. Systems thinker. Focused on client experience across complex platforms.';
+  const zenDesc = 'Artist, reader, wanderer. Interests and creative pursuits, copy coming soon.';
+  const DESC_START = 2640;
 
-  const [phase, setPhase] = useState('idle'); // 'idle' | 'name' | 'desc' | 'done'
-  const [nameText, setNameText] = useState('');
-  const [descText, setDescText] = useState('');
+  const [typedText, setTypedText] = useState('');
+  const [descReady, setDescReady] = useState(false);
+  const startedRef = useRef(false);
 
-  // Wait, then start typing name
   useEffect(() => {
-    if (phase !== 'idle') return;
-    const t = setTimeout(() => setPhase('name'), 1500);
+    if (startedRef.current) return;
+    startedRef.current = true;
+    const t = setTimeout(() => {
+      setDescReady(true);
+      let i = 0;
+      const iv = setInterval(() => {
+        i++;
+        setTypedText(workDesc.slice(0, i));
+        if (i >= workDesc.length) clearInterval(iv);
+      }, 30);
+    }, DESC_START);
     return () => clearTimeout(t);
-  }, [phase]);
-
-  // Type name
-  useEffect(() => {
-    if (phase !== 'name') return;
-    if (nameText.length >= nameFull.length) {
-      const t = setTimeout(() => setPhase('desc'), 380);
-      return () => clearTimeout(t);
-    }
-    const t = setTimeout(() => setNameText(nameFull.slice(0, nameText.length + 1)), 68);
-    return () => clearTimeout(t);
-  }, [phase, nameText]);
-
-  // Type description
-  useEffect(() => {
-    if (phase !== 'desc') return;
-    if (descText.length >= descFull.length) { setPhase('done'); return; }
-    const t = setTimeout(() => setDescText(descFull.slice(0, descText.length + 1)), 30);
-    return () => clearTimeout(t);
-  }, [phase, descText]);
+  }, []);
 
   return (
     <div className="hero">
-      <h1 className="hero-name">
-        {nameText}
-        {(phase === 'idle' || phase === 'name') && (
-          <span className={`cursor${phase === 'idle' ? ' cursor-idle' : ''}`} />
+      <div className="hero-top">
+        <img
+          className="hero-photo"
+          src={mode === 'work' ? 'headshot-work.jpg' : 'headshot-zen.jpg'}
+          alt="Jacqueline Koerner"
+          onError={e => { e.target.style.display = 'none'; }}
+        />
+        {mode === 'work' ? (
+          <h1 className="hero-name">
+            {NAME.split('').map((ch, i) =>
+              ch === ' ' ? (
+                <span key={i}>&nbsp;</span>
+              ) : (
+                <span key={i} className="ink-letter" style={{animationDelay: `${0.8 + i * 0.08}s`}}>{ch}</span>
+              )
+            )}
+          </h1>
+        ) : (
+          <h1 className="hero-name hero-name-zen">{NAME}</h1>
         )}
-      </h1>
-      {(phase === 'desc' || phase === 'done') && (
-        <p className="hero-desc">
-          {descText}
-          {phase === 'desc' && <span className="cursor" />}
-        </p>
-      )}
+      </div>
+      {mode === 'work' && descReady && <p className="hero-desc">{typedText}</p>}
+      {mode === 'zen' && <p className="hero-desc" style={{animation: 'fadeIn 0.5s ease both'}}>{zenDesc}</p>}
     </div>
   );
 }
@@ -525,8 +578,40 @@ function Card({ title, meta, url }) {
 }
 
 function App() {
+  const [mode, setMode] = useState(() => localStorage.getItem('siteMode') || 'work');
+  const [fading, setFading] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-mode', mode);
+    localStorage.setItem('siteMode', mode);
+  }, [mode]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll('.scroll-reveal:not(.revealed)').forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, [mode]);
+
+  const toggleMode = () => {
+    setFading(true);
+    setTimeout(() => {
+      setMode(m => m === 'work' ? 'zen' : 'work');
+      setFading(false);
+    }, 180);
+  };
+
   return (
-    <div>
+    <div style={{opacity: fading ? 0 : 1, transition: 'opacity 0.18s ease'}}>
       <nav>
         <div className="container">
           <a href="#" className="nav-name">jk</a>
@@ -535,58 +620,71 @@ function App() {
             <li><a href="#writing">writing</a></li>
             <li><a href="#design">design</a></li>
             <li><a href="#now">now</a></li>
+            <li>
+              <button className="mode-toggle" onClick={toggleMode}>
+                {mode === 'work' ? 'zen' : 'work'}
+              </button>
+            </li>
           </ul>
         </div>
       </nav>
 
       <div className="container">
-        <TypedHero />
+        <HeroSection mode={mode} />
 
         <SketchAnim id="sk1" viewBox="0 0 600 600" ratio="1/1" label="Grid Study I"
           filterEl={<filter id="sk-f1" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".08" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="G"/></filter>}
           buildFn={buildGrid} />
 
-        <section id="about">
+        <section id="about" className="scroll-reveal">
           <div className="section-label">About</div>
-          <div className="about-text">
-            <p>
-              I'm a product and design leader with a background in wealth and asset management, focused on systems thinking and client experience across complex platforms. I thrive in discovery, using research methods and data to clarify direction, validate hypotheses, and drive strong business outcomes.
-            </p>
+          {mode === 'work' ? (
+            <div className="about-text">
+              <p>
+                I'm a product and design leader with a background in wealth and asset management, focused on systems thinking and client experience across complex platforms. I thrive in discovery, using research methods and data to clarify direction, validate hypotheses, and drive strong business outcomes.
+              </p>
 
-            <div className="about-subhead">Product Philosophy</div>
-            <p>
-              To evolve architecture meaningfully, the broader ecosystem must be understood. I look to workflows to uncover opportunity, exploring how accuracy, efficiency, and oversight interact. In the current era of AI, I'm particularly interested in translating unstructured data into rules engines that power flywheel dynamics.
-            </p>
+              <div className="about-subhead">Product Philosophy</div>
+              <p>
+                To evolve architecture meaningfully, the broader ecosystem must be understood. I look to workflows to uncover opportunity, exploring how accuracy, efficiency, and oversight interact. In the current era of AI, I'm particularly interested in translating unstructured data into rules engines that power flywheel dynamics.
+              </p>
 
-            <div className="about-subhead">Strategy and Focus</div>
-            <p>
-              My favorite product mantra is "the main thing is to keep the main thing the main thing." I value the discipline of saying no and doubling down on what a product or platform can do better than any other — while remaining attentive to selective opportunities for vertical integration that improve the end-to-end experience.
-            </p>
+              <div className="about-subhead">Strategy and Focus</div>
+              <p>
+                My favorite product mantra is "the main thing is to keep the main thing the main thing." I value the discipline of saying no and doubling down on what a product or platform can do better than any other, while remaining attentive to selective opportunities for vertical integration that improve the end-to-end experience.
+              </p>
 
-            <div className="about-subhead">People and Leadership</div>
-            <p>
-              I grow others through curiosity, respect, and caring personally, with the goal of expanding individual autonomy and modeling behaviors that foster alignment. This approach enables thoughtfully interconnected work that is greater than the sum of its parts.
-            </p>
-          </div>
+              <div className="about-subhead">People and Leadership</div>
+              <p>
+                I grow others through curiosity, respect, and caring personally, with the goal of expanding individual autonomy and modeling behaviors that foster alignment. This approach enables thoughtfully interconnected work that is greater than the sum of its parts.
+              </p>
+            </div>
+          ) : (
+            <div className="about-text">
+              <p>Interests, creative pursuits, and what I'm like outside of work. Copy coming soon.</p>
+            </div>
+          )}
         </section>
 
-        <section id="writing">
-          <div className="section-label">Writing</div>
-          <div className="cards">
-            {data.writing.map((item, i) => <Card key={i} {...item} />)}
-            <a href="https://substack.com/home/post/p-187676112" target="_blank" rel="noopener noreferrer" style={{
-              display:'inline-block', marginTop:'1.2rem',
-              fontFamily:'var(--mono)', fontSize:'0.62rem',
-              color:'var(--muted)', letterSpacing:'0.06em', textDecoration:'none'
-            }}>All writing on Substack →</a>
-          </div>
-        </section>
+        {mode === 'work' && (
+          <section id="writing" className="scroll-reveal">
+            <div className="section-label">Writing</div>
+            <div className="cards">
+              {data.writing.map((item, i) => <Card key={i} {...item} />)}
+              <a href="https://substack.com/home/post/p-187676112" target="_blank" rel="noopener noreferrer" style={{
+                display:'inline-block', marginTop:'1.2rem',
+                fontFamily:'var(--mono)', fontSize:'0.62rem',
+                color:'var(--muted)', letterSpacing:'0.06em', textDecoration:'none'
+              }}>All writing on Substack →</a>
+            </div>
+          </section>
+        )}
 
         <SketchAnim id="sk2" viewBox="0 0 800 450" ratio="16/9" label="Undulation"
           filterEl={<filter id="sk-f2" x="-2%" y="-2%" width="104%" height="104%"><feTurbulence type="fractalNoise" baseFrequency=".035 .06" numOctaves="4" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G"/></filter>}
           buildFn={buildWaves} />
 
-        <section id="design">
+        <section id="design" className="scroll-reveal">
           <div className="section-label">Design Work</div>
           <div className="cards">
             {data.design.map((item, i) => <Card key={i} {...item} />)}
@@ -600,7 +698,7 @@ function App() {
           filterEl={<filter id="sk-f3" x="-4%" y="-4%" width="108%" height="108%"><feTurbulence type="turbulence" baseFrequency=".02 .08" numOctaves="5" seed="12" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>}
           buildFn={buildVert} />
 
-        <section id="now">
+        <section id="now" className="scroll-reveal">
           <div className="section-label">Now</div>
           <div className="now-block">
             <p>
