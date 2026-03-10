@@ -33,8 +33,8 @@
       --mono: 'JetBrains Mono', monospace;
     }
 
-    [data-mode="work"] { --paper: #ffffff; }
-    [data-mode="zen"]  { --paper: #ebebeb; }
+    [data-mode="work"] { --paper: #ffffff; --serif: 'Crimson Pro', Georgia, serif; }
+    [data-mode="zen"]  { --paper: #ebebeb; --serif: 'Palette Mosaic', Georgia, serif; }
 
     html { scroll-behavior: smooth; }
 
@@ -194,7 +194,7 @@
       line-height: 1.2;
     }
     .hero-name-work {
-      font-weight: 800;
+      font-weight: 600;
       font-style: normal;
       color: #1e3a6e;
       animation: fadeUp 0.7s ease both;
@@ -659,9 +659,9 @@ function buildVertWork(g) {
   const rnd = makeRnd(777);
   const bg = svgEl('g', {}); graphPaper(bg, 600, 600); g.appendChild(bg);
   const grp = svgEl('g', {});
-  for (let r = 0; r < 6; r++) for (let s = 0; s < 26; s++) {
-    const x = 44 + s*(512/26);
-    const y0 = 60 + r*70;
+  for (let r = 0; r < 5; r++) for (let s = 0; s < 26; s++) {
+    const x = 54 + s*(512/26);
+    const y0 = 131 + r*70;
     const n = Math.floor(rnd(2,4));
     for (let k = 0; k < n; k++) {
       const px = x + k*2.2;
