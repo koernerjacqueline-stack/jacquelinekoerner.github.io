@@ -74,10 +74,6 @@
       from { clip-path: inset(0 100% 0 0); }
       to   { clip-path: inset(0 0%   0 0); }
     }
-    @keyframes zenFade {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
     @keyframes blink {
       0%, 100% { opacity: 1; }
       50%       { opacity: 0; }
@@ -206,12 +202,6 @@
       font-style: normal;
       text-transform: uppercase;
       color: #111111;
-    }
-    .zen-letter {
-      display: inline-block;
-      animation-name: zenFade;
-      animation-timing-function: ease-in;
-      animation-fill-mode: both;
     }
     .cursor {
       display: inline-block;
@@ -462,36 +452,35 @@ const data = {
   ],
 };
 
-// Zen fade: letter, ink opacity, delay (ms), fade duration (s).
-// Groups: JACQ / UELINE / KOER / NER — 1200ms ink-reload pauses between groups.
-// First letter of each group fades in over 3s; following letters 1–2s.
-// Ink opacity drops are dramatic within each group.
+// Zen stamp: instant appearance, no fade. Delay = time since page load.
+// 3s between first letter and next within each group; 1.5–2s for following letters.
+// Small jitter added at runtime for human feel.
+// Groups: JACQ / UELINE / KOER / NER — 1200ms ink-reload pauses.
 const ZEN_LETTERS = [
-  // JACQ (400ms between letters)
-  { c:'J', o:1.00, d:0,    dur:3.0 },
-  { c:'A', o:0.82, d:400,  dur:2.0 },
-  { c:'C', o:0.68, d:800,  dur:1.5 },
-  { c:'Q', o:0.52, d:1200, dur:1.2 },
-  // ink reload (1200ms) → UELINE
-  { c:'U', o:1.00, d:2800, dur:3.0 },
-  { c:'E', o:0.80, d:3200, dur:2.0 },
-  { c:'L', o:0.65, d:3600, dur:1.5 },
-  { c:'I', o:0.55, d:4000, dur:1.3 },
-  { c:'N', o:0.44, d:4400, dur:1.2 },
-  { c:'E', o:0.32, d:4800, dur:1.0 },
-  // line break after index 9 (end of JACQUELINE)
-  // ink reload (1200ms) → KOER
-  { c:'K', o:1.00, d:6400, dur:3.0 },
-  { c:'O', o:0.84, d:6800, dur:2.0 },
-  { c:'E', o:0.68, d:7200, dur:1.5 },
-  { c:'R', o:0.52, d:7600, dur:1.2 },
-  // ink reload (1200ms) → NER
-  { c:'N', o:1.00, d:9200, dur:3.0 },
-  { c:'E', o:0.78, d:9600, dur:1.5 },
-  { c:'R', o:0.58, d:10000,dur:1.2 },
+  // JACQ
+  { c:'J', o:1.00, d:0     },
+  { c:'A', o:0.82, d:3000  },
+  { c:'C', o:0.68, d:5000  },
+  { c:'Q', o:0.52, d:6500  },
+  // ink reload → UELINE (starts ~7700)
+  { c:'U', o:1.00, d:7700  },
+  { c:'E', o:0.80, d:10700 },
+  { c:'L', o:0.65, d:12700 },
+  { c:'I', o:0.55, d:14200 },
+  { c:'N', o:0.44, d:15500 },
+  { c:'E', o:0.32, d:16700 },
+  // line break after index 9 — ink reload → KOER (starts ~17900)
+  { c:'K', o:1.00, d:17900 },
+  { c:'O', o:0.84, d:20900 },
+  { c:'E', o:0.68, d:22900 },
+  { c:'R', o:0.52, d:24400 },
+  // ink reload → NER (starts ~25600)
+  { c:'N', o:1.00, d:25600 },
+  { c:'E', o:0.78, d:28600 },
+  { c:'R', o:0.58, d:30600 },
 ];
 
-function HeroSection({ mode }) {
+function HeroSection({ mode, onHeroComplete }) {
   const workDesc = 'Product and design leader. Systems thinker. Focused on client experience across complex platforms.';
   const zenDesc = 'Artist, reader, wanderer. Interests and creative pursuits, copy coming soon.';
   const WORK_NAME = 'Jacqueline\nKoerner';
@@ -517,6 +506,7 @@ function HeroSection({ mode }) {
         if (i >= WORK_NAME.length) {
           clearInterval(nameIv);
           setNameDone(true);
+          onHeroComplete && onHeroComplete();
           setTimeout(() => {
             setDescReady(true);
             let j = 0;
@@ -532,16 +522,18 @@ function HeroSection({ mode }) {
     return () => clearTimeout(t);
   }, [mode]);
 
-  // Zen: fade letters one by one, then reveal description after last letter's fade completes
+  // Zen: stamp letters instantly with human jitter, then description
   useEffect(() => {
     if (mode !== 'zen') return;
     if (zenStarted.current) return;
     zenStarted.current = true;
     ZEN_LETTERS.forEach((def, i) => {
-      setTimeout(() => setZenRevealed(i + 1), def.d);
+      const jitter = Math.random() * 500 - 250;
+      setTimeout(() => setZenRevealed(i + 1), Math.max(0, def.d + jitter));
     });
     const last = ZEN_LETTERS[ZEN_LETTERS.length - 1];
-    setTimeout(() => setDescReady(true), last.d + last.dur * 1000 + 400);
+    setTimeout(() => { onHeroComplete && onHeroComplete(); }, last.d + 300);
+    setTimeout(() => setDescReady(true), last.d + 900);
   }, [mode]);
 
   const renderTypedName = () => {
@@ -555,9 +547,7 @@ function HeroSection({ mode }) {
 
   const renderZenName = () => ZEN_LETTERS.slice(0, zenRevealed).map((def, i) => (
     <React.Fragment key={i}>
-      <span style={{opacity: def.o, display: 'inline-block'}}>
-        <span className="zen-letter" style={{animationDuration: def.dur + 's'}}>{def.c}</span>
-      </span>
+      <span style={{opacity: def.o}}>{def.c}</span>
       {i === 9 && <br/>}
     </React.Fragment>
   ));
@@ -579,17 +569,30 @@ function HeroSection({ mode }) {
   );
 }
 
-function SketchAnim({ id, viewBox, filterId, filterEl, buildFn, ratio, label }) {
+function SketchAnim({ id, viewBox, filterId, filterEl, buildFn, ratio, label, heroComplete }) {
   const ref = React.useRef(null);
   const drawn = React.useRef(false);
+  const inView = React.useRef(false);
+  const heroCompleteRef = React.useRef(heroComplete);
+
+  React.useEffect(() => {
+    heroCompleteRef.current = heroComplete;
+    if (heroComplete && inView.current && !drawn.current) {
+      const el = ref.current;
+      if (el) { drawn.current = true; setTimeout(() => buildFn(el), 120); }
+    }
+  }, [heroComplete]);
 
   React.useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const obs = new IntersectionObserver(([e]) => {
       if (e.isIntersecting && !drawn.current) {
-        drawn.current = true;
-        setTimeout(() => buildFn(el), 120);
+        inView.current = true;
+        if (heroCompleteRef.current) {
+          drawn.current = true;
+          setTimeout(() => buildFn(el), 120);
+        }
       }
     }, { threshold: 0.15 });
     obs.observe(el.closest('.sk-wrap'));
@@ -779,6 +782,7 @@ function Card({ title, meta, url }) {
 function App() {
   const [mode, setMode] = useState(() => localStorage.getItem('siteMode') || 'work');
   const [fading, setFading] = useState(false);
+  const [heroComplete, setHeroComplete] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-mode', mode);
@@ -805,6 +809,7 @@ function App() {
 
   const toggleMode = () => {
     setFading(true);
+    setHeroComplete(false);
     setTimeout(() => {
       setMode(m => m === 'work' ? 'zen' : 'work');
       setFading(false);
@@ -832,9 +837,10 @@ function App() {
       </nav>
 
       <div className="container">
-        <HeroSection mode={mode} />
+        <HeroSection mode={mode} onHeroComplete={() => setHeroComplete(true)} />
 
         <SketchAnim key={`sk1-${mode}`} id="sk1" viewBox="0 0 600 600" ratio="1/1" label="Grid Study I"
+          heroComplete={heroComplete}
           filterEl={mode === 'zen' ? <filter id="sk-f1" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".08" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
           buildFn={mode === 'work' ? buildGridWork : buildGrid} />
 
@@ -883,6 +889,7 @@ function App() {
         )}
 
         <SketchAnim key={`sk2-${mode}`} id="sk2" viewBox="0 0 800 450" ratio="16/9" label="Undulation"
+          heroComplete={heroComplete}
           filterEl={mode === 'zen' ? <filter id="sk-f2" x="-2%" y="-2%" width="104%" height="104%"><feTurbulence type="fractalNoise" baseFrequency=".035 .06" numOctaves="4" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
           buildFn={mode === 'work' ? buildWavesWork : buildWaves} />
 
@@ -897,6 +904,7 @@ function App() {
         </section>
 
         <SketchAnim key={`sk3-${mode}`} id="sk3" viewBox="0 0 600 600" ratio="4/3" label="Vertical Field"
+          heroComplete={heroComplete}
           filterEl={mode === 'zen' ? <filter id="sk-f3" x="-4%" y="-4%" width="108%" height="108%"><feTurbulence type="turbulence" baseFrequency=".02 .08" numOctaves="5" seed="12" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
           buildFn={mode === 'work' ? buildVertWork : buildVert} />
 
