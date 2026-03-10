@@ -525,6 +525,21 @@ function prep(el, len, dur, delay) {
   el.style.transition = `stroke-dashoffset ${dur}s cubic-bezier(.4,0,.2,1) ${delay}s`;
 }
 
+function graphPaper(g, w, h) {
+  for (let x = 0; x <= w; x += 20) {
+    const line = svgEl('line', { x1:x, y1:0, x2:x, y2:h,
+      stroke: x % 100 === 0 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.05)',
+      'stroke-width': x % 100 === 0 ? '0.7' : '0.4' });
+    g.appendChild(line);
+  }
+  for (let y = 0; y <= h; y += 20) {
+    const line = svgEl('line', { x1:0, y1:y, x2:w, y2:y,
+      stroke: y % 100 === 0 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.05)',
+      'stroke-width': y % 100 === 0 ? '0.7' : '0.4' });
+    g.appendChild(line);
+  }
+}
+
 function buildGrid(g) {
   const rnd = makeRnd(42);
   const grp = svgEl('g', { filter: 'url(#sk-f1)' });
@@ -577,21 +592,7 @@ function buildVert(g) {
 
 function buildGridWork(g) {
   const rnd = makeRnd(42);
-  // Graph paper background — appears instantly
-  const bg = svgEl('g', {});
-  for (let x = 0; x <= 600; x += 20) {
-    const line = svgEl('line', { x1:x, y1:0, x2:x, y2:600,
-      stroke: x % 100 === 0 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.05)',
-      'stroke-width': x % 100 === 0 ? '0.7' : '0.4' });
-    bg.appendChild(line);
-  }
-  for (let y = 0; y <= 600; y += 20) {
-    const line = svgEl('line', { x1:0, y1:y, x2:600, y2:y,
-      stroke: y % 100 === 0 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.05)',
-      'stroke-width': y % 100 === 0 ? '0.7' : '0.4' });
-    bg.appendChild(line);
-  }
-  g.appendChild(bg);
+  const bg = svgEl('g', {}); graphPaper(bg, 600, 600); g.appendChild(bg);
   // Precise clean rectangles — same grid layout, no noise
   const grp = svgEl('g', {});
   for (let r = 0; r < 14; r++) for (let c = 0; c < 14; c++) {
@@ -611,6 +612,7 @@ function buildGridWork(g) {
 
 function buildWavesWork(g) {
   const rnd = makeRnd(99);
+  const bg = svgEl('g', {}); graphPaper(bg, 800, 450); g.appendChild(bg);
   const grp = svgEl('g', {});
   for (let i = 0; i < 18; i++) {
     const y = 40 + (i/17)*370, amp=rnd(4,14), fr=rnd(.008,.016), ph=rnd(0,Math.PI*2);
@@ -628,6 +630,7 @@ function buildWavesWork(g) {
 
 function buildVertWork(g) {
   const rnd = makeRnd(777);
+  const bg = svgEl('g', {}); graphPaper(bg, 600, 600); g.appendChild(bg);
   const grp = svgEl('g', {});
   for (let r = 0; r < 6; r++) for (let s = 0; s < 26; s++) {
     const x = 44 + s*(512/26);

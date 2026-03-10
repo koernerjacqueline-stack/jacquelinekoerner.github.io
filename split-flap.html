@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <script>(function(){var m=localStorage.getItem('siteMode')||'work';document.documentElement.setAttribute('data-mode',m);})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Split-flap display — Jacqueline Koerner</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +13,7 @@
     :root {
       --ink: #1a1a1a;
       --paper: #ffffff;
-      --paper-warm: #f7f6f3;
+      --paper-warm: #ebebeb;
       --muted: #888;
       --accent: #2a5298;
       --serif: 'Crimson Pro', Georgia, serif;
@@ -26,7 +27,10 @@
       font-weight: 300;
       min-height: 100vh;
       line-height: 1.7;
+      transition: background-color 0.5s ease;
     }
+
+    [data-mode="zen"] body { background: var(--paper-warm); }
 
     .container {
       max-width: 680px;
@@ -34,9 +38,15 @@
       padding: 0 2rem;
     }
 
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 2.5rem 0 0;
+    }
+
     .back {
       display: inline-block;
-      margin: 2.5rem 0 0;
       font-size: 0.8rem;
       font-weight: 400;
       letter-spacing: 0.06em;
@@ -45,6 +55,35 @@
       transition: color 0.2s;
     }
     .back:hover { color: var(--accent); }
+
+    .mode-switch {
+      display: flex;
+      background: rgba(0,0,0,0.06);
+      border-radius: 4px;
+      padding: 2px;
+      border: none;
+      cursor: pointer;
+      gap: 0;
+      font-family: inherit;
+    }
+    .ms-opt {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 3px 10px;
+      border-radius: 3px;
+      transition: background 0.2s, color 0.2s;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .ms-opt.active {
+      background: var(--ink);
+      color: var(--paper);
+    }
 
     h1 {
       font-size: clamp(2rem, 5vw, 3rem);
@@ -196,7 +235,13 @@
 </head>
 <body>
   <div class="container">
-    <a href="index.html" class="back">← Back to portfolio</a>
+    <div class="top-bar">
+      <a href="index.html" class="back">← Back to portfolio</a>
+      <button class="mode-switch" id="mode-btn" aria-label="Toggle work/zen mode">
+        <span class="ms-opt" data-m="work">work</span>
+        <span class="ms-opt" data-m="zen">zen</span>
+      </button>
+    </div>
 
     <h1>Split-flap display</h1>
     <p class="subtitle">An airport departure board, rendered in code</p>
@@ -219,6 +264,26 @@
   </div>
 
 <script>
+  /* ── Mode toggle ── */
+  (function() {
+    var html = document.documentElement;
+    var btn  = document.getElementById('mode-btn');
+
+    function setMode(m) {
+      html.setAttribute('data-mode', m);
+      localStorage.setItem('siteMode', m);
+      btn.querySelectorAll('.ms-opt').forEach(function(el) {
+        el.classList.toggle('active', el.getAttribute('data-m') === m);
+      });
+    }
+
+    setMode(html.getAttribute('data-mode') || 'work');
+
+    btn.addEventListener('click', function() {
+      setMode(html.getAttribute('data-mode') === 'work' ? 'zen' : 'work');
+    });
+  })();
+
   /* ── Layout ── */
   const COLS  = 7;
   const ROWS  = 4;
