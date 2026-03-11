@@ -290,10 +290,10 @@ const THEMES = {
     bodyClass: 'theme-dusk',
   },
   night: {
-    sky: ['#060c1e','#0c1428','#101c36','#162240'],
-    mtFarFill: 'rgba(25,35,55,0.70)',   mtFarStroke: 'rgba(60,80,110,0.25)',
-    mtNearFill: 'rgba(12,18,28,0.88)',  mtNearStroke: 'rgba(80,100,130,0.20)',
-    ground: '#1c1810', groundFar: '#282014',
+    sky: ['#0a1628','#0e1e38','#142448','#1a2c58'],
+    mtFarFill: 'rgba(30,45,70,0.75)',   mtFarStroke: 'rgba(70,95,130,0.30)',
+    mtNearFill: 'rgba(14,22,36,0.90)',  mtNearStroke: 'rgba(90,115,148,0.25)',
+    ground: '#1e1a10', groundFar: '#2a2416',
     pondWater: 'rgba(30,60,100,0.28)',  pondBorder: 'rgba(140,160,190,0.30)',
     inkLine: 'rgba(160,170,190,0.40)', bambooInk: 'rgba(100,130,80,0.40)',
     stars: 1, moon: 1,
@@ -319,6 +319,7 @@ const ctx    = canvas.getContext('2d');
 
 let W, H, PX, PY, PA, PB;
 let mtFarPts, mtNearPts;
+let stars = [];
 
 function makeRnd(seed) {
   let s = seed;
@@ -366,7 +367,6 @@ function inPond(x, y, m) {
 }
 
 // ─── Stars ────────────────────────────────────────────────────────
-let stars = [];
 function initStars() {
   const r = makeRnd(4321);
   stars = Array.from({ length: 75 }, () => ({
@@ -986,7 +986,9 @@ function loop(ts) {
   lastTime  = ts;
   frameTime = ts * 0.001;
 
-  ctx.clearRect(0, 0, W, H);
+  // Fill canvas with base sky color so it's never transparent against body
+  ctx.fillStyle = T.sky[0];
+  ctx.fillRect(0, 0, W, H);
 
   // Scene back to front
   drawSky();
