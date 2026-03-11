@@ -205,6 +205,77 @@
     }
 
     @media (max-width: 400px) { .page { padding: 0 1rem 3rem; } }
+
+    /* ─── Garden fullscreen mode ──────────────────────────────────── */
+    #garden-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 6, 12, 0.94);
+      z-index: 10000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    #garden-overlay.open { opacity: 1; pointer-events: all; }
+
+    #pond-canvas.fullscreen {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10001;
+      max-width: none !important;
+      width: auto !important;
+      cursor: pointer;
+      border-radius: 6px;
+      box-shadow: 0 0 80px rgba(0,0,0,0.7);
+    }
+    #garden-close {
+      position: fixed;
+      top: 1.2rem;
+      right: 1.4rem;
+      z-index: 10002;
+      background: none;
+      border: none;
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      cursor: pointer;
+      display: none;
+      transition: color 0.2s;
+      padding: 0.4rem 0;
+    }
+    #garden-close:hover { color: rgba(255,255,255,0.75); }
+    body.garden-open #garden-close { display: block; }
+
+    .page-subtitle {
+      font-family: var(--serif);
+      font-size: 0.92rem;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.6;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    #garden-btn {
+      background: none;
+      border: none;
+      font-family: var(--serif);
+      font-size: 0.9rem;
+      font-style: italic;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0;
+      margin-top: 0.6rem;
+      width: 100%;
+      text-align: left;
+      transition: color 0.2s;
+      display: block;
+    }
+    #garden-btn:hover { color: var(--accent); }
   </style>
 </head>
 <body>
@@ -222,9 +293,13 @@
     <div class="page-date" id="today-date"></div>
   </div>
 
+  <p class="page-subtitle">A small garden. A quiet pond. A morning ritual before the day begins.</p>
+
   <p class="hint" id="feed-hint">tap the water to drop food</p>
 
   <canvas id="pond-canvas"></canvas>
+
+  <button id="garden-btn" aria-label="Enter the garden fullscreen">enter the garden ↗</button>
 
   <p class="fed-msg" id="fed-msg"></p>
 
@@ -236,6 +311,9 @@
     <div class="past-entry" id="past-entry" style="display:none"></div>
   </div>
 </div>
+
+<div id="garden-overlay"></div>
+<button id="garden-close" aria-label="Close garden">close ×</button>
 
 <script>
 (function() {
@@ -321,6 +399,13 @@ let W, H, PX, PY, PA, PB;
 let mtFarPts, mtNearPts;
 let stars = [];
 
+// ─── Scene / fullscreen state ──────────────────────────────────────
+let scene        = 'pond';  // 'bedroom' | 'door' | 'pond'
+let isFullscreen = false;
+let doorStartTime = null;
+const DOOR_DUR   = 0.9;    // seconds
+const BEDROOM_GREETING = { dawn:'Good morning.', day:'Good morning.', dusk:'Good evening.', night:'Goodnight.' }[themeName];
+
 function makeRnd(seed) {
   let s = seed;
   return function(a, b) {
@@ -342,28 +427,255 @@ function genMountain(seed, numPts, horizonY, maxLift) {
   return pts;
 }
 
-function resize() {
-  W = Math.min(window.innerWidth - 48, 480);
-  H = Math.round(W * 1.28);
+function applySize() {
   canvas.width  = W;
   canvas.height = H;
-
-  PX = W * 0.50;
-  PY = H * 0.765;
-  PA = W * 0.420;
-  PB = H * 0.108;
-
+  PX = W * 0.50;  PY = H * 0.765;
+  PA = W * 0.420; PB = H * 0.108;
   mtFarPts  = genMountain(71,  12, H * 0.415, H * 0.195);
   mtNearPts = genMountain(137, 10, H * 0.485, H * 0.155);
-
   initStars();
 }
+
+function resize() {
+  if (isFullscreen) return;
+  W = Math.min(window.innerWidth - 48, 480);
+  H = Math.round(W * 1.28);
+  applySize();
+}
+
+function resizeFullscreen() {
+  const maxH = window.innerHeight - 32;
+  const maxW = window.innerWidth  - 32;
+  W = Math.min(Math.floor(maxH / 1.28), maxW, 600);
+  H = Math.round(W * 1.28);
+  applySize();
+  // Set CSS size on canvas so it actually fills space correctly
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+}
+
 resize();
-window.addEventListener('resize', () => { resize(); initFish(); });
+window.addEventListener('resize', () => {
+  if (isFullscreen) resizeFullscreen();
+  else { resize(); initFish(); }
+});
+
+function openGarden() {
+  isFullscreen = true;
+  scene = 'bedroom';
+  doorStartTime = null;
+  resizeFullscreen();
+  initFish();
+  canvas.classList.add('fullscreen');
+  document.getElementById('garden-overlay').classList.add('open');
+  document.body.classList.add('garden-open');
+}
+
+function closeGarden() {
+  isFullscreen = false;
+  scene = 'pond';
+  canvas.classList.remove('fullscreen');
+  canvas.style.width  = '';
+  canvas.style.height = '';
+  document.getElementById('garden-overlay').classList.remove('open');
+  document.body.classList.remove('garden-open');
+  resize();
+  initFish();
+}
 
 function inPond(x, y, m) {
   m = m || 0;
   return ((x - PX) / (PA - m)) ** 2 + ((y - PY) / (PB - m)) ** 2 < 1;
+}
+
+// ─── Bedroom scene ────────────────────────────────────────────────
+function drawBedroom(ts) {
+  // Room background
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0,   '#0c0804');
+  bg.addColorStop(0.5, '#1a1008');
+  bg.addColorStop(1,   '#100a04');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Window / shoji door bounds
+  const wx = W * 0.10, wy = H * 0.06;
+  const ww = W * 0.80, wh = H * 0.60;
+
+  // ── Exterior scene through window ──────────────────────────────
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(wx, wy, ww, wh);
+  ctx.clip();
+
+  // Sky
+  const skyH = wh * 0.55;
+  const skyGrad = ctx.createLinearGradient(wx, wy, wx, wy + skyH);
+  T.sky.forEach((c, i) => skyGrad.addColorStop(i / (T.sky.length - 1), c));
+  ctx.fillStyle = skyGrad;
+  ctx.fillRect(wx, wy, ww, skyH);
+
+  // Stars (impressionistic subset)
+  if (T.stars > 0) {
+    const rr = makeRnd(8822);
+    for (let i = 0; i < 28; i++) {
+      const sx = wx + rr(0.04, 0.96) * ww;
+      const sy = wy + rr(0.05, 0.88) * skyH;
+      const tw = 0.3 + 0.7 * Math.sin(ts * 1.8 + rr(0, 6));
+      ctx.beginPath();
+      ctx.arc(sx, sy, rr(0.4, 1.2), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,252,230,${tw * T.stars * 0.6})`;
+      ctx.fill();
+    }
+  }
+
+  // Moon
+  if (T.moon > 0) {
+    const mx = wx + ww * 0.76, my = wy + wh * 0.15;
+    const mr = W * 0.038;
+    ctx.save();
+    ctx.globalAlpha = T.moon * 0.72;
+    const glow = ctx.createRadialGradient(mx, my, 0, mx, my, mr * 1.9);
+    glow.addColorStop(0, 'rgba(255,250,200,0.18)');
+    glow.addColorStop(1, 'rgba(255,250,200,0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath(); ctx.arc(mx, my, mr * 1.9, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath();
+    ctx.arc(mx, my, mr, -Math.PI / 2, Math.PI / 2, false);
+    ctx.arc(mx + mr * 0.38, my, mr * 0.80, Math.PI / 2, -Math.PI / 2, true);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255,250,215,0.88)'; ctx.fill();
+    ctx.restore();
+  }
+
+  // Ground
+  const groundY = wy + skyH;
+  const gGrad = ctx.createLinearGradient(0, groundY, 0, wy + wh);
+  gGrad.addColorStop(0, T.groundFar);
+  gGrad.addColorStop(0.6, T.ground);
+  ctx.fillStyle = gGrad;
+  ctx.fillRect(wx, groundY, ww, wh - skyH);
+
+  // Far mountains
+  ctx.fillStyle = T.mtFarFill;
+  const mfp = [[0,0],[0.18,-0.14],[0.32,-0.08],[0.50,-0.20],[0.64,-0.10],[0.80,-0.18],[0.93,-0.07],[1,0]];
+  ctx.beginPath(); ctx.moveTo(wx, groundY);
+  for (const [mx_, my_] of mfp) ctx.lineTo(wx + mx_ * ww, groundY + my_ * wh * 0.36);
+  ctx.lineTo(wx + ww, groundY); ctx.closePath(); ctx.fill();
+
+  // Near mountains
+  ctx.fillStyle = T.mtNearFill;
+  const mnp = [[0,0],[0.14,-0.10],[0.30,-0.06],[0.46,-0.15],[0.58,-0.08],[0.72,-0.13],[0.90,-0.05],[1,0]];
+  ctx.beginPath(); ctx.moveTo(wx, groundY);
+  for (const [mx_, my_] of mnp) ctx.lineTo(wx + mx_ * ww, groundY + my_ * wh * 0.25);
+  ctx.lineTo(wx + ww, groundY); ctx.closePath(); ctx.fill();
+
+  // Bamboo silhouettes left side
+  ctx.strokeStyle = T.bambooInk;
+  ctx.lineCap = 'round';
+  const bData = [[0.07, 0.24, 3.0], [0.12, 0.30, 3.8], [0.05, 0.18, 2.4], [0.17, 0.21, 2.8]];
+  for (const [bx, bh, bw] of bData) {
+    ctx.lineWidth = bw;
+    ctx.beginPath();
+    ctx.moveTo(wx + bx * ww, wy + wh);
+    ctx.lineTo(wx + bx * ww + W * 0.004, groundY - bh * wh * 0.55);
+    ctx.stroke();
+  }
+
+  // Distant pond oval
+  const pX = wx + ww * 0.52, pY = wy + wh * 0.80;
+  const pA = ww * 0.19, pB = wh * 0.048;
+  ctx.save();
+  ctx.globalAlpha = 0.55;
+  ctx.beginPath(); ctx.ellipse(pX, pY, pA, pB, 0, 0, Math.PI * 2);
+  const pGr = ctx.createRadialGradient(pX, pY, 0, pX, pY, pA);
+  pGr.addColorStop(0, 'rgba(80,140,185,0.50)');
+  pGr.addColorStop(1, 'rgba(30,60,90,0.08)');
+  ctx.fillStyle = pGr; ctx.fill();
+  ctx.strokeStyle = T.pondBorder; ctx.lineWidth = 1.0; ctx.stroke();
+  ctx.restore();
+
+  ctx.restore(); // end window clip
+
+  // ── Shoji grid ──────────────────────────────────────────────────
+  ctx.save();
+  ctx.strokeStyle = 'rgba(200,175,130,0.14)';
+  ctx.lineWidth = 1.5;
+  for (let c = 1; c < 4; c++) {
+    const x = wx + (c / 4) * ww;
+    ctx.beginPath(); ctx.moveTo(x, wy); ctx.lineTo(x, wy + wh); ctx.stroke();
+  }
+  for (let r = 1; r < 6; r++) {
+    const y = wy + (r / 6) * wh;
+    ctx.beginPath(); ctx.moveTo(wx, y); ctx.lineTo(wx + ww, y); ctx.stroke();
+  }
+  // Center rail (door split)
+  ctx.strokeStyle = '#6a3c12';
+  ctx.lineWidth = 3.5;
+  ctx.beginPath(); ctx.moveTo(wx + ww * 0.5, wy); ctx.lineTo(wx + ww * 0.5, wy + wh); ctx.stroke();
+  ctx.restore();
+
+  // ── Window frame ────────────────────────────────────────────────
+  ctx.strokeStyle = '#6a3c12';
+  ctx.lineWidth = 6;
+  ctx.strokeRect(wx, wy, ww, wh);
+  ctx.strokeStyle = '#8a5420';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(wx + 4, wy + 4, ww - 8, wh - 8);
+
+  // ── Floor below window ──────────────────────────────────────────
+  const floorY = wy + wh + 6;
+  const fGrad = ctx.createLinearGradient(0, floorY, 0, H);
+  fGrad.addColorStop(0, '#2a1a0a');
+  fGrad.addColorStop(0.4, '#1e1206');
+  fGrad.addColorStop(1, '#100a04');
+  ctx.fillStyle = fGrad;
+  ctx.fillRect(0, floorY, W, H - floorY);
+
+  // Floor planks perspective
+  ctx.strokeStyle = 'rgba(200,150,80,0.06)';
+  ctx.lineWidth = 1;
+  const vpX = W / 2;
+  for (let p = 0; p <= 9; p++) {
+    const bx = (p / 9) * W;
+    ctx.beginPath();
+    ctx.moveTo(vpX + (bx - vpX) * 0.04, floorY);
+    ctx.lineTo(bx, H);
+    ctx.stroke();
+  }
+  for (let r = 1; r < 5; r++) {
+    const y = floorY + (H - floorY) * (r / 5);
+    const sp = (y - floorY) / (H - floorY);
+    ctx.beginPath();
+    ctx.moveTo(W * (0.5 - 0.5 * sp), y);
+    ctx.lineTo(W * (0.5 + 0.5 * sp), y);
+    ctx.stroke();
+  }
+
+  // ── Vignette ────────────────────────────────────────────────────
+  const vig = ctx.createRadialGradient(W / 2, H * 0.42, W * 0.12, W / 2, H * 0.42, W * 0.72);
+  vig.addColorStop(0, 'rgba(0,0,0,0)');
+  vig.addColorStop(1, 'rgba(0,0,0,0.60)');
+  ctx.fillStyle = vig;
+  ctx.fillRect(0, 0, W, H);
+
+  // ── Text overlay ─────────────────────────────────────────────────
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  ctx.fillStyle = 'rgba(228,208,165,0.90)';
+  ctx.font = `italic 300 ${Math.round(W * 0.060)}px 'Crimson Pro', Georgia, serif`;
+  ctx.fillText(BEDROOM_GREETING, W / 2, H * 0.800);
+
+  ctx.fillStyle = 'rgba(195,172,128,0.55)';
+  ctx.font = `300 ${Math.round(W * 0.032)}px 'Source Sans 3', system-ui, sans-serif`;
+  ctx.fillText('your fish are waiting', W / 2, H * 0.848);
+
+  const pulse = 0.50 + 0.50 * Math.sin(ts * 2.6);
+  ctx.fillStyle = `rgba(175,152,108,${0.22 + 0.28 * pulse})`;
+  ctx.font = `300 ${Math.round(W * 0.026)}px 'Source Sans 3', system-ui, sans-serif`;
+  ctx.fillText('tap to approach', W / 2, H * 0.916);
 }
 
 // ─── Stars ────────────────────────────────────────────────────────
@@ -737,6 +1049,78 @@ function drawRocks() {
   }
 }
 
+// ─── Door slide animation ─────────────────────────────────────────
+function drawDoorSlide(progress) {
+  // Draw full garden behind the panels
+  drawSky();
+  drawStars(frameTime);
+  drawMoon();
+  drawMountainRange(mtFarPts,  T.mtFarFill,  T.mtFarStroke,  0.9);
+  drawMountainRange(mtNearPts, T.mtNearFill, T.mtNearStroke, 1.1);
+  drawGround();
+  drawBamboo();
+  drawCherryTree();
+  drawHouse();
+  drawRocks();
+  drawPondBase();
+  ctx.save();
+  ctx.beginPath();
+  ctx.ellipse(PX, PY, PA * 0.97, PB * 0.97, 0, 0, Math.PI * 2);
+  ctx.clip();
+  fish.forEach(f => { updateFish(f); drawFish(f); });
+  ctx.restore();
+
+  // Ease-out cubic
+  const ease = 1 - Math.pow(1 - progress, 3);
+  const halfW = W * 0.5;
+
+  const drawPanel = (x, pw) => {
+    // Warm washi paper fill
+    ctx.fillStyle = '#e8dcca';
+    ctx.fillRect(x, 0, pw, H);
+
+    // Subtle paper texture (semi-transparent overlay)
+    const tex = ctx.createLinearGradient(x, 0, x + pw, 0);
+    tex.addColorStop(0, 'rgba(0,0,0,0.06)');
+    tex.addColorStop(0.5, 'rgba(255,255,255,0.04)');
+    tex.addColorStop(1, 'rgba(0,0,0,0.06)');
+    ctx.fillStyle = tex;
+    ctx.fillRect(x, 0, pw, H);
+
+    // Shoji grid
+    ctx.strokeStyle = 'rgba(90,55,18,0.22)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x + pw * 0.5, 0); ctx.lineTo(x + pw * 0.5, H); ctx.stroke();
+    for (let r = 1; r < 7; r++) {
+      const y = (r / 7) * H;
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + pw, y); ctx.stroke();
+    }
+
+    // Frame
+    ctx.strokeStyle = '#6a3c12';
+    ctx.lineWidth = 5;
+    ctx.strokeRect(x, 0, pw, H);
+    ctx.strokeStyle = '#8a5420';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x + 3, 3, pw - 6, H - 6);
+
+    // Inner shadow on opening edge
+    const shadowSide = x < halfW ? x + pw : x;
+    const shadowDir  = x < halfW ? -1 : 1;
+    const shadowGrad = ctx.createLinearGradient(shadowSide, 0, shadowSide + shadowDir * pw * 0.12, 0);
+    shadowGrad.addColorStop(0, 'rgba(0,0,0,0.22)');
+    shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = shadowGrad;
+    ctx.fillRect(
+      x < halfW ? shadowSide - pw * 0.12 : shadowSide,
+      0, pw * 0.12, H
+    );
+  };
+
+  drawPanel(-halfW * ease,           halfW); // left slides left
+  drawPanel(halfW + halfW * ease,    halfW); // right slides right
+}
+
 // ─── Pond ─────────────────────────────────────────────────────────
 let rngState = 1;
 function seededRand() {
@@ -986,37 +1370,45 @@ function loop(ts) {
   lastTime  = ts;
   frameTime = ts * 0.001;
 
-  // Fill canvas with base sky color so it's never transparent against body
-  ctx.fillStyle = T.sky[0];
-  ctx.fillRect(0, 0, W, H);
+  if (scene === 'bedroom') {
+    ctx.fillStyle = '#0c0804';
+    ctx.fillRect(0, 0, W, H);
+    drawBedroom(frameTime);
 
-  // Scene back to front
-  drawSky();
-  drawStars(frameTime);
-  drawMoon();
-  drawMountainRange(mtFarPts,  T.mtFarFill,  T.mtFarStroke,  0.9);
-  drawMountainRange(mtNearPts, T.mtNearFill, T.mtNearStroke, 1.1);
-  drawGround();
-  drawBamboo();
-  drawCherryTree();
-  drawHouse();
-  drawRocks();
+  } else if (scene === 'door') {
+    ctx.fillStyle = T.sky[0];
+    ctx.fillRect(0, 0, W, H);
+    // Advance door timer
+    if (doorStartTime === null) doorStartTime = frameTime;
+    const rawP = Math.min((frameTime - doorStartTime) / DOOR_DUR, 1);
+    drawDoorSlide(rawP);
+    if (rawP >= 1) { scene = 'pond'; doorStartTime = null; }
 
-  // Pond
-  drawPondBase();
-
-  // Fish and food clipped to pond
-  ctx.save();
-  ctx.beginPath();
-  ctx.ellipse(PX, PY, PA * 0.97, PB * 0.97, 0, 0, Math.PI * 2);
-  ctx.clip();
-  foods = foods.filter(fd => fd.age < 360);
-  foods.forEach(fd => { fd.age++; drawFood(fd); });
-  fish.forEach(f => { updateFish(f); drawFish(f); });
-  ctx.restore();
-
-  // Blossoms on top of everything
-  drawBlossoms();
+  } else {
+    // Pond scene
+    ctx.fillStyle = T.sky[0];
+    ctx.fillRect(0, 0, W, H);
+    drawSky();
+    drawStars(frameTime);
+    drawMoon();
+    drawMountainRange(mtFarPts,  T.mtFarFill,  T.mtFarStroke,  0.9);
+    drawMountainRange(mtNearPts, T.mtNearFill, T.mtNearStroke, 1.1);
+    drawGround();
+    drawBamboo();
+    drawCherryTree();
+    drawHouse();
+    drawRocks();
+    drawPondBase();
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(PX, PY, PA * 0.97, PB * 0.97, 0, 0, Math.PI * 2);
+    ctx.clip();
+    foods = foods.filter(fd => fd.age < 360);
+    foods.forEach(fd => { fd.age++; drawFood(fd); });
+    fish.forEach(f => { updateFish(f); drawFish(f); });
+    ctx.restore();
+    drawBlossoms();
+  }
 
   requestAnimationFrame(loop);
 }
@@ -1031,14 +1423,25 @@ function getXY(e) {
     y: (src.clientY - rect.top)  * (canvas.height / rect.height),
   };
 }
+function handleTap(x, y) {
+  if (scene === 'bedroom') {
+    scene = 'door';
+    doorStartTime = null;
+  } else if (scene === 'door') {
+    // animation runs, do nothing
+  } else {
+    if (inPond(x, y, 10)) dropFood(x, y);
+  }
+}
+
 canvas.addEventListener('click', e => {
   const {x, y} = getXY(e);
-  if (inPond(x, y, 10)) dropFood(x, y);
+  handleTap(x, y);
 });
 canvas.addEventListener('touchend', e => {
   e.preventDefault();
   const {x, y} = getXY(e);
-  if (inPond(x, y, 10)) dropFood(x, y);
+  handleTap(x, y);
 }, { passive: false });
 
 // ─── UI ───────────────────────────────────────────────────────────
@@ -1102,6 +1505,13 @@ if (lastFedKey === todayKey) {
   document.getElementById('feed-hint').textContent = 'already fed today, tap for more';
   setTimeout(showRitual, 600);
 }
+
+// ─── Garden button handlers ────────────────────────────────────────
+document.getElementById('garden-btn').addEventListener('click', openGarden);
+document.getElementById('garden-close').addEventListener('click', closeGarden);
+document.getElementById('garden-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('garden-overlay')) closeGarden();
+});
 
 })();
 </script>
