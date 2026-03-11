@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <script>(function(){var m=localStorage.getItem('siteMode')||'work';document.documentElement.setAttribute('data-mode',m);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nobody Asked for Denim Ice Cream — Jacqueline Koerner</title>
+  <link rel="icon" id="favicon" type="image/svg+xml" href="favicon-work.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a1a;
+      --paper: #ffffff;
+      --paper-warm: #ebebeb;
+      --muted: #888;
+      --accent: #2a5298;
+      --serif: 'Crimson Pro', Georgia, serif;
+      --sans: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      min-height: 100vh;
+      line-height: 1.7;
+      transition: background-color 0.5s ease;
+    }
+
+    [data-mode="zen"] body { background: var(--paper-warm); }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 2.5rem 0 0;
+    }
+
+    .back {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back:hover { color: var(--accent); }
+
+    .mode-switch {
+      display: flex;
+      background: rgba(0,0,0,0.06);
+      border-radius: 4px;
+      padding: 2px;
+      border: none;
+      cursor: pointer;
+      gap: 0;
+      font-family: inherit;
+    }
+    .ms-opt {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 3px 10px;
+      border-radius: 3px;
+      transition: background 0.2s, color 0.2s;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .ms-opt.active {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-family: var(--serif);
+      font-weight: 300;
+      margin: 3rem 0 0.5rem;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .meta {
+      font-size: 0.72rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    .about-text {
+      font-size: 1.1rem;
+      font-family: var(--serif);
+      line-height: 1.8;
+    }
+    .about-text p + p { margin-top: 1.2rem; }
+
+    .about-subhead {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 2.5rem 0 0.5rem;
+    }
+
+    .map-wrap {
+      margin: 3rem 0;
+      padding: 2rem 0;
+      border-top: 1px solid rgba(28,26,23,0.1);
+      border-bottom: 1px solid rgba(28,26,23,0.1);
+    }
+    .map-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .map-caption {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 1rem;
+      font-family: var(--sans);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a href="index.html" class="back">← Back to portfolio</a>
+      <button class="mode-switch" id="mode-btn" aria-label="Toggle work/zen mode">
+        <span class="ms-opt" data-m="work">work</span>
+        <span class="ms-opt" data-m="zen">zen</span>
+      </button>
+    </div>
+
+    <h1>Nobody Asked for Denim Ice Cream</h1>
+    <p class="subtitle">A ¥500 sign and a very blue cone in Osaka</p>
+    <p class="meta">Product observations · Osaka · March 2026</p>
+
+    <div class="about-text">
+      <p>
+        There is a sign outside a denim shop in Osaka. It advertises a blue soft serve for ¥500. The flavor is, according to the label, denim.
+      </p>
+      <p>
+        I am certain that in the entire recorded history of customer feedback, nobody has ever said: I wish I could eat a pair of jeans.
+      </p>
+    </div>
+
+    <div class="map-wrap">
+      <img src="denim-soft-serve.jpg" alt="A sidewalk sign advertising denim soft serve ice cream for ¥500 outside a denim shop in Osaka." />
+      <p class="map-caption">Denim Street, Osaka. ¥500.</p>
+    </div>
+
+    <div class="about-text">
+      <div class="about-subhead">The canonical mode</div>
+      <p>
+        Product development has a well-worn shape. You find the problem. You validate the need. You build the solution. The whole process rests on a belief that demand exists somewhere, latent, waiting to be surfaced and satisfied. Ask the right questions and the product reveals itself.
+      </p>
+      <p>
+        This framework is good at many things. It is not good at producing denim ice cream.
+      </p>
+
+      <div class="about-subhead">Reading the market</div>
+      <p>
+        What happened here was not demand discovery. It was market reading, which is a different skill, and a less celebrated one.
+      </p>
+      <p>
+        Japan has a food culture that treats novelty as a distinct value. The pleasure is not always in the flavor itself, it is in the moment of surprise, the social currency of telling someone about it, the low-stakes adventure of eating something unexpected. Soft serve here comes in black sesame, in matcha, in cherry blossom, in soy sauce. A blue cone with a denim label is not an act of shock for shock's sake. It is a fluent gesture in an established dialect.
+      </p>
+      <p>
+        The denim shop read that. They also read something else.
+      </p>
+
+      <div class="about-subhead">The conversion mechanism</div>
+      <p>
+        Buying jeans is a considered decision. Nobody leaves home with a vague plan to pop into a jeans shop, unplanned. The barrier to entry is the usual one for clothing: time, intention, the low-grade dread of a fitting room.
+      </p>
+      <p>
+        But ice cream is a three-second decision. ¥500. A blue cone. A sign on the sidewalk.
+      </p>
+      <p>
+        They did not try to sell jeans on the street. They sold a moment of delight, and that moment put them in someone's day. Maybe the person walks in. Maybe they just photograph the sign and tell someone about it later. Either way, the store is now in their story. They were in their day, in a way an ad cannot replicate.
+      </p>
+
+      <div class="about-subhead">The translation</div>
+      <p>
+        The best product thinking I have seen stops asking what users want and starts asking: what is this culture already in love with, and where does our product fit inside that love? The famous misattributed Ford line, "if I had asked people what they wanted, they would have said faster horses," is a warning against literalism in discovery, not against discovery itself. The underlying desire was real. Getting somewhere faster, covering more ground, that was already there. The translation was his.
+      </p>
+      <p>
+        In Osaka, the underlying desire was for the small novelty, the thing worth photographing, the ¥500 surprise. The translation was blue.
+      </p>
+      <p>
+        The cone was, apparently, delicious. I didn't try it. I was too busy writing this down.
+      </p>
+    </div>
+
+    <div style="height: 6rem;"></div>
+  </div>
+
+<script>
+  (function() {
+    var html = document.documentElement;
+    var btn  = document.getElementById('mode-btn');
+
+    function setMode(m) {
+      html.setAttribute('data-mode', m);
+      localStorage.setItem('siteMode', m);
+      btn.querySelectorAll('.ms-opt').forEach(function(el) {
+        el.classList.toggle('active', el.getAttribute('data-m') === m);
+      });
+      var fav = document.getElementById('favicon');
+      if (fav) fav.href = 'favicon-' + m + '.svg';
+    }
+
+    setMode(html.getAttribute('data-mode') || 'work');
+
+    btn.addEventListener('click', function() {
+      setMode(html.getAttribute('data-mode') === 'work' ? 'zen' : 'work');
+    });
+  })();
+</script>
+
+</body>
+</html>

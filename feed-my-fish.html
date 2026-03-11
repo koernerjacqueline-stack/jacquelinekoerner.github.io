@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Feed My Fish</title>
+  <link rel="icon" type="image/svg+xml" href="favicon-zen.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=Source+Sans+3:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --paper: #ebebeb;
+      --ink: #1a1a1a;
+      --muted: #999;
+      --accent: #744848;
+      --serif: 'Crimson Pro', Georgia, serif;
+      --sans: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      overscroll-behavior: none;
+    }
+
+    /* Grain */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .page {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Top bar */
+    .top-bar {
+      width: 100%;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 2rem 0 0;
+      margin-bottom: 1.2rem;
+    }
+    .back {
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back:hover { color: var(--ink); }
+    .top-right {
+      text-align: right;
+    }
+    .streak-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+    }
+    .streak-count {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+
+    /* Title */
+    .title-block {
+      width: 100%;
+      margin-bottom: 0.4rem;
+    }
+    .page-title {
+      font-family: var(--serif);
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+      font-weight: 300;
+      line-height: 1.2;
+      color: var(--ink);
+    }
+    .page-date {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    /* Hint */
+    .hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+      font-family: var(--serif);
+      margin-bottom: 1rem;
+      width: 100%;
+      opacity: 1;
+      transition: opacity 1s ease;
+    }
+    .hint.hidden { opacity: 0; pointer-events: none; }
+
+    /* Canvas */
+    #pond-canvas {
+      display: block;
+      width: 100%;
+      max-width: 480px;
+      touch-action: none;
+      cursor: crosshair;
+    }
+
+    /* Fed message */
+    .fed-msg {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--accent);
+      margin-top: 1rem;
+      min-height: 1.4rem;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+      text-align: center;
+    }
+    .fed-msg.visible { opacity: 1; }
+
+    /* Ritual zone */
+    .ritual-zone {
+      width: 100%;
+      margin-top: 2rem;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 1.4s ease, transform 1.4s ease;
+      pointer-events: none;
+    }
+    .ritual-zone.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+    .ritual-divider {
+      width: 2rem;
+      height: 1px;
+      background: rgba(0,0,0,0.15);
+      margin: 0 auto 1.8rem;
+    }
+    .ritual-question {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--ink);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+      text-align: center;
+    }
+    .ritual-input {
+      width: 100%;
+      background: rgba(0,0,0,0.035);
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 4px;
+      padding: 0.9rem 1rem;
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--ink);
+      resize: none;
+      min-height: 5rem;
+      line-height: 1.6;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .ritual-input:focus { border-color: rgba(0,0,0,0.25); }
+    .ritual-input::placeholder { color: var(--muted); font-style: italic; }
+    .ritual-save {
+      margin-top: 0.8rem;
+      background: none;
+      border: 1px solid rgba(0,0,0,0.2);
+      border-radius: 3px;
+      padding: 0.45rem 1.2rem;
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .ritual-save:hover { color: var(--ink); border-color: rgba(0,0,0,0.4); }
+
+    /* Past entry */
+    .past-entry {
+      margin-top: 1rem;
+      font-family: var(--serif);
+      font-size: 0.88rem;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.6;
+    }
+    .past-entry-label {
+      font-family: var(--sans);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+      font-style: normal;
+    }
+
+    @media (max-width: 400px) {
+      .page { padding: 0 1rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="top-bar">
+    <a href="index.html" class="back">← portfolio</a>
+    <div class="top-right">
+      <span class="streak-label">days</span>
+      <span class="streak-count" id="streak-display">–</span>
+    </div>
+  </div>
+
+  <div class="title-block">
+    <div class="page-title">Feed my fish</div>
+    <div class="page-date" id="today-date"></div>
+  </div>
+
+  <p class="hint" id="feed-hint">tap the water to drop food</p>
+
+  <canvas id="pond-canvas"></canvas>
+
+  <p class="fed-msg" id="fed-msg"></p>
+
+  <div class="ritual-zone" id="ritual-zone">
+    <div class="ritual-divider"></div>
+    <p class="ritual-question" id="ritual-question">What's one thing you're grateful for today?</p>
+    <textarea class="ritual-input" id="ritual-input" placeholder="write here..."></textarea>
+    <button class="ritual-save" id="ritual-save">Save</button>
+    <div class="past-entry" id="past-entry" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+
+// ─── Date & streak ───────────────────────────────────────────────
+const today = new Date();
+const dateStr = today.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+document.getElementById('today-date').textContent = dateStr;
+
+const todayKey = today.toISOString().slice(0,10);
+const lastFedKey = localStorage.getItem('fish_last_fed');
+const streakRaw = parseInt(localStorage.getItem('fish_streak') || '0', 10);
+
+// Calculate current streak
+let streak = streakRaw;
+const yesterday = new Date(today);
+yesterday.setDate(yesterday.getDate() - 1);
+const yKey = yesterday.toISOString().slice(0,10);
+if (lastFedKey !== todayKey && lastFedKey !== yKey) streak = 0;
+document.getElementById('streak-display').textContent = streak > 0 ? streak + (streak === 1 ? ' day' : ' days') : '–';
+
+// ─── Canvas setup ─────────────────────────────────────────────────
+const canvas = document.getElementById('pond-canvas');
+const ctx = canvas.getContext('2d');
+
+let W, H, PX, PY, PA, PB;
+
+function resize() {
+  const maxW = Math.min(window.innerWidth - 48, 480);
+  W = maxW;
+  H = Math.round(maxW * 0.78);
+  canvas.width = W;
+  canvas.height = H;
+  PX = W * 0.5;
+  PY = H * 0.5;
+  PA = W * 0.44;
+  PB = H * 0.43;
+}
+resize();
+window.addEventListener('resize', () => { resize(); initFish(); });
+
+function inPond(x, y, margin) {
+  const m = margin || 0;
+  return ((x - PX) / (PA - m)) ** 2 + ((y - PY) / (PB - m)) ** 2 < 1;
+}
+
+// ─── Fish ─────────────────────────────────────────────────────────
+const PALETTES = [
+  { body:'#d4603a', belly:'#e8a070', fin:'#b04020', spots:null },
+  { body:'#e0d4c0', belly:'#f0e8d8', fin:'#c0a880', spots:'#d4603a' },
+  { body:'#c04030', belly:'#d86050', fin:'#902010', spots:'#f0e8d8' },
+  { body:'#d4603a', belly:'#f0a060', fin:'#903020', spots:'#e0d4c0' },
+  { body:'#e0d4c0', belly:'#f8f0e4', fin:'#b8a070', spots:null },
+];
+
+let fish = [];
+
+function mkFish(i) {
+  const a = Math.random() * Math.PI * 2;
+  const r = 0.5 + Math.random() * 0.3;
+  return {
+    x: PX + PA * r * Math.cos(a),
+    y: PY + PB * r * Math.sin(a),
+    angle: a + Math.PI,
+    speed: 0.55 + Math.random() * 0.35,
+    len: 34 + Math.random() * 16,
+    pal: PALETTES[i % PALETTES.length],
+    wiggle: Math.random() * Math.PI * 2,
+    wigSpeed: 0.07 + Math.random() * 0.03,
+    state: 'excited',
+    target: null,
+    wanderAngle: a + Math.PI,
+    wanderTimer: Math.random() * 80,
+  };
+}
+
+function initFish() {
+  fish = Array.from({length: 6}, (_, i) => mkFish(i));
+}
+initFish();
+
+// ─── Food ─────────────────────────────────────────────────────────
+let foods = [];
+let fedCount = 0;
+let feedingDone = false;
+
+function dropFood(cx, cy) {
+  const count = 4 + Math.floor(Math.random() * 3);
+  for (let i = 0; i < count; i++) {
+    foods.push({
+      x: cx + (Math.random() - 0.5) * 28,
+      y: cy + (Math.random() - 0.5) * 28,
+      r: 3 + Math.random() * 1.5,
+      eaten: false,
+      age: 0,
+    });
+  }
+  fedCount++;
+  document.getElementById('feed-hint').classList.add('hidden');
+
+  if (fedCount === 1) {
+    showFedMsg('they see the food...');
+  } else if (fedCount === 2 && !feedingDone) {
+    showFedMsg('happy fish.');
+    feedingDone = true;
+    saveFed();
+    setTimeout(showRitual, 2200);
+  }
+}
+
+// ─── Fish AI ──────────────────────────────────────────────────────
+function updateFish(f) {
+  f.wiggle += f.wigSpeed;
+
+  let targetAngle = f.angle;
+  let spd = f.speed;
+
+  // Find nearest uneaten food
+  let nearest = null, nearestDist = 110;
+  for (const fd of foods) {
+    if (fd.eaten) continue;
+    const d = Math.hypot(fd.x - f.x, fd.y - f.y);
+    if (d < nearestDist) { nearest = fd; nearestDist = d; }
+  }
+
+  if (nearest) {
+    f.state = 'seeking';
+    f.target = nearest;
+  }
+
+  if (f.state === 'seeking' && f.target && !f.target.eaten) {
+    const dx = f.target.x - f.x;
+    const dy = f.target.y - f.y;
+    targetAngle = Math.atan2(dy, dx);
+    spd = f.speed * 2.8;
+    if (Math.hypot(dx, dy) < 9) {
+      f.target.eaten = true;
+      f.target = null;
+      f.state = 'idle';
+    }
+  } else if (f.state === 'excited') {
+    // Cluster near surface-center
+    const tx = PX + (Math.random() - 0.5) * PA * 0.5;
+    const ty = PY - PB * 0.28;
+    const dx = tx - f.x, dy = ty - f.y;
+    const dist = Math.hypot(dx, dy);
+    if (dist < 22) {
+      targetAngle = f.angle + (Math.random() - 0.5) * 0.6;
+      spd = f.speed * 0.35;
+    } else {
+      targetAngle = Math.atan2(dy, dx);
+      spd = f.speed * 1.6;
+    }
+  } else {
+    // Idle wander
+    f.wanderTimer--;
+    if (f.wanderTimer <= 0) {
+      f.wanderAngle = Math.random() * Math.PI * 2;
+      f.wanderTimer = 60 + Math.random() * 100;
+    }
+    targetAngle = f.wanderAngle;
+    spd = f.speed * 0.45;
+  }
+
+  // Smooth steering
+  let da = targetAngle - f.angle;
+  while (da > Math.PI) da -= Math.PI * 2;
+  while (da < -Math.PI) da += Math.PI * 2;
+  f.angle += da * 0.072;
+
+  f.x += Math.cos(f.angle) * spd;
+  f.y += Math.sin(f.angle) * spd;
+
+  // Pond boundary
+  const nx = (f.x - PX) / PA;
+  const ny = (f.y - PY) / PB;
+  if (nx * nx + ny * ny > 0.82) {
+    const ba = Math.atan2(ny, nx);
+    f.x = PX + PA * 0.78 * Math.cos(ba);
+    f.y = PY + PB * 0.78 * Math.sin(ba);
+    f.angle = Math.atan2(-ny * PB, -nx * PA) + (Math.random() - 0.5) * 0.9;
+    f.wanderAngle = f.angle;
+  }
+}
+
+// ─── Drawing ──────────────────────────────────────────────────────
+let rngState = 1;
+function seededRand() {
+  rngState = (rngState * 1664525 + 1013904223) & 0xffffffff;
+  return (rngState >>> 0) / 4294967295;
+}
+
+// Draw the pond background + border
+function drawPond() {
+  // Clip region
+  ctx.save();
+  ctx.beginPath();
+  ctx.ellipse(PX, PY, PA, PB, 0, 0, Math.PI * 2);
+  ctx.clip();
+
+  // Water fill
+  ctx.fillStyle = 'rgba(165, 195, 215, 0.22)';
+  ctx.fillRect(0, 0, W, H);
+
+  // Very subtle concentric shimmer lines
+  ctx.save();
+  ctx.strokeStyle = 'rgba(100,140,170,0.09)';
+  ctx.lineWidth = 1;
+  for (let i = 1; i < 5; i++) {
+    const s = i / 5;
+    ctx.beginPath();
+    ctx.ellipse(PX, PY, PA * s, PB * s, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  ctx.restore();
+
+  // Pond border — ink sketch wobbly ellipse
+  rngState = 99;
+  ctx.beginPath();
+  const steps = 120;
+  for (let i = 0; i <= steps; i++) {
+    const a = (i / steps) * Math.PI * 2;
+    const wobble = 1 + (seededRand() - 0.5) * 0.018;
+    const x = PX + PA * wobble * Math.cos(a);
+    const y = PY + PB * wobble * Math.sin(a);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  ctx.strokeStyle = 'rgba(30,15,5,0.55)';
+  ctx.lineWidth = 1.8;
+  ctx.stroke();
+
+  // Second pass for sketch feel
+  rngState = 42;
+  ctx.beginPath();
+  for (let i = 0; i <= steps; i++) {
+    const a = (i / steps) * Math.PI * 2;
+    const wobble = 1 + (seededRand() - 0.5) * 0.012;
+    const x = PX + PA * wobble * Math.cos(a) + (seededRand() - 0.5) * 1.5;
+    const y = PY + PB * wobble * Math.sin(a) + (seededRand() - 0.5) * 1.5;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  ctx.strokeStyle = 'rgba(30,15,5,0.2)';
+  ctx.lineWidth = 0.8;
+  ctx.stroke();
+}
+
+function drawFood(fd) {
+  if (fd.eaten) return;
+  ctx.beginPath();
+  ctx.arc(fd.x, fd.y, fd.r, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(100,60,20,0.75)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(60,30,5,0.4)';
+  ctx.lineWidth = 0.5;
+  ctx.stroke();
+}
+
+function drawFish(f) {
+  const L = f.len;
+  const W2 = L * 0.32;
+  const wag = Math.sin(f.wiggle) * 0.28;
+
+  ctx.save();
+  ctx.translate(f.x, f.y);
+  ctx.rotate(f.angle);
+
+  // Clip to pond (fish fade if they try to leave)
+  // Body
+  ctx.beginPath();
+  ctx.moveTo(L * 0.48, 0);
+  ctx.bezierCurveTo(
+    L * 0.28, -W2 * 0.9 + wag * W2 * 0.3,
+    -L * 0.08, -W2,
+    -L * 0.28, -W2 * 0.35 + wag * W2 * 0.4
+  );
+  ctx.bezierCurveTo(
+    -L * 0.42, -W2 * 0.05,
+    -L * 0.42, W2 * 0.05,
+    -L * 0.28, W2 * 0.35 - wag * W2 * 0.4
+  );
+  ctx.bezierCurveTo(
+    -L * 0.08, W2,
+    L * 0.28, W2 * 0.9 - wag * W2 * 0.3,
+    L * 0.48, 0
+  );
+  ctx.closePath();
+  ctx.fillStyle = f.pal.body;
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(30,12,5,0.65)';
+  ctx.lineWidth = 1.1;
+  ctx.stroke();
+
+  // Belly highlight
+  ctx.beginPath();
+  ctx.moveTo(L * 0.3, 0);
+  ctx.bezierCurveTo(L * 0.1, -W2 * 0.45, -L * 0.1, -W2 * 0.55, -L * 0.22, -W2 * 0.2);
+  ctx.bezierCurveTo(-L * 0.22, 0, -L * 0.22, W2 * 0.2, -L * 0.1, W2 * 0.55);
+  ctx.bezierCurveTo(L * 0.1, W2 * 0.45, L * 0.3, 0, L * 0.3, 0);
+  ctx.fillStyle = f.pal.belly;
+  ctx.globalAlpha = 0.55;
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  // Spot (optional)
+  if (f.pal.spots) {
+    ctx.beginPath();
+    ctx.arc(L * 0.05, -W2 * 0.3, W2 * 0.38, 0, Math.PI * 2);
+    ctx.fillStyle = f.pal.spots;
+    ctx.globalAlpha = 0.7;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  // Tail
+  const tx = -L * 0.3;
+  ctx.beginPath();
+  ctx.moveTo(tx, wag * W2 * 0.5);
+  ctx.bezierCurveTo(
+    tx - L * 0.18, -W2 * 0.7 + wag * W2,
+    tx - L * 0.36, -W2 * 0.55 + wag * W2,
+    tx - L * 0.32, 0
+  );
+  ctx.bezierCurveTo(
+    tx - L * 0.36, W2 * 0.55 - wag * W2,
+    tx - L * 0.18, W2 * 0.7 - wag * W2,
+    tx, wag * W2 * 0.5
+  );
+  ctx.fillStyle = f.pal.fin;
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(30,12,5,0.55)';
+  ctx.lineWidth = 0.9;
+  ctx.stroke();
+
+  // Dorsal fin
+  ctx.beginPath();
+  ctx.moveTo(L * 0.1, -W2 * 0.78);
+  ctx.bezierCurveTo(L * 0.05, -W2 * 1.25, -L * 0.08, -W2 * 1.2, -L * 0.15, -W2 * 0.72);
+  ctx.strokeStyle = 'rgba(30,12,5,0.45)';
+  ctx.lineWidth = 0.9;
+  ctx.stroke();
+
+  // Pectoral fin
+  ctx.beginPath();
+  ctx.moveTo(L * 0.2, W2 * 0.45);
+  ctx.bezierCurveTo(L * 0.05, W2 * 1.0, -L * 0.05, W2 * 0.9, -L * 0.02, W2 * 0.55);
+  ctx.strokeStyle = 'rgba(30,12,5,0.4)';
+  ctx.lineWidth = 0.8;
+  ctx.stroke();
+
+  // Eye
+  ctx.beginPath();
+  ctx.arc(L * 0.35, -W2 * 0.18, 2.2, 0, Math.PI * 2);
+  ctx.fillStyle = '#180800';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(L * 0.355, -W2 * 0.2, 0.7, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.fill();
+
+  ctx.restore();
+}
+
+// ─── Animation loop ───────────────────────────────────────────────
+let lastTime = 0;
+function loop(ts) {
+  if (ts - lastTime < 16) { requestAnimationFrame(loop); return; }
+  lastTime = ts;
+
+  ctx.clearRect(0, 0, W, H);
+
+  drawPond();
+
+  // Clip all drawing to pond
+  ctx.save();
+  ctx.beginPath();
+  ctx.ellipse(PX, PY, PA * 0.98, PB * 0.98, 0, 0, Math.PI * 2);
+  ctx.clip();
+
+  foods = foods.filter(fd => fd.age < 380);
+  foods.forEach(fd => { fd.age++; drawFood(fd); });
+
+  fish.forEach(f => { updateFish(f); drawFish(f); });
+
+  ctx.restore();
+
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// ─── Input ────────────────────────────────────────────────────────
+function getXY(e, el) {
+  const rect = el.getBoundingClientRect();
+  const src = e.touches ? e.touches[0] : e;
+  const scaleX = el.width / rect.width;
+  const scaleY = el.height / rect.height;
+  return {
+    x: (src.clientX - rect.left) * scaleX,
+    y: (src.clientY - rect.top) * scaleY,
+  };
+}
+
+canvas.addEventListener('click', e => {
+  const {x, y} = getXY(e, canvas);
+  if (inPond(x, y, 10)) dropFood(x, y);
+});
+canvas.addEventListener('touchend', e => {
+  e.preventDefault();
+  const {x, y} = getXY(e, canvas);
+  if (inPond(x, y, 10)) dropFood(x, y);
+}, { passive: false });
+
+// ─── UI helpers ───────────────────────────────────────────────────
+function showFedMsg(text) {
+  const el = document.getElementById('fed-msg');
+  el.textContent = text;
+  requestAnimationFrame(() => el.classList.add('visible'));
+}
+
+function showRitual() {
+  const zone = document.getElementById('ritual-zone');
+
+  // Rotate through questions
+  const questions = [
+    "What's one thing you're grateful for today?",
+    "What would make today feel complete?",
+    "One word for how you want to feel today.",
+    "What are you looking forward to?",
+    "Name something beautiful you noticed recently.",
+  ];
+  const dayIdx = Math.floor(Date.now() / 86400000) % questions.length;
+  document.getElementById('ritual-question').textContent = questions[dayIdx];
+
+  // Show past entry if any
+  const pastKey = localStorage.getItem('fish_entry_date');
+  const pastText = localStorage.getItem('fish_entry_text');
+  const pastEl = document.getElementById('past-entry');
+  if (pastText && pastKey && pastKey !== todayKey) {
+    const pastDate = new Date(pastKey);
+    const pastLabel = pastDate.toLocaleDateString('en-US', { month:'long', day:'numeric' });
+    pastEl.innerHTML = '<div class="past-entry-label">' + pastLabel + '</div>' + pastText;
+    pastEl.style.display = 'block';
+  }
+
+  zone.classList.add('visible');
+}
+
+document.getElementById('ritual-save').addEventListener('click', () => {
+  const text = document.getElementById('ritual-input').value.trim();
+  if (!text) return;
+  localStorage.setItem('fish_entry_date', todayKey);
+  localStorage.setItem('fish_entry_text', text);
+  const btn = document.getElementById('ritual-save');
+  btn.textContent = 'saved';
+  btn.style.color = 'var(--accent)';
+  setTimeout(() => {
+    btn.textContent = 'save';
+    btn.style.color = '';
+  }, 2000);
+});
+
+// ─── Streak persistence ───────────────────────────────────────────
+function saveFed() {
+  const prev = localStorage.getItem('fish_last_fed');
+  const yesterday2 = new Date(today);
+  yesterday2.setDate(yesterday2.getDate() - 1);
+  const yKey2 = yesterday2.toISOString().slice(0, 10);
+
+  let newStreak = 1;
+  if (prev === yKey2) newStreak = streakRaw + 1;
+  else if (prev === todayKey) newStreak = streakRaw || 1;
+
+  localStorage.setItem('fish_last_fed', todayKey);
+  localStorage.setItem('fish_streak', newStreak);
+
+  const streakEl = document.getElementById('streak-display');
+  streakEl.textContent = newStreak + (newStreak === 1 ? ' day' : ' days');
+  streakEl.style.transition = 'color 0.5s';
+  streakEl.style.color = 'var(--accent)';
+}
+
+// If already fed today, show ritual immediately
+if (lastFedKey === todayKey) {
+  feedingDone = true;
+  document.getElementById('feed-hint').textContent = 'already fed today — tap for more';
+  setTimeout(showRitual, 600);
+}
+
+})();
+</script>
+</body>
+</html>
