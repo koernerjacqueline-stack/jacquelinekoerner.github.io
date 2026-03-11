@@ -424,11 +424,6 @@ const { useState, useEffect, useRef } = React;
 const data = {
   writing: [
     {
-      title: "Placeholder: Your latest Substack post",
-      meta: "Substack · 2025",
-      url: "https://substack.com/home/post/p-187676112"
-    },
-    {
       title: "Nobody Asked for Denim Ice Cream",
       meta: "Product observations · Enoshima · March 2026",
       url: "denim-soft-serve.html"
@@ -439,21 +434,23 @@ const data = {
       url: "getting-online.html"
     },
   ],
-  design: [
+  designWork: [
     {
       title: "Figma Make — Design portfolio",
       meta: "jacquelinekoerner.figma.site",
       url: "https://jacquelinekoerner.figma.site"
     },
     {
-      title: "Feed My Fish",
-      meta: "Morning ritual. Koi pond. A daily habit dressed as a game.",
-      url: "feed-my-fish.html"
-    },
-    {
       title: "Split-flap display",
       meta: "Split flap display animation created with Claude Code + Cursor.",
       url: "split-flap.html"
+    },
+  ],
+  designZen: [
+    {
+      title: "Feed My Fish",
+      meta: "Morning ritual. Koi pond. A daily habit dressed as a game.",
+      url: "feed-my-fish.html"
     },
     {
       title: "Koi Study",
@@ -899,11 +896,6 @@ function App() {
             <div className="section-label">Writing</div>
             <div className="cards">
               {data.writing.map((item, i) => <Card key={i} {...item} />)}
-              <a href="https://substack.com/home/post/p-187676112" target="_blank" rel="noopener noreferrer" style={{
-                display:'inline-block', marginTop:'1.2rem',
-                fontFamily:'var(--mono)', fontSize:'0.62rem',
-                color:'var(--muted)', letterSpacing:'0.06em', textDecoration:'none'
-              }}>All writing on Substack →</a>
             </div>
           </section>
         )}
@@ -916,11 +908,13 @@ function App() {
         <section id="design" className="scroll-reveal">
           <div className="section-label">Design Work</div>
           <div className="cards">
-            {data.design.map((item, i) => <Card key={i} {...item} />)}
+            {(mode === 'work' ? data.designWork : data.designZen).map((item, i) => <Card key={i} {...item} />)}
           </div>
-          <p style={{marginTop:'1.5rem', fontFamily:'var(--mono)', fontSize:'0.62rem', color:'var(--muted)', lineHeight:1.6}}>
-            Explorations in Figma — interfaces, concepts, prototypes.
-          </p>
+          {mode === 'work' && (
+            <p style={{marginTop:'1.5rem', fontFamily:'var(--mono)', fontSize:'0.62rem', color:'var(--muted)', lineHeight:1.6}}>
+              Explorations in Figma — interfaces, concepts, prototypes.
+            </p>
+          )}
         </section>
 
         <SketchAnim key={`sk3-${mode}`} id="sk3" viewBox="0 0 600 600" ratio="4/3" label="Vertical Field"
@@ -944,7 +938,6 @@ function App() {
           <div className="footer-inner">
             <span className="footer-note">Jacqueline Koerner © 2026</span>
             <div className="footer-links">
-              <a href="https://substack.com/home/post/p-187676112" target="_blank" rel="noopener noreferrer">Substack</a>
               <a href="https://jacquelinekoerner.figma.site" target="_blank" rel="noopener noreferrer">Figma</a>
               <a href="mailto:koernerjacqueline@gmail.com">Email</a>
             </div>
