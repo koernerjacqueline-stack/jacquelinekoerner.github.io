@@ -27,9 +27,11 @@
       font-family: var(--sans);
       font-weight: 300;
       overscroll-behavior: none;
+      transition: background-color 2s ease, color 2s ease;
     }
+    body.theme-night { background: #0e1220; color: #c8c0b0; --muted: #666; }
+    body.theme-dusk  { background: #2a1820; color: #d8c8b8; }
 
-    /* Grain */
     body::after {
       content: '';
       position: fixed;
@@ -49,14 +51,13 @@
       align-items: center;
     }
 
-    /* Top bar */
     .top-bar {
       width: 100%;
       display: flex;
       align-items: baseline;
       justify-content: space-between;
       padding: 2rem 0 0;
-      margin-bottom: 1.2rem;
+      margin-bottom: 1rem;
     }
     .back {
       font-size: 0.78rem;
@@ -66,9 +67,7 @@
       transition: color 0.2s;
     }
     .back:hover { color: var(--ink); }
-    .top-right {
-      text-align: right;
-    }
+    .top-right { text-align: right; }
     .streak-label {
       font-size: 0.65rem;
       letter-spacing: 0.1em;
@@ -82,17 +81,12 @@
       color: var(--accent);
     }
 
-    /* Title */
-    .title-block {
-      width: 100%;
-      margin-bottom: 0.4rem;
-    }
+    .title-block { width: 100%; margin-bottom: 0.5rem; }
     .page-title {
       font-family: var(--serif);
       font-size: clamp(1.6rem, 5vw, 2.2rem);
       font-weight: 300;
       line-height: 1.2;
-      color: var(--ink);
     }
     .page-date {
       font-size: 0.68rem;
@@ -102,29 +96,27 @@
       margin-top: 0.3rem;
     }
 
-    /* Hint */
     .hint {
       font-size: 0.82rem;
       color: var(--muted);
       font-style: italic;
       font-family: var(--serif);
-      margin-bottom: 1rem;
+      margin-bottom: 0.8rem;
       width: 100%;
       opacity: 1;
       transition: opacity 1s ease;
     }
     .hint.hidden { opacity: 0; pointer-events: none; }
 
-    /* Canvas */
     #pond-canvas {
       display: block;
       width: 100%;
       max-width: 480px;
       touch-action: none;
       cursor: crosshair;
+      border-radius: 4px;
     }
 
-    /* Fed message */
     .fed-msg {
       font-family: var(--serif);
       font-size: 1rem;
@@ -138,7 +130,6 @@
     }
     .fed-msg.visible { opacity: 1; }
 
-    /* Ritual zone */
     .ritual-zone {
       width: 100%;
       margin-top: 2rem;
@@ -147,48 +138,42 @@
       transition: opacity 1.4s ease, transform 1.4s ease;
       pointer-events: none;
     }
-    .ritual-zone.visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: all;
-    }
+    .ritual-zone.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
     .ritual-divider {
-      width: 2rem;
-      height: 1px;
-      background: rgba(0,0,0,0.15);
+      width: 2rem; height: 1px;
+      background: rgba(128,128,128,0.3);
       margin: 0 auto 1.8rem;
     }
     .ritual-question {
       font-family: var(--serif);
       font-size: 1.15rem;
       font-style: italic;
-      color: var(--ink);
       margin-bottom: 1rem;
       line-height: 1.5;
       text-align: center;
     }
     .ritual-input {
       width: 100%;
-      background: rgba(0,0,0,0.035);
-      border: 1px solid rgba(0,0,0,0.1);
+      background: rgba(128,128,128,0.06);
+      border: 1px solid rgba(128,128,128,0.18);
       border-radius: 4px;
       padding: 0.9rem 1rem;
       font-family: var(--serif);
       font-size: 1rem;
       font-weight: 300;
-      color: var(--ink);
+      color: inherit;
       resize: none;
       min-height: 5rem;
       line-height: 1.6;
       outline: none;
       transition: border-color 0.2s;
     }
-    .ritual-input:focus { border-color: rgba(0,0,0,0.25); }
+    .ritual-input:focus { border-color: rgba(128,128,128,0.35); }
     .ritual-input::placeholder { color: var(--muted); font-style: italic; }
     .ritual-save {
       margin-top: 0.8rem;
       background: none;
-      border: 1px solid rgba(0,0,0,0.2);
+      border: 1px solid rgba(128,128,128,0.25);
       border-radius: 3px;
       padding: 0.45rem 1.2rem;
       font-family: var(--sans);
@@ -199,9 +184,8 @@
       cursor: pointer;
       transition: color 0.2s, border-color 0.2s;
     }
-    .ritual-save:hover { color: var(--ink); border-color: rgba(0,0,0,0.4); }
+    .ritual-save:hover { color: var(--ink); border-color: rgba(128,128,128,0.5); }
 
-    /* Past entry */
     .past-entry {
       margin-top: 1rem;
       font-family: var(--serif);
@@ -220,9 +204,7 @@
       font-style: normal;
     }
 
-    @media (max-width: 400px) {
-      .page { padding: 0 1rem 3rem; }
-    }
+    @media (max-width: 400px) { .page { padding: 0 1rem 3rem; } }
   </style>
 </head>
 <body>
@@ -258,46 +240,549 @@
 <script>
 (function() {
 
-// ─── Date & streak ───────────────────────────────────────────────
+// ─── Date & streak ────────────────────────────────────────────────
 const today = new Date();
-const dateStr = today.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
-document.getElementById('today-date').textContent = dateStr;
+document.getElementById('today-date').textContent =
+  today.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
 
-const todayKey = today.toISOString().slice(0,10);
+const todayKey   = today.toISOString().slice(0,10);
 const lastFedKey = localStorage.getItem('fish_last_fed');
-const streakRaw = parseInt(localStorage.getItem('fish_streak') || '0', 10);
+const streakRaw  = parseInt(localStorage.getItem('fish_streak') || '0', 10);
 
-// Calculate current streak
-let streak = streakRaw;
 const yesterday = new Date(today);
 yesterday.setDate(yesterday.getDate() - 1);
 const yKey = yesterday.toISOString().slice(0,10);
-if (lastFedKey !== todayKey && lastFedKey !== yKey) streak = 0;
-document.getElementById('streak-display').textContent = streak > 0 ? streak + (streak === 1 ? ' day' : ' days') : '–';
 
-// ─── Canvas setup ─────────────────────────────────────────────────
+let streak = (lastFedKey !== todayKey && lastFedKey !== yKey) ? 0 : streakRaw;
+document.getElementById('streak-display').textContent =
+  streak > 0 ? streak + (streak === 1 ? ' day' : ' days') : '–';
+
+// ─── Time of day ──────────────────────────────────────────────────
+const THEMES = {
+  dawn: {
+    sky: ['#f0904a','#f8c070','#f8e0b0','#e8d4a8'],
+    mtFarFill: 'rgba(190,155,120,0.40)', mtFarStroke: 'rgba(120,80,50,0.30)',
+    mtNearFill: 'rgba(130,100,70,0.55)', mtNearStroke: 'rgba(80,50,25,0.45)',
+    ground: '#c8b488', groundFar: '#d8c898',
+    pondWater: 'rgba(200,220,240,0.25)', pondBorder: 'rgba(30,15,5,0.50)',
+    inkLine: 'rgba(40,20,8,0.55)', bambooInk: 'rgba(60,80,35,0.65)',
+    stars: 0, moon: 0.3,
+    bodyClass: '',
+  },
+  day: {
+    sky: ['#7ab8d8','#98cce8','#c0e0f2','#dff0f8'],
+    mtFarFill: 'rgba(155,165,175,0.35)', mtFarStroke: 'rgba(90,100,110,0.25)',
+    mtNearFill: 'rgba(80,90,75,0.55)',   mtNearStroke: 'rgba(40,50,35,0.45)',
+    ground: '#bfad7a', groundFar: '#d0be88',
+    pondWater: 'rgba(160,200,225,0.25)', pondBorder: 'rgba(30,15,5,0.55)',
+    inkLine: 'rgba(30,15,5,0.55)', bambooInk: 'rgba(50,75,30,0.65)',
+    stars: 0, moon: 0,
+    bodyClass: '',
+  },
+  dusk: {
+    sky: ['#8a2040','#c04828','#e07828','#f0b858'],
+    mtFarFill: 'rgba(110,60,80,0.45)',  mtFarStroke: 'rgba(80,30,50,0.35)',
+    mtNearFill: 'rgba(40,25,35,0.70)',  mtNearStroke: 'rgba(25,12,20,0.55)',
+    ground: '#705040', groundFar: '#906858',
+    pondWater: 'rgba(120,100,150,0.22)', pondBorder: 'rgba(30,15,5,0.45)',
+    inkLine: 'rgba(35,18,8,0.50)', bambooInk: 'rgba(50,65,30,0.50)',
+    stars: 0.2, moon: 0.65,
+    bodyClass: 'theme-dusk',
+  },
+  night: {
+    sky: ['#060c1e','#0c1428','#101c36','#162240'],
+    mtFarFill: 'rgba(25,35,55,0.70)',   mtFarStroke: 'rgba(60,80,110,0.25)',
+    mtNearFill: 'rgba(12,18,28,0.88)',  mtNearStroke: 'rgba(80,100,130,0.20)',
+    ground: '#1c1810', groundFar: '#282014',
+    pondWater: 'rgba(30,60,100,0.28)',  pondBorder: 'rgba(140,160,190,0.30)',
+    inkLine: 'rgba(160,170,190,0.40)', bambooInk: 'rgba(100,130,80,0.40)',
+    stars: 1, moon: 1,
+    bodyClass: 'theme-night',
+  },
+};
+
+function getThemeName() {
+  const h = today.getHours() + today.getMinutes() / 60;
+  if (h >= 5   && h < 7.5) return 'dawn';
+  if (h >= 7.5 && h < 17)  return 'day';
+  if (h >= 17  && h < 20)  return 'dusk';
+  return 'night';
+}
+
+const themeName = getThemeName();
+const T = THEMES[themeName];
+if (T.bodyClass) document.body.classList.add(T.bodyClass);
+
+// ─── Canvas + layout ──────────────────────────────────────────────
 const canvas = document.getElementById('pond-canvas');
-const ctx = canvas.getContext('2d');
+const ctx    = canvas.getContext('2d');
 
 let W, H, PX, PY, PA, PB;
+let mtFarPts, mtNearPts;
+
+function makeRnd(seed) {
+  let s = seed;
+  return function(a, b) {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    const t = (s >>> 0) / 4294967295;
+    return a + t * (b - a);
+  };
+}
+
+function genMountain(seed, numPts, horizonY, maxLift) {
+  const r = makeRnd(seed);
+  const pts = [{ x: -8, y: horizonY }];
+  for (let i = 0; i < numPts; i++) {
+    const t   = (i + 0.5 + r(-0.15, 0.15)) / numPts;
+    const env = Math.sin(t * Math.PI);
+    pts.push({ x: t * (W + 16) - 8, y: horizonY - maxLift * env * r(0.55, 1.0) });
+  }
+  pts.push({ x: W + 8, y: horizonY });
+  return pts;
+}
 
 function resize() {
-  const maxW = Math.min(window.innerWidth - 48, 480);
-  W = maxW;
-  H = Math.round(maxW * 0.78);
-  canvas.width = W;
+  W = Math.min(window.innerWidth - 48, 480);
+  H = Math.round(W * 1.28);
+  canvas.width  = W;
   canvas.height = H;
-  PX = W * 0.5;
-  PY = H * 0.5;
-  PA = W * 0.44;
-  PB = H * 0.43;
+
+  PX = W * 0.50;
+  PY = H * 0.765;
+  PA = W * 0.420;
+  PB = H * 0.108;
+
+  mtFarPts  = genMountain(71,  12, H * 0.415, H * 0.195);
+  mtNearPts = genMountain(137, 10, H * 0.485, H * 0.155);
+
+  initStars();
 }
 resize();
 window.addEventListener('resize', () => { resize(); initFish(); });
 
-function inPond(x, y, margin) {
-  const m = margin || 0;
+function inPond(x, y, m) {
+  m = m || 0;
   return ((x - PX) / (PA - m)) ** 2 + ((y - PY) / (PB - m)) ** 2 < 1;
+}
+
+// ─── Stars ────────────────────────────────────────────────────────
+let stars = [];
+function initStars() {
+  const r = makeRnd(4321);
+  stars = Array.from({ length: 75 }, () => ({
+    x:     r(0, 1) * W,
+    y:     r(0.01, 0.94) * H * 0.40,
+    size:  r(0.5, 1.8),
+    phase: r(0, Math.PI * 2),
+    spd:   r(0.018, 0.055),
+  }));
+}
+
+function drawStars(t) {
+  const alpha = T.stars;
+  if (alpha <= 0) return;
+  for (const s of stars) {
+    const tw = 0.45 + 0.55 * Math.sin(t * s.spd + s.phase);
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,252,230,${tw * alpha})`;
+    ctx.fill();
+  }
+}
+
+// ─── Moon ─────────────────────────────────────────────────────────
+function drawMoon() {
+  const alpha = T.moon;
+  if (alpha <= 0) return;
+  const mx = W * 0.80, my = H * 0.12;
+  const mr = W * 0.052;
+
+  ctx.save();
+  ctx.globalAlpha = alpha;
+
+  // Glow
+  const glow = ctx.createRadialGradient(mx, my, mr * 0.4, mx, my, mr * 2.0);
+  glow.addColorStop(0, 'rgba(255,250,210,0.22)');
+  glow.addColorStop(1, 'rgba(255,250,210,0)');
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(mx, my, mr * 2.0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Crescent body: outer arc clockwise + inner offset arc counterclockwise
+  ctx.beginPath();
+  ctx.arc(mx, my, mr, -Math.PI / 2, Math.PI / 2, false);
+  ctx.arc(mx + mr * 0.38, my, mr * 0.80, Math.PI / 2, -Math.PI / 2, true);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(255,250,215,0.92)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(220,200,150,0.3)';
+  ctx.lineWidth = 0.5;
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+// ─── Sky ──────────────────────────────────────────────────────────
+function drawSky() {
+  const skyH = H * 0.50;
+  const grad = ctx.createLinearGradient(0, 0, 0, skyH);
+  const cols = T.sky;
+  cols.forEach((c, i) => grad.addColorStop(i / (cols.length - 1), c));
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, skyH);
+}
+
+// ─── Mountains ────────────────────────────────────────────────────
+function drawMountainRange(pts, fillStyle, strokeStyle, strokeW) {
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+  for (let i = 1; i < pts.length - 1; i++) {
+    const mx = (pts[i].x + pts[i + 1].x) * 0.5;
+    const my = (pts[i].y + pts[i + 1].y) * 0.5;
+    ctx.quadraticCurveTo(pts[i].x, pts[i].y, mx, my);
+  }
+  ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
+  ctx.lineTo(W + 8, H);
+  ctx.lineTo(-8, H);
+  ctx.closePath();
+  ctx.fillStyle = fillStyle;
+  ctx.fill();
+
+  if (strokeStyle) {
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length - 1; i++) {
+      const mx = (pts[i].x + pts[i + 1].x) * 0.5;
+      const my = (pts[i].y + pts[i + 1].y) * 0.5;
+      ctx.quadraticCurveTo(pts[i].x, pts[i].y, mx, my);
+    }
+    ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
+    ctx.strokeStyle = strokeStyle;
+    ctx.lineWidth   = strokeW || 1.0;
+    ctx.stroke();
+  }
+}
+
+// ─── Ground ───────────────────────────────────────────────────────
+function drawGround() {
+  const gy = H * 0.492;
+  const grad = ctx.createLinearGradient(0, gy, 0, H);
+  grad.addColorStop(0,   T.groundFar);
+  grad.addColorStop(0.4, T.ground);
+  grad.addColorStop(1,   T.ground);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, gy, W, H - gy);
+
+  // Subtle ground texture lines
+  ctx.strokeStyle = T.inkLine.replace(/[\d.]+\)$/, '0.10)');
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i < 4; i++) {
+    const y = gy + 12 + i * 14 + (i * i * 2);
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(W, y);
+    ctx.stroke();
+  }
+}
+
+// ─── House ────────────────────────────────────────────────────────
+function drawHouse() {
+  const hx = W * 0.73;
+  const hby = H * 0.638;    // base y
+  const hw  = W * 0.135;
+  const hh  = hw * 0.82;
+  const ink = T.inkLine;
+  const wallFill = themeName === 'night'
+    ? 'rgba(15,12,8,0.55)'
+    : 'rgba(210,195,168,0.40)';
+
+  // Night window glow
+  if (themeName === 'night' || themeName === 'dusk') {
+    const wx = hx;
+    const wy = hby - hh * 0.52;
+    const glow = ctx.createRadialGradient(wx, wy, 0, wx, wy, hw * 0.8);
+    glow.addColorStop(0, 'rgba(255,195,80,0.28)');
+    glow.addColorStop(1, 'rgba(255,195,80,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(hx - hw, hby - hh * 1.2, hw * 2, hh * 1.6);
+  }
+
+  // Walls
+  ctx.fillStyle = wallFill;
+  ctx.fillRect(hx - hw / 2, hby - hh, hw, hh);
+  ctx.strokeStyle = ink;
+  ctx.lineWidth   = 0.9;
+  ctx.strokeRect(hx - hw / 2, hby - hh, hw, hh);
+
+  // Gabled roof
+  ctx.beginPath();
+  ctx.moveTo(hx - hw * 0.58, hby - hh);
+  ctx.lineTo(hx,              hby - hh * 1.48);
+  ctx.lineTo(hx + hw * 0.58,  hby - hh);
+  ctx.closePath();
+  ctx.fillStyle   = wallFill;
+  ctx.fill();
+  ctx.strokeStyle = ink;
+  ctx.lineWidth   = 0.9;
+  ctx.stroke();
+
+  // Shoji window (paper screen grid)
+  const wl = hx - hw * 0.18;
+  const wt = hby - hh * 0.70;
+  const ww = hw * 0.36;
+  const wh = hw * 0.32;
+  ctx.strokeStyle = ink;
+  ctx.lineWidth   = 0.7;
+  ctx.strokeRect(wl, wt, ww, wh);
+  ctx.beginPath();
+  ctx.moveTo(wl + ww * 0.5, wt); ctx.lineTo(wl + ww * 0.5, wt + wh);
+  ctx.moveTo(wl, wt + wh * 0.5); ctx.lineTo(wl + ww, wt + wh * 0.5);
+  ctx.stroke();
+
+  // Door
+  ctx.strokeRect(hx - hw * 0.11, hby - hh * 0.36, hw * 0.22, hh * 0.36);
+  ctx.beginPath();
+  ctx.moveTo(hx, hby - hh * 0.36); ctx.lineTo(hx, hby);
+  ctx.stroke();
+}
+
+// ─── Bamboo ───────────────────────────────────────────────────────
+function drawBamboo() {
+  const ink  = T.bambooInk;
+  const base = H * 0.638;
+  const stalks = [
+    { x: W * 0.09, h: H * 0.278, lean:  0.018, w: 3.8 },
+    { x: W * 0.155, h: H * 0.318, lean: -0.012, w: 4.4 },
+    { x: W * 0.06, h: H * 0.228, lean:  0.025, w: 3.0 },
+    { x: W * 0.205, h: H * 0.255, lean:  0.006, w: 3.2 },
+    { x: W * 0.125, h: H * 0.195, lean: -0.008, w: 2.6 },
+  ];
+
+  ctx.strokeStyle = ink;
+
+  for (const s of stalks) {
+    const topX = s.x + s.lean * s.h;
+    const topY = base - s.h;
+
+    // Stalk
+    ctx.beginPath();
+    ctx.moveTo(s.x, base);
+    ctx.bezierCurveTo(
+      s.x + s.lean * s.h * 0.25, base - s.h * 0.35,
+      topX - s.lean * s.h * 0.1, topY + s.h * 0.2,
+      topX, topY
+    );
+    ctx.lineWidth   = s.w;
+    ctx.lineCap     = 'round';
+    ctx.stroke();
+
+    // Nodes
+    const nodeCount = Math.floor(s.h / 20);
+    for (let n = 1; n < nodeCount; n++) {
+      const t  = n / nodeCount;
+      const nx = s.x + (topX - s.x) * t;
+      const ny = base - s.h * t;
+      ctx.beginPath();
+      ctx.moveTo(nx - s.w * 0.9, ny);
+      ctx.lineTo(nx + s.w * 0.9, ny);
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+
+      // Leaves every other node
+      if (n % 2 === 0) {
+        const dir = n % 4 === 0 ? 1 : -1;
+        const leafLen = s.h * 0.09;
+        ctx.beginPath();
+        ctx.moveTo(nx, ny);
+        ctx.bezierCurveTo(
+          nx + dir * leafLen * 0.55, ny - leafLen * 0.30,
+          nx + dir * leafLen * 1.0,  ny - leafLen * 0.55,
+          nx + dir * leafLen * 0.9,  ny - leafLen * 0.95
+        );
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+// ─── Cherry tree (right side) ─────────────────────────────────────
+function drawCherryTree() {
+  const ink = T.inkLine;
+  const bx = W * 0.88, by = H * 0.636;
+  const trunkH = H * 0.095;
+
+  ctx.strokeStyle = ink;
+  ctx.lineWidth   = 2.8;
+  ctx.lineCap     = 'round';
+
+  // Trunk
+  ctx.beginPath();
+  ctx.moveTo(bx, by);
+  ctx.bezierCurveTo(bx - W*0.01, by - trunkH*0.5, bx + W*0.01, by - trunkH*0.8, bx - W*0.008, by - trunkH);
+  ctx.stroke();
+
+  // Branches
+  const branches = [
+    { ox:0,      oy:-trunkH,      dx:-W*0.055, dy:-H*0.058 },
+    { ox:0,      oy:-trunkH,      dx: W*0.04,  dy:-H*0.068 },
+    { ox:-W*0.02,oy:-trunkH*0.65, dx:-W*0.07,  dy:-H*0.042 },
+    { ox: W*0.01,oy:-trunkH*0.60, dx: W*0.055, dy:-H*0.035 },
+  ];
+
+  for (const b of branches) {
+    const ex = bx + b.ox + b.dx;
+    const ey = by + b.oy + b.dy;
+    ctx.beginPath();
+    ctx.moveTo(bx + b.ox, by + b.oy);
+    ctx.quadraticCurveTo(
+      bx + b.ox + b.dx * 0.3, by + b.oy + b.dy * 0.6, ex, ey
+    );
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+
+    // Blossom clusters at branch tips
+    if (themeName !== 'night') {
+      for (let p = 0; p < 5; p++) {
+        const px = ex + (Math.sin(p * 2.1) * W * 0.018);
+        const py = ey + (Math.cos(p * 1.7) * H * 0.012);
+        ctx.beginPath();
+        ctx.arc(px, py, 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(230,170,175,0.65)';
+        ctx.fill();
+      }
+    } else {
+      // Night: just tiny white dots
+      for (let p = 0; p < 4; p++) {
+        const px = ex + (Math.sin(p * 2.4) * W * 0.016);
+        const py = ey + (Math.cos(p * 1.9) * H * 0.010);
+        ctx.beginPath();
+        ctx.arc(px, py, 1.4, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(220,200,210,0.35)';
+        ctx.fill();
+      }
+    }
+  }
+}
+
+// ─── Cherry blossom particles ─────────────────────────────────────
+let blossoms = [];
+function initBlossoms() {
+  blossoms = Array.from({ length: 14 }, () => ({
+    x:   Math.random() * W,
+    y:   Math.random() * H * 0.85,
+    vx:  -(0.22 + Math.random() * 0.28),
+    vy:   0.20 + Math.random() * 0.25,
+    rot:  Math.random() * Math.PI * 2,
+    rs:  (Math.random() - 0.5) * 0.035,
+    sz:   2.5 + Math.random() * 2.0,
+    op:   0.35 + Math.random() * 0.40,
+  }));
+}
+initBlossoms();
+
+function drawBlossoms() {
+  if (themeName === 'night') return;
+  for (const b of blossoms) {
+    ctx.save();
+    ctx.translate(b.x, b.y);
+    ctx.rotate(b.rot);
+    ctx.globalAlpha = b.op;
+    // 5 petals
+    for (let p = 0; p < 5; p++) {
+      ctx.save();
+      ctx.rotate((p / 5) * Math.PI * 2);
+      ctx.beginPath();
+      ctx.ellipse(0, -b.sz * 0.85, b.sz * 0.36, b.sz * 0.85, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#f0c8cc';
+      ctx.fill();
+      ctx.restore();
+    }
+    // Center dot
+    ctx.beginPath();
+    ctx.arc(0, 0, b.sz * 0.22, 0, Math.PI * 2);
+    ctx.fillStyle = '#e89898';
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.restore();
+
+    b.x   += b.vx;
+    b.y   += b.vy;
+    b.rot += b.rs;
+    if (b.x < -12) { b.x = W + 12; b.y = Math.random() * H * 0.7; }
+    if (b.y > H + 12) { b.y = -12; b.x = Math.random() * W; }
+  }
+}
+
+// ─── Rocks near pond ──────────────────────────────────────────────
+function drawRocks() {
+  const ink = T.inkLine;
+  const rocks = [
+    { x: PX - PA * 0.88, y: PY + PB * 0.62, rx: W*0.028, ry: H*0.014 },
+    { x: PX + PA * 0.82, y: PY + PB * 0.55, rx: W*0.022, ry: H*0.011 },
+    { x: PX - PA * 0.60, y: PY + PB * 0.80, rx: W*0.015, ry: H*0.010 },
+    { x: PX + PA * 0.55, y: PY + PB * 0.75, rx: W*0.018, ry: H*0.009 },
+  ];
+  for (const r of rocks) {
+    ctx.beginPath();
+    ctx.ellipse(r.x, r.y, r.rx, r.ry, -0.2, 0, Math.PI * 2);
+    ctx.fillStyle = themeName === 'night'
+      ? 'rgba(40,42,50,0.55)'
+      : 'rgba(150,138,118,0.55)';
+    ctx.fill();
+    ctx.strokeStyle = ink;
+    ctx.lineWidth   = 0.7;
+    ctx.stroke();
+  }
+}
+
+// ─── Pond ─────────────────────────────────────────────────────────
+let rngState = 1;
+function seededRand() {
+  rngState = (rngState * 1664525 + 1013904223) & 0xffffffff;
+  return (rngState >>> 0) / 4294967295;
+}
+
+function drawPondBase() {
+  // Clip and fill water
+  ctx.save();
+  ctx.beginPath();
+  ctx.ellipse(PX, PY, PA, PB, 0, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.fillStyle = T.pondWater;
+  ctx.fillRect(PX - PA, PY - PB, PA * 2, PB * 2);
+  // Shimmer
+  ctx.strokeStyle = 'rgba(160,190,210,0.07)';
+  ctx.lineWidth   = 1;
+  for (let i = 1; i < 5; i++) {
+    const s = i / 5;
+    ctx.beginPath();
+    ctx.ellipse(PX, PY, PA * s, PB * s, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // Wobbly ink border
+  const bColor = T.pondBorder;
+  for (let pass = 0; pass < 2; pass++) {
+    rngState = pass === 0 ? 99 : 42;
+    const wobbleAmt = pass === 0 ? 0.018 : 0.012;
+    const alpha     = pass === 0 ? 0.55 : 0.20;
+    const lw        = pass === 0 ? 1.8 : 0.8;
+    ctx.beginPath();
+    for (let i = 0; i <= 120; i++) {
+      const a = (i / 120) * Math.PI * 2;
+      const w = 1 + (seededRand() - 0.5) * wobbleAmt;
+      const x = PX + PA * w * Math.cos(a) + (pass === 1 ? (seededRand() - 0.5) * 1.5 : 0);
+      const y = PY + PB * w * Math.sin(a) + (pass === 1 ? (seededRand() - 0.5) * 1.5 : 0);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = bColor.replace(/[\d.]+\)$/, alpha + ')');
+    ctx.lineWidth   = lw;
+    ctx.stroke();
+  }
 }
 
 // ─── Fish ─────────────────────────────────────────────────────────
@@ -306,20 +791,19 @@ const PALETTES = [
   { body:'#e0d4c0', belly:'#f0e8d8', fin:'#c0a880', spots:'#d4603a' },
   { body:'#c04030', belly:'#d86050', fin:'#902010', spots:'#f0e8d8' },
   { body:'#d4603a', belly:'#f0a060', fin:'#903020', spots:'#e0d4c0' },
+  { body:'#e8d0a8', belly:'#f8e8c8', fin:'#c8a860', spots:null },
   { body:'#e0d4c0', belly:'#f8f0e4', fin:'#b8a070', spots:null },
 ];
 
 let fish = [];
-
 function mkFish(i) {
   const a = Math.random() * Math.PI * 2;
-  const r = 0.5 + Math.random() * 0.3;
+  const r = 0.45 + Math.random() * 0.35;
   return {
-    x: PX + PA * r * Math.cos(a),
-    y: PY + PB * r * Math.sin(a),
+    x: PX + PA * r * Math.cos(a), y: PY + PB * r * Math.sin(a),
     angle: a + Math.PI,
-    speed: 0.55 + Math.random() * 0.35,
-    len: 34 + Math.random() * 16,
+    speed: 0.48 + Math.random() * 0.32,
+    len: 28 + Math.random() * 14,
     pal: PALETTES[i % PALETTES.length],
     wiggle: Math.random() * Math.PI * 2,
     wigSpeed: 0.07 + Math.random() * 0.03,
@@ -329,78 +813,32 @@ function mkFish(i) {
     wanderTimer: Math.random() * 80,
   };
 }
-
-function initFish() {
-  fish = Array.from({length: 6}, (_, i) => mkFish(i));
-}
+function initFish() { fish = Array.from({ length: 6 }, (_, i) => mkFish(i)); }
 initFish();
 
-// ─── Food ─────────────────────────────────────────────────────────
-let foods = [];
-let fedCount = 0;
-let feedingDone = false;
-
-function dropFood(cx, cy) {
-  const count = 4 + Math.floor(Math.random() * 3);
-  for (let i = 0; i < count; i++) {
-    foods.push({
-      x: cx + (Math.random() - 0.5) * 28,
-      y: cy + (Math.random() - 0.5) * 28,
-      r: 3 + Math.random() * 1.5,
-      eaten: false,
-      age: 0,
-    });
-  }
-  fedCount++;
-  document.getElementById('feed-hint').classList.add('hidden');
-
-  if (fedCount === 1) {
-    showFedMsg('they see the food...');
-  } else if (fedCount === 2 && !feedingDone) {
-    showFedMsg('happy fish.');
-    feedingDone = true;
-    saveFed();
-    setTimeout(showRitual, 2200);
-  }
-}
-
-// ─── Fish AI ──────────────────────────────────────────────────────
 function updateFish(f) {
   f.wiggle += f.wigSpeed;
+  let targetAngle = f.angle, spd = f.speed;
 
-  let targetAngle = f.angle;
-  let spd = f.speed;
-
-  // Find nearest uneaten food
-  let nearest = null, nearestDist = 110;
+  // Nearest food
+  let nearest = null, nearestDist = 100;
   for (const fd of foods) {
     if (fd.eaten) continue;
     const d = Math.hypot(fd.x - f.x, fd.y - f.y);
     if (d < nearestDist) { nearest = fd; nearestDist = d; }
   }
-
-  if (nearest) {
-    f.state = 'seeking';
-    f.target = nearest;
-  }
+  if (nearest) { f.state = 'seeking'; f.target = nearest; }
 
   if (f.state === 'seeking' && f.target && !f.target.eaten) {
-    const dx = f.target.x - f.x;
-    const dy = f.target.y - f.y;
+    const dx = f.target.x - f.x, dy = f.target.y - f.y;
     targetAngle = Math.atan2(dy, dx);
     spd = f.speed * 2.8;
-    if (Math.hypot(dx, dy) < 9) {
-      f.target.eaten = true;
-      f.target = null;
-      f.state = 'idle';
-    }
+    if (Math.hypot(dx, dy) < 9) { f.target.eaten = true; f.target = null; f.state = 'idle'; }
   } else if (f.state === 'excited') {
-    // Cluster near surface-center
     const tx = PX + (Math.random() - 0.5) * PA * 0.5;
-    const ty = PY - PB * 0.28;
+    const ty = PY - PB * 0.30;
     const dx = tx - f.x, dy = ty - f.y;
-    const dist = Math.hypot(dx, dy);
-    if (dist < 22) {
+    if (Math.hypot(dx, dy) < 22) {
       targetAngle = f.angle + (Math.random() - 0.5) * 0.6;
       spd = f.speed * 0.35;
     } else {
@@ -408,28 +846,20 @@ function updateFish(f) {
       spd = f.speed * 1.6;
     }
   } else {
-    // Idle wander
     f.wanderTimer--;
-    if (f.wanderTimer <= 0) {
-      f.wanderAngle = Math.random() * Math.PI * 2;
-      f.wanderTimer = 60 + Math.random() * 100;
-    }
+    if (f.wanderTimer <= 0) { f.wanderAngle = Math.random() * Math.PI * 2; f.wanderTimer = 60 + Math.random() * 100; }
     targetAngle = f.wanderAngle;
     spd = f.speed * 0.45;
   }
 
-  // Smooth steering
   let da = targetAngle - f.angle;
-  while (da > Math.PI) da -= Math.PI * 2;
+  while (da >  Math.PI) da -= Math.PI * 2;
   while (da < -Math.PI) da += Math.PI * 2;
   f.angle += da * 0.072;
-
   f.x += Math.cos(f.angle) * spd;
   f.y += Math.sin(f.angle) * spd;
 
-  // Pond boundary
-  const nx = (f.x - PX) / PA;
-  const ny = (f.y - PY) / PB;
+  const nx = (f.x - PX) / PA, ny = (f.y - PY) / PB;
   if (nx * nx + ny * ny > 0.82) {
     const ba = Math.atan2(ny, nx);
     f.x = PX + PA * 0.78 * Math.cos(ba);
@@ -439,132 +869,38 @@ function updateFish(f) {
   }
 }
 
-// ─── Drawing ──────────────────────────────────────────────────────
-let rngState = 1;
-function seededRand() {
-  rngState = (rngState * 1664525 + 1013904223) & 0xffffffff;
-  return (rngState >>> 0) / 4294967295;
-}
-
-// Draw the pond background + border
-function drawPond() {
-  // Clip region
-  ctx.save();
-  ctx.beginPath();
-  ctx.ellipse(PX, PY, PA, PB, 0, 0, Math.PI * 2);
-  ctx.clip();
-
-  // Water fill
-  ctx.fillStyle = 'rgba(165, 195, 215, 0.22)';
-  ctx.fillRect(0, 0, W, H);
-
-  // Very subtle concentric shimmer lines
-  ctx.save();
-  ctx.strokeStyle = 'rgba(100,140,170,0.09)';
-  ctx.lineWidth = 1;
-  for (let i = 1; i < 5; i++) {
-    const s = i / 5;
-    ctx.beginPath();
-    ctx.ellipse(PX, PY, PA * s, PB * s, 0, 0, Math.PI * 2);
-    ctx.stroke();
-  }
-  ctx.restore();
-
-  ctx.restore();
-
-  // Pond border — ink sketch wobbly ellipse
-  rngState = 99;
-  ctx.beginPath();
-  const steps = 120;
-  for (let i = 0; i <= steps; i++) {
-    const a = (i / steps) * Math.PI * 2;
-    const wobble = 1 + (seededRand() - 0.5) * 0.018;
-    const x = PX + PA * wobble * Math.cos(a);
-    const y = PY + PB * wobble * Math.sin(a);
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  }
-  ctx.closePath();
-  ctx.strokeStyle = 'rgba(30,15,5,0.55)';
-  ctx.lineWidth = 1.8;
-  ctx.stroke();
-
-  // Second pass for sketch feel
-  rngState = 42;
-  ctx.beginPath();
-  for (let i = 0; i <= steps; i++) {
-    const a = (i / steps) * Math.PI * 2;
-    const wobble = 1 + (seededRand() - 0.5) * 0.012;
-    const x = PX + PA * wobble * Math.cos(a) + (seededRand() - 0.5) * 1.5;
-    const y = PY + PB * wobble * Math.sin(a) + (seededRand() - 0.5) * 1.5;
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  }
-  ctx.closePath();
-  ctx.strokeStyle = 'rgba(30,15,5,0.2)';
-  ctx.lineWidth = 0.8;
-  ctx.stroke();
-}
-
-function drawFood(fd) {
-  if (fd.eaten) return;
-  ctx.beginPath();
-  ctx.arc(fd.x, fd.y, fd.r, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(100,60,20,0.75)';
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(60,30,5,0.4)';
-  ctx.lineWidth = 0.5;
-  ctx.stroke();
-}
-
 function drawFish(f) {
-  const L = f.len;
-  const W2 = L * 0.32;
-  const wag = Math.sin(f.wiggle) * 0.28;
-
+  const L = f.len, W2 = L * 0.32, wag = Math.sin(f.wiggle) * 0.28;
   ctx.save();
   ctx.translate(f.x, f.y);
   ctx.rotate(f.angle);
 
-  // Clip to pond (fish fade if they try to leave)
-  // Body
   ctx.beginPath();
   ctx.moveTo(L * 0.48, 0);
-  ctx.bezierCurveTo(
-    L * 0.28, -W2 * 0.9 + wag * W2 * 0.3,
-    -L * 0.08, -W2,
-    -L * 0.28, -W2 * 0.35 + wag * W2 * 0.4
-  );
-  ctx.bezierCurveTo(
-    -L * 0.42, -W2 * 0.05,
-    -L * 0.42, W2 * 0.05,
-    -L * 0.28, W2 * 0.35 - wag * W2 * 0.4
-  );
-  ctx.bezierCurveTo(
-    -L * 0.08, W2,
-    L * 0.28, W2 * 0.9 - wag * W2 * 0.3,
-    L * 0.48, 0
-  );
+  ctx.bezierCurveTo(L*0.28, -W2*0.9+wag*W2*0.3, -L*0.08, -W2, -L*0.28, -W2*0.35+wag*W2*0.4);
+  ctx.bezierCurveTo(-L*0.42, -W2*0.05, -L*0.42, W2*0.05, -L*0.28, W2*0.35-wag*W2*0.4);
+  ctx.bezierCurveTo(-L*0.08, W2, L*0.28, W2*0.9-wag*W2*0.3, L*0.48, 0);
   ctx.closePath();
   ctx.fillStyle = f.pal.body;
   ctx.fill();
   ctx.strokeStyle = 'rgba(30,12,5,0.65)';
-  ctx.lineWidth = 1.1;
+  ctx.lineWidth   = 1.1;
   ctx.stroke();
 
-  // Belly highlight
+  // Belly
   ctx.beginPath();
-  ctx.moveTo(L * 0.3, 0);
-  ctx.bezierCurveTo(L * 0.1, -W2 * 0.45, -L * 0.1, -W2 * 0.55, -L * 0.22, -W2 * 0.2);
-  ctx.bezierCurveTo(-L * 0.22, 0, -L * 0.22, W2 * 0.2, -L * 0.1, W2 * 0.55);
-  ctx.bezierCurveTo(L * 0.1, W2 * 0.45, L * 0.3, 0, L * 0.3, 0);
+  ctx.moveTo(L*0.3, 0);
+  ctx.bezierCurveTo(L*0.1, -W2*0.45, -L*0.1, -W2*0.55, -L*0.22, -W2*0.2);
+  ctx.bezierCurveTo(-L*0.22, 0, -L*0.22, W2*0.2, -L*0.1, W2*0.55);
+  ctx.bezierCurveTo(L*0.1, W2*0.45, L*0.3, 0, L*0.3, 0);
   ctx.fillStyle = f.pal.belly;
   ctx.globalAlpha = 0.55;
   ctx.fill();
   ctx.globalAlpha = 1;
 
-  // Spot (optional)
   if (f.pal.spots) {
     ctx.beginPath();
-    ctx.arc(L * 0.05, -W2 * 0.3, W2 * 0.38, 0, Math.PI * 2);
+    ctx.arc(L*0.05, -W2*0.3, W2*0.38, 0, Math.PI*2);
     ctx.fillStyle = f.pal.spots;
     ctx.globalAlpha = 0.7;
     ctx.fill();
@@ -574,102 +910,136 @@ function drawFish(f) {
   // Tail
   const tx = -L * 0.3;
   ctx.beginPath();
-  ctx.moveTo(tx, wag * W2 * 0.5);
-  ctx.bezierCurveTo(
-    tx - L * 0.18, -W2 * 0.7 + wag * W2,
-    tx - L * 0.36, -W2 * 0.55 + wag * W2,
-    tx - L * 0.32, 0
-  );
-  ctx.bezierCurveTo(
-    tx - L * 0.36, W2 * 0.55 - wag * W2,
-    tx - L * 0.18, W2 * 0.7 - wag * W2,
-    tx, wag * W2 * 0.5
-  );
+  ctx.moveTo(tx, wag*W2*0.5);
+  ctx.bezierCurveTo(tx-L*0.18, -W2*0.7+wag*W2, tx-L*0.36, -W2*0.55+wag*W2, tx-L*0.32, 0);
+  ctx.bezierCurveTo(tx-L*0.36, W2*0.55-wag*W2, tx-L*0.18, W2*0.7-wag*W2, tx, wag*W2*0.5);
   ctx.fillStyle = f.pal.fin;
   ctx.fill();
   ctx.strokeStyle = 'rgba(30,12,5,0.55)';
-  ctx.lineWidth = 0.9;
+  ctx.lineWidth   = 0.9;
   ctx.stroke();
 
   // Dorsal fin
   ctx.beginPath();
-  ctx.moveTo(L * 0.1, -W2 * 0.78);
-  ctx.bezierCurveTo(L * 0.05, -W2 * 1.25, -L * 0.08, -W2 * 1.2, -L * 0.15, -W2 * 0.72);
+  ctx.moveTo(L*0.1, -W2*0.78);
+  ctx.bezierCurveTo(L*0.05, -W2*1.25, -L*0.08, -W2*1.2, -L*0.15, -W2*0.72);
   ctx.strokeStyle = 'rgba(30,12,5,0.45)';
-  ctx.lineWidth = 0.9;
+  ctx.lineWidth   = 0.9;
   ctx.stroke();
 
-  // Pectoral fin
+  // Pec fin
   ctx.beginPath();
-  ctx.moveTo(L * 0.2, W2 * 0.45);
-  ctx.bezierCurveTo(L * 0.05, W2 * 1.0, -L * 0.05, W2 * 0.9, -L * 0.02, W2 * 0.55);
+  ctx.moveTo(L*0.2, W2*0.45);
+  ctx.bezierCurveTo(L*0.05, W2*1.0, -L*0.05, W2*0.9, -L*0.02, W2*0.55);
   ctx.strokeStyle = 'rgba(30,12,5,0.4)';
-  ctx.lineWidth = 0.8;
+  ctx.lineWidth   = 0.8;
   ctx.stroke();
 
   // Eye
-  ctx.beginPath();
-  ctx.arc(L * 0.35, -W2 * 0.18, 2.2, 0, Math.PI * 2);
-  ctx.fillStyle = '#180800';
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(L * 0.355, -W2 * 0.2, 0.7, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(255,255,255,0.5)';
-  ctx.fill();
+  ctx.beginPath(); ctx.arc(L*0.35, -W2*0.18, 2.2, 0, Math.PI*2);
+  ctx.fillStyle = '#180800'; ctx.fill();
+  ctx.beginPath(); ctx.arc(L*0.355, -W2*0.20, 0.7, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fill();
 
   ctx.restore();
 }
 
-// ─── Animation loop ───────────────────────────────────────────────
-let lastTime = 0;
+// ─── Food ─────────────────────────────────────────────────────────
+let foods = [], fedCount = 0, feedingDone = false;
+
+function dropFood(cx, cy) {
+  const n = 4 + Math.floor(Math.random() * 3);
+  for (let i = 0; i < n; i++) {
+    foods.push({
+      x: cx + (Math.random() - 0.5) * 28,
+      y: cy + (Math.random() - 0.5) * 28,
+      r: 2.8 + Math.random() * 1.4,
+      eaten: false, age: 0,
+    });
+  }
+  fedCount++;
+  document.getElementById('feed-hint').classList.add('hidden');
+  if (fedCount === 1) showFedMsg('they see the food...');
+  else if (fedCount === 2 && !feedingDone) {
+    showFedMsg('happy fish.');
+    feedingDone = true;
+    saveFed();
+    setTimeout(showRitual, 2200);
+  }
+}
+
+function drawFood(fd) {
+  if (fd.eaten) return;
+  ctx.beginPath();
+  ctx.arc(fd.x, fd.y, fd.r, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(100,60,20,0.78)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(60,30,5,0.35)';
+  ctx.lineWidth = 0.5;
+  ctx.stroke();
+}
+
+// ─── Main loop ────────────────────────────────────────────────────
+let lastTime = 0, frameTime = 0;
 function loop(ts) {
   if (ts - lastTime < 16) { requestAnimationFrame(loop); return; }
-  lastTime = ts;
+  lastTime  = ts;
+  frameTime = ts * 0.001;
 
   ctx.clearRect(0, 0, W, H);
 
-  drawPond();
+  // Scene back to front
+  drawSky();
+  drawStars(frameTime);
+  drawMoon();
+  drawMountainRange(mtFarPts,  T.mtFarFill,  T.mtFarStroke,  0.9);
+  drawMountainRange(mtNearPts, T.mtNearFill, T.mtNearStroke, 1.1);
+  drawGround();
+  drawBamboo();
+  drawCherryTree();
+  drawHouse();
+  drawRocks();
 
-  // Clip all drawing to pond
+  // Pond
+  drawPondBase();
+
+  // Fish and food clipped to pond
   ctx.save();
   ctx.beginPath();
-  ctx.ellipse(PX, PY, PA * 0.98, PB * 0.98, 0, 0, Math.PI * 2);
+  ctx.ellipse(PX, PY, PA * 0.97, PB * 0.97, 0, 0, Math.PI * 2);
   ctx.clip();
-
-  foods = foods.filter(fd => fd.age < 380);
+  foods = foods.filter(fd => fd.age < 360);
   foods.forEach(fd => { fd.age++; drawFood(fd); });
-
   fish.forEach(f => { updateFish(f); drawFish(f); });
-
   ctx.restore();
+
+  // Blossoms on top of everything
+  drawBlossoms();
 
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
 
 // ─── Input ────────────────────────────────────────────────────────
-function getXY(e, el) {
-  const rect = el.getBoundingClientRect();
-  const src = e.touches ? e.touches[0] : e;
-  const scaleX = el.width / rect.width;
-  const scaleY = el.height / rect.height;
+function getXY(e) {
+  const rect = canvas.getBoundingClientRect();
+  const src  = e.touches ? e.touches[0] : e;
   return {
-    x: (src.clientX - rect.left) * scaleX,
-    y: (src.clientY - rect.top) * scaleY,
+    x: (src.clientX - rect.left) * (canvas.width  / rect.width),
+    y: (src.clientY - rect.top)  * (canvas.height / rect.height),
   };
 }
-
 canvas.addEventListener('click', e => {
-  const {x, y} = getXY(e, canvas);
+  const {x, y} = getXY(e);
   if (inPond(x, y, 10)) dropFood(x, y);
 });
 canvas.addEventListener('touchend', e => {
   e.preventDefault();
-  const {x, y} = getXY(e, canvas);
+  const {x, y} = getXY(e);
   if (inPond(x, y, 10)) dropFood(x, y);
 }, { passive: false });
 
-// ─── UI helpers ───────────────────────────────────────────────────
+// ─── UI ───────────────────────────────────────────────────────────
 function showFedMsg(text) {
   const el = document.getElementById('fed-msg');
   el.textContent = text;
@@ -677,9 +1047,6 @@ function showFedMsg(text) {
 }
 
 function showRitual() {
-  const zone = document.getElementById('ritual-zone');
-
-  // Rotate through questions
   const questions = [
     "What's one thing you're grateful for today?",
     "What would make today feel complete?",
@@ -687,21 +1054,20 @@ function showRitual() {
     "What are you looking forward to?",
     "Name something beautiful you noticed recently.",
   ];
-  const dayIdx = Math.floor(Date.now() / 86400000) % questions.length;
-  document.getElementById('ritual-question').textContent = questions[dayIdx];
+  document.getElementById('ritual-question').textContent =
+    questions[Math.floor(Date.now() / 86400000) % questions.length];
 
-  // Show past entry if any
-  const pastKey = localStorage.getItem('fish_entry_date');
+  const pastKey  = localStorage.getItem('fish_entry_date');
   const pastText = localStorage.getItem('fish_entry_text');
-  const pastEl = document.getElementById('past-entry');
+  const pastEl   = document.getElementById('past-entry');
   if (pastText && pastKey && pastKey !== todayKey) {
-    const pastDate = new Date(pastKey);
-    const pastLabel = pastDate.toLocaleDateString('en-US', { month:'long', day:'numeric' });
-    pastEl.innerHTML = '<div class="past-entry-label">' + pastLabel + '</div>' + pastText;
+    const d = new Date(pastKey);
+    pastEl.innerHTML = '<div class="past-entry-label">'
+      + d.toLocaleDateString('en-US', { month:'long', day:'numeric' })
+      + '</div>' + pastText;
     pastEl.style.display = 'block';
   }
-
-  zone.classList.add('visible');
+  document.getElementById('ritual-zone').classList.add('visible');
 }
 
 document.getElementById('ritual-save').addEventListener('click', () => {
@@ -710,38 +1076,28 @@ document.getElementById('ritual-save').addEventListener('click', () => {
   localStorage.setItem('fish_entry_date', todayKey);
   localStorage.setItem('fish_entry_text', text);
   const btn = document.getElementById('ritual-save');
-  btn.textContent = 'saved';
-  btn.style.color = 'var(--accent)';
-  setTimeout(() => {
-    btn.textContent = 'save';
-    btn.style.color = '';
-  }, 2000);
+  btn.textContent = 'saved'; btn.style.color = 'var(--accent)';
+  setTimeout(() => { btn.textContent = 'save'; btn.style.color = ''; }, 2000);
 });
 
-// ─── Streak persistence ───────────────────────────────────────────
+// ─── Streak ───────────────────────────────────────────────────────
 function saveFed() {
-  const prev = localStorage.getItem('fish_last_fed');
-  const yesterday2 = new Date(today);
-  yesterday2.setDate(yesterday2.getDate() - 1);
-  const yKey2 = yesterday2.toISOString().slice(0, 10);
-
-  let newStreak = 1;
-  if (prev === yKey2) newStreak = streakRaw + 1;
-  else if (prev === todayKey) newStreak = streakRaw || 1;
-
+  const prev  = localStorage.getItem('fish_last_fed');
+  const yKey2 = new Date(today.getTime() - 86400000).toISOString().slice(0,10);
+  let s = 1;
+  if (prev === yKey2)   s = streakRaw + 1;
+  else if (prev === todayKey) s = streakRaw || 1;
   localStorage.setItem('fish_last_fed', todayKey);
-  localStorage.setItem('fish_streak', newStreak);
-
-  const streakEl = document.getElementById('streak-display');
-  streakEl.textContent = newStreak + (newStreak === 1 ? ' day' : ' days');
-  streakEl.style.transition = 'color 0.5s';
-  streakEl.style.color = 'var(--accent)';
+  localStorage.setItem('fish_streak', s);
+  const el = document.getElementById('streak-display');
+  el.textContent = s + (s === 1 ? ' day' : ' days');
+  el.style.transition = 'color 0.5s';
+  el.style.color = 'var(--accent)';
 }
 
-// If already fed today, show ritual immediately
 if (lastFedKey === todayKey) {
   feedingDone = true;
-  document.getElementById('feed-hint').textContent = 'already fed today — tap for more';
+  document.getElementById('feed-hint').textContent = 'already fed today, tap for more';
   setTimeout(showRitual, 600);
 }
 
