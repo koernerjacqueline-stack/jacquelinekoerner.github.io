@@ -210,13 +210,15 @@
     #garden-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(4, 6, 12, 0.94);
+      background: var(--paper);
       z-index: 10000;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.4s ease;
+      transition: background-color 2s ease, opacity 0.5s ease;
     }
     #garden-overlay.open { opacity: 1; pointer-events: all; }
+    body.theme-night #garden-overlay { background: #0e1220; }
+    body.theme-dusk  #garden-overlay { background: #2a1820; }
 
     #pond-canvas.fullscreen {
       position: fixed;
@@ -227,14 +229,12 @@
       max-width: none !important;
       width: auto !important;
       cursor: pointer;
-      border-radius: 6px;
-      box-shadow: 0 0 80px rgba(0,0,0,0.7);
     }
     #garden-close {
       position: fixed;
       top: 1.2rem;
       right: 1.4rem;
-      z-index: 10002;
+      z-index: 10004;
       background: none;
       border: none;
       font-family: var(--sans);
@@ -248,8 +248,92 @@
       transition: color 0.2s;
       padding: 0.4rem 0;
     }
+    body.theme-dawn  #garden-close,
+    body.theme-day   #garden-close { color: rgba(80,60,40,0.35); }
+    body.theme-dawn  #garden-close:hover,
+    body.theme-day   #garden-close:hover { color: rgba(80,60,40,0.75); }
     #garden-close:hover { color: rgba(255,255,255,0.75); }
     body.garden-open #garden-close { display: block; }
+
+    /* ─── Garden journal overlay ──────────────────────────────────── */
+    #garden-journal {
+      position: fixed;
+      inset: 0;
+      z-index: 10003;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0 1.5rem 3rem;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #garden-journal.visible { pointer-events: all; }
+    .j-inner {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(8, 12, 24, 0.92);
+      border-top: 1px solid rgba(200,175,130,0.12);
+      padding: 1.8rem 1.8rem 1.4rem;
+    }
+    body.theme-dawn  .j-inner,
+    body.theme-day   .j-inner {
+      background: rgba(230,224,212,0.95);
+      border-top: 1px solid rgba(120,90,60,0.18);
+    }
+    .j-pair { display: none; }
+    .j-pair.active { display: block; }
+    .j-q {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.05rem;
+      color: rgba(220,200,165,0.92);
+      line-height: 1.5;
+      margin-bottom: 0.55rem;
+    }
+    body.theme-dawn .j-q,
+    body.theme-day  .j-q { color: rgba(80,55,35,0.88); }
+    .j-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(200,170,120,0.22);
+      color: rgba(215,200,170,0.85);
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      font-weight: 300;
+      padding: 0.4rem 0 0.5rem;
+      resize: none;
+      height: 2.8rem;
+      outline: none;
+      margin-bottom: 1.2rem;
+    }
+    body.theme-dawn .j-input,
+    body.theme-day  .j-input {
+      color: rgba(60,40,25,0.80);
+      border-bottom-color: rgba(120,90,60,0.22);
+    }
+    .j-input::placeholder { color: rgba(180,160,120,0.35); }
+    body.theme-dawn .j-input::placeholder,
+    body.theme-day  .j-input::placeholder { color: rgba(120,90,60,0.30); }
+    .j-btn {
+      background: none;
+      border: none;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.92rem;
+      color: rgba(175,152,108,0.70);
+      cursor: pointer;
+      padding: 0.2rem 0 0;
+      text-align: left;
+      line-height: 1.55;
+      transition: color 0.2s;
+      display: block;
+    }
+    .j-btn:hover { color: rgba(220,195,145,0.95); }
+    body.theme-dawn .j-btn,
+    body.theme-day  .j-btn { color: rgba(100,70,45,0.65); }
+    body.theme-dawn .j-btn:hover,
+    body.theme-day  .j-btn:hover { color: rgba(80,50,30,0.90); }
 
     .page-subtitle {
       font-family: var(--serif);
@@ -314,6 +398,19 @@
 
 <div id="garden-overlay"></div>
 <button id="garden-close" aria-label="Close garden">close ×</button>
+<div id="garden-journal">
+  <div class="j-inner">
+    <div class="j-pair" id="j-pair1">
+      <p class="j-q" id="j-q1"></p>
+      <textarea class="j-input" id="j-input1" rows="2" placeholder="write here..."></textarea>
+    </div>
+    <div class="j-pair" id="j-pair2">
+      <p class="j-q" id="j-q2"></p>
+      <textarea class="j-input" id="j-input2" rows="2" placeholder="write here..."></textarea>
+    </div>
+    <button class="j-btn" id="j-btn"></button>
+  </div>
+</div>
 
 <script>
 (function() {
@@ -345,7 +442,7 @@ const THEMES = {
     pondWater: 'rgba(200,220,240,0.25)', pondBorder: 'rgba(30,15,5,0.50)',
     inkLine: 'rgba(40,20,8,0.55)', bambooInk: 'rgba(60,80,35,0.65)',
     stars: 0, moon: 0.3,
-    bodyClass: '',
+    bodyClass: 'theme-dawn',
   },
   day: {
     sky: ['#7ab8d8','#98cce8','#c0e0f2','#dff0f8'],
@@ -355,7 +452,7 @@ const THEMES = {
     pondWater: 'rgba(160,200,225,0.25)', pondBorder: 'rgba(30,15,5,0.55)',
     inkLine: 'rgba(30,15,5,0.55)', bambooInk: 'rgba(50,75,30,0.65)',
     stars: 0, moon: 0,
-    bodyClass: '',
+    bodyClass: 'theme-day',
   },
   dusk: {
     sky: ['#8a2040','#c04828','#e07828','#f0b858'],
@@ -405,6 +502,8 @@ let isFullscreen = false;
 let doorStartTime = null;
 const DOOR_DUR   = 0.9;    // seconds
 const BEDROOM_GREETING = { dawn:'Good morning.', day:'Good morning.', dusk:'Good evening.', night:'Goodnight.' }[themeName];
+let journalShown    = false;
+let intentionShown  = false;
 
 function makeRnd(seed) {
   let s = seed;
@@ -465,6 +564,16 @@ function openGarden() {
   isFullscreen = true;
   scene = 'bedroom';
   doorStartTime = null;
+  journalShown   = false;
+  intentionShown = false;
+  fedCount       = 0;
+  feedingDone    = false;
+  foods          = [];
+  // Immediately hide journal without fade
+  if (jFadeRaf) { cancelAnimationFrame(jFadeRaf); jFadeRaf = null; }
+  const jEl = document.getElementById('garden-journal');
+  jEl.classList.remove('visible');
+  jEl.style.opacity = 0;
   resizeFullscreen();
   initFish();
   canvas.classList.add('fullscreen');
@@ -480,6 +589,11 @@ function closeGarden() {
   canvas.style.height = '';
   document.getElementById('garden-overlay').classList.remove('open');
   document.body.classList.remove('garden-open');
+  // Immediately hide journal without fade
+  if (jFadeRaf) { cancelAnimationFrame(jFadeRaf); jFadeRaf = null; }
+  const jEl = document.getElementById('garden-journal');
+  jEl.classList.remove('visible');
+  jEl.style.opacity = 0;
   resize();
   initFish();
 }
@@ -503,98 +617,65 @@ function drawBedroom(ts) {
   const wx = W * 0.10, wy = H * 0.06;
   const ww = W * 0.80, wh = H * 0.60;
 
-  // ── Exterior scene through window ──────────────────────────────
+  // ── Exterior through window: quiet sky only, garden hidden ─────
   ctx.save();
   ctx.beginPath();
   ctx.rect(wx, wy, ww, wh);
   ctx.clip();
 
-  // Sky
-  const skyH = wh * 0.55;
-  const skyGrad = ctx.createLinearGradient(wx, wy, wx, wy + skyH);
-  T.sky.forEach((c, i) => skyGrad.addColorStop(i / (T.sky.length - 1), c));
-  ctx.fillStyle = skyGrad;
-  ctx.fillRect(wx, wy, ww, skyH);
+  // Deep sky — almost featureless, just darkness outside
+  const extGrad = ctx.createLinearGradient(wx, wy, wx, wy + wh);
+  if (themeName === 'dawn') {
+    extGrad.addColorStop(0, '#0a0c18');
+    extGrad.addColorStop(0.65, '#1c1008');
+    extGrad.addColorStop(1, '#2a1a0c');
+  } else if (themeName === 'day') {
+    extGrad.addColorStop(0, '#0e1828');
+    extGrad.addColorStop(1, '#1a2c1a');
+  } else if (themeName === 'dusk') {
+    extGrad.addColorStop(0, '#0c0810');
+    extGrad.addColorStop(0.7, '#180c10');
+    extGrad.addColorStop(1, '#1e0e08');
+  } else {
+    extGrad.addColorStop(0, '#04060e');
+    extGrad.addColorStop(1, '#0a0c18');
+  }
+  ctx.fillStyle = extGrad;
+  ctx.fillRect(wx, wy, ww, wh);
 
-  // Stars (impressionistic subset)
+  // Faint stars — barely visible through the shoji
   if (T.stars > 0) {
     const rr = makeRnd(8822);
-    for (let i = 0; i < 28; i++) {
-      const sx = wx + rr(0.04, 0.96) * ww;
-      const sy = wy + rr(0.05, 0.88) * skyH;
-      const tw = 0.3 + 0.7 * Math.sin(ts * 1.8 + rr(0, 6));
+    for (let i = 0; i < 18; i++) {
+      const sx = wx + rr(0.08, 0.92) * ww;
+      const sy = wy + rr(0.06, 0.60) * wh;
+      const tw = 0.4 + 0.6 * Math.sin(ts * 1.4 + rr(0, 6));
       ctx.beginPath();
-      ctx.arc(sx, sy, rr(0.4, 1.2), 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,252,230,${tw * T.stars * 0.6})`;
+      ctx.arc(sx, sy, rr(0.3, 0.9), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(240,235,215,${tw * T.stars * 0.28})`;
       ctx.fill();
     }
   }
 
-  // Moon
+  // Soft moon glow only — not the crescent itself, just ambient light
   if (T.moon > 0) {
-    const mx = wx + ww * 0.76, my = wy + wh * 0.15;
-    const mr = W * 0.038;
-    ctx.save();
-    ctx.globalAlpha = T.moon * 0.72;
-    const glow = ctx.createRadialGradient(mx, my, 0, mx, my, mr * 1.9);
-    glow.addColorStop(0, 'rgba(255,250,200,0.18)');
-    glow.addColorStop(1, 'rgba(255,250,200,0)');
+    const mx = wx + ww * 0.72, my = wy + wh * 0.18;
+    const mr = W * 0.09;
+    const glow = ctx.createRadialGradient(mx, my, 0, mx, my, mr);
+    glow.addColorStop(0, `rgba(245,238,200,${T.moon * 0.14})`);
+    glow.addColorStop(0.4, `rgba(200,190,155,${T.moon * 0.06})`);
+    glow.addColorStop(1, 'rgba(200,190,155,0)');
     ctx.fillStyle = glow;
-    ctx.beginPath(); ctx.arc(mx, my, mr * 1.9, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath();
-    ctx.arc(mx, my, mr, -Math.PI / 2, Math.PI / 2, false);
-    ctx.arc(mx + mr * 0.38, my, mr * 0.80, Math.PI / 2, -Math.PI / 2, true);
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(255,250,215,0.88)'; ctx.fill();
-    ctx.restore();
+    ctx.beginPath(); ctx.arc(mx, my, mr, 0, Math.PI * 2); ctx.fill();
   }
 
-  // Ground
-  const groundY = wy + skyH;
-  const gGrad = ctx.createLinearGradient(0, groundY, 0, wy + wh);
-  gGrad.addColorStop(0, T.groundFar);
-  gGrad.addColorStop(0.6, T.ground);
-  ctx.fillStyle = gGrad;
-  ctx.fillRect(wx, groundY, ww, wh - skyH);
-
-  // Far mountains
-  ctx.fillStyle = T.mtFarFill;
-  const mfp = [[0,0],[0.18,-0.14],[0.32,-0.08],[0.50,-0.20],[0.64,-0.10],[0.80,-0.18],[0.93,-0.07],[1,0]];
-  ctx.beginPath(); ctx.moveTo(wx, groundY);
-  for (const [mx_, my_] of mfp) ctx.lineTo(wx + mx_ * ww, groundY + my_ * wh * 0.36);
-  ctx.lineTo(wx + ww, groundY); ctx.closePath(); ctx.fill();
-
-  // Near mountains
-  ctx.fillStyle = T.mtNearFill;
-  const mnp = [[0,0],[0.14,-0.10],[0.30,-0.06],[0.46,-0.15],[0.58,-0.08],[0.72,-0.13],[0.90,-0.05],[1,0]];
-  ctx.beginPath(); ctx.moveTo(wx, groundY);
-  for (const [mx_, my_] of mnp) ctx.lineTo(wx + mx_ * ww, groundY + my_ * wh * 0.25);
-  ctx.lineTo(wx + ww, groundY); ctx.closePath(); ctx.fill();
-
-  // Bamboo silhouettes left side
-  ctx.strokeStyle = T.bambooInk;
-  ctx.lineCap = 'round';
-  const bData = [[0.07, 0.24, 3.0], [0.12, 0.30, 3.8], [0.05, 0.18, 2.4], [0.17, 0.21, 2.8]];
-  for (const [bx, bh, bw] of bData) {
-    ctx.lineWidth = bw;
-    ctx.beginPath();
-    ctx.moveTo(wx + bx * ww, wy + wh);
-    ctx.lineTo(wx + bx * ww + W * 0.004, groundY - bh * wh * 0.55);
-    ctx.stroke();
-  }
-
-  // Distant pond oval
-  const pX = wx + ww * 0.52, pY = wy + wh * 0.80;
-  const pA = ww * 0.19, pB = wh * 0.048;
-  ctx.save();
-  ctx.globalAlpha = 0.55;
-  ctx.beginPath(); ctx.ellipse(pX, pY, pA, pB, 0, 0, Math.PI * 2);
-  const pGr = ctx.createRadialGradient(pX, pY, 0, pX, pY, pA);
-  pGr.addColorStop(0, 'rgba(80,140,185,0.50)');
-  pGr.addColorStop(1, 'rgba(30,60,90,0.08)');
-  ctx.fillStyle = pGr; ctx.fill();
-  ctx.strokeStyle = T.pondBorder; ctx.lineWidth = 1.0; ctx.stroke();
-  ctx.restore();
+  // Very faint horizon warmth (suggests land, nothing identifiable)
+  const horizonY = wy + wh * 0.60;
+  const hGrad = ctx.createLinearGradient(wx, horizonY - wh*0.05, wx, wy + wh);
+  hGrad.addColorStop(0, 'rgba(0,0,0,0)');
+  hGrad.addColorStop(1, 'rgba(0,0,0,0.55)');
+  ctx.fillStyle = hGrad;
+  ctx.fillRect(wx, horizonY - wh * 0.05, ww, wh - (horizonY - wy - wh * 0.05));
 
   ctx.restore(); // end window clip
 
@@ -1186,15 +1267,15 @@ function mkFish(i) {
   return {
     x: PX + PA * r * Math.cos(a), y: PY + PB * r * Math.sin(a),
     angle: a + Math.PI,
-    speed: 0.48 + Math.random() * 0.32,
+    speed: 0.18 + Math.random() * 0.10,
     len: 28 + Math.random() * 14,
     pal: PALETTES[i % PALETTES.length],
     wiggle: Math.random() * Math.PI * 2,
-    wigSpeed: 0.07 + Math.random() * 0.03,
-    state: 'excited',
+    wigSpeed: 0.045 + Math.random() * 0.02,
+    state: 'idle',
     target: null,
     wanderAngle: a + Math.PI,
-    wanderTimer: Math.random() * 80,
+    wanderTimer: 40 + Math.random() * 120,
   };
 }
 function initFish() { fish = Array.from({ length: 6 }, (_, i) => mkFish(i)); }
@@ -1216,30 +1297,22 @@ function updateFish(f) {
   if (f.state === 'seeking' && f.target && !f.target.eaten) {
     const dx = f.target.x - f.x, dy = f.target.y - f.y;
     targetAngle = Math.atan2(dy, dx);
-    spd = f.speed * 2.8;
+    spd = f.speed * 2.2;
     if (Math.hypot(dx, dy) < 9) { f.target.eaten = true; f.target = null; f.state = 'idle'; }
-  } else if (f.state === 'excited') {
-    const tx = PX + (Math.random() - 0.5) * PA * 0.5;
-    const ty = PY - PB * 0.30;
-    const dx = tx - f.x, dy = ty - f.y;
-    if (Math.hypot(dx, dy) < 22) {
-      targetAngle = f.angle + (Math.random() - 0.5) * 0.6;
-      spd = f.speed * 0.35;
-    } else {
-      targetAngle = Math.atan2(dy, dx);
-      spd = f.speed * 1.6;
-    }
   } else {
     f.wanderTimer--;
-    if (f.wanderTimer <= 0) { f.wanderAngle = Math.random() * Math.PI * 2; f.wanderTimer = 60 + Math.random() * 100; }
+    if (f.wanderTimer <= 0) {
+      f.wanderAngle = Math.random() * Math.PI * 2;
+      f.wanderTimer = 90 + Math.random() * 160;
+    }
     targetAngle = f.wanderAngle;
-    spd = f.speed * 0.45;
+    spd = f.speed * 0.50;
   }
 
   let da = targetAngle - f.angle;
   while (da >  Math.PI) da -= Math.PI * 2;
   while (da < -Math.PI) da += Math.PI * 2;
-  f.angle += da * 0.072;
+  f.angle += da * 0.048;
   f.x += Math.cos(f.angle) * spd;
   f.y += Math.sin(f.angle) * spd;
 
@@ -1348,7 +1421,13 @@ function dropFood(cx, cy) {
     showFedMsg('happy fish.');
     feedingDone = true;
     saveFed();
-    setTimeout(showRitual, 2200);
+    const isMorning = (themeName === 'dawn' || themeName === 'day');
+    if (isFullscreen && isMorning && !intentionShown) {
+      intentionShown = true;
+      setTimeout(() => showGardenJournal('morning-intention'), 2400);
+    } else if (!isFullscreen) {
+      setTimeout(showRitual, 2200);
+    }
   }
 }
 
@@ -1382,7 +1461,15 @@ function loop(ts) {
     if (doorStartTime === null) doorStartTime = frameTime;
     const rawP = Math.min((frameTime - doorStartTime) / DOOR_DUR, 1);
     drawDoorSlide(rawP);
-    if (rawP >= 1) { scene = 'pond'; doorStartTime = null; }
+    if (rawP >= 1) {
+      scene = 'pond';
+      doorStartTime = null;
+      if (isFullscreen && !journalShown) {
+        journalShown = true;
+        const type = (themeName === 'dawn' || themeName === 'day') ? 'morning-intro' : 'night';
+        setTimeout(() => showGardenJournal(type), 700);
+      }
+    }
 
   } else {
     // Pond scene
@@ -1504,6 +1591,83 @@ if (lastFedKey === todayKey) {
   feedingDone = true;
   document.getElementById('feed-hint').textContent = 'already fed today, tap for more';
   setTimeout(showRitual, 600);
+}
+
+// ─── Garden journal ───────────────────────────────────────────────
+let jFadeRaf = null;
+function fadeJournal(fromOp, toOp, dur, onDone) {
+  if (jFadeRaf) cancelAnimationFrame(jFadeRaf);
+  const jEl = document.getElementById('garden-journal');
+  const start = performance.now();
+  function step(now) {
+    const t = Math.min((now - start) / dur, 1);
+    const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+    jEl.style.opacity = fromOp + (toOp - fromOp) * ease;
+    if (t < 1) { jFadeRaf = requestAnimationFrame(step); }
+    else { jEl.style.opacity = toOp; if (onDone) onDone(); }
+  }
+  jFadeRaf = requestAnimationFrame(step);
+}
+
+function showGardenJournal(type) {
+  const jEl   = document.getElementById('garden-journal');
+  const pair1 = document.getElementById('j-pair1');
+  const pair2 = document.getElementById('j-pair2');
+  const q1    = document.getElementById('j-q1');
+  const q2    = document.getElementById('j-q2');
+  const i1    = document.getElementById('j-input1');
+  const i2    = document.getElementById('j-input2');
+  const btn   = document.getElementById('j-btn');
+
+  // Reset
+  pair1.classList.remove('active');
+  pair2.classList.remove('active');
+  i1.value = '';
+  i2.value = '';
+
+  if (type === 'night' || type === 'dusk') {
+    pair1.classList.add('active');
+    pair2.classList.add('active');
+    q1.textContent  = 'What went well today?';
+    q2.textContent  = 'What could go better tomorrow?';
+    btn.textContent = 'feel free to explore the garden to reflect.';
+    btn.onclick = () => {
+      if (i1.value.trim()) localStorage.setItem('fish_reflection_' + todayKey, i1.value.trim() + '||' + i2.value.trim());
+      closeGardenJournal();
+    };
+  } else if (type === 'morning-intro') {
+    q1.textContent  = "Let's feed your fish.";
+    pair1.classList.add('active');
+    i1.style.display = 'none';
+    btn.textContent  = 'go feed them →';
+    btn.onclick = () => {
+      i1.style.display = '';
+      closeGardenJournal();
+    };
+  } else if (type === 'morning-intention') {
+    pair1.classList.add('active');
+    i1.style.display = '';
+    q1.textContent  = 'What is the most important thing you have to do today?';
+    btn.textContent = 'have a great today. today matters. now is important.';
+    btn.onclick = () => {
+      if (i1.value.trim()) localStorage.setItem('fish_intention_' + todayKey, i1.value.trim());
+      closeGardenJournal();
+    };
+  }
+
+  jEl.style.opacity = 0;
+  jEl.classList.add('visible');
+  fadeJournal(0, 1, 600, null);
+}
+
+function closeGardenJournal() {
+  const jEl = document.getElementById('garden-journal');
+  const from = parseFloat(jEl.style.opacity);
+  if (isNaN(from) || from <= 0) { jEl.classList.remove('visible'); return; }
+  fadeJournal(from, 0, 400, () => {
+    jEl.classList.remove('visible');
+    jEl.style.opacity = 0;
+  });
 }
 
 // ─── Garden button handlers ────────────────────────────────────────
