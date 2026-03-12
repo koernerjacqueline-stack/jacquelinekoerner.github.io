@@ -271,6 +271,46 @@
 <script>
 (function () {
 
+// ─── Daily mantras ────────────────────────────────────────────────
+const MANTRAS = [
+  'This moment is complete as it is.',
+  'You are already here. That is enough.',
+  'The day is not behind you yet.',
+  'Breathe in what is. Release what was.',
+  'Presence is the only place anything happens.',
+  'Nothing is required of you except attention.',
+  'The ordinary is full of light if you look.',
+  'Today will not come again. Notice it.',
+  'Gratitude and attention are the same thing.',
+  'The water moves. So does time. Both are beautiful.',
+  'You have everything you need for this moment.',
+  'Slowness is a kind of richness.',
+  'What is here right now is enough.',
+  'The present does not ask you to hurry.',
+  'Small things done with care become sacred.',
+  'To be awake is already a gift.',
+  'Your feet are on the ground. Feel it.',
+  'Joy does not require more than this.',
+  'Pay attention. Everything else follows.',
+  'This is the day. Not preparation for the day.',
+  'Gratitude lives in the details.',
+  'Let the morning be morning.',
+  'Notice what is good. It is everywhere.',
+  'You are in the right place.',
+  'The pond is still. You can be too.',
+  'Nothing is wasted when you are present.',
+  'A full breath is a full life.',
+  'What you have is already remarkable.',
+  'The light changes. Watch it.',
+  'Right now, you are not behind.',
+];
+
+function getDailyMantra(key) {
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) | 0;
+  return MANTRAS[Math.abs(hash) % MANTRAS.length];
+}
+
 // ─── Date & streak ────────────────────────────────────────────────
 const today = new Date();
 document.getElementById('today-date').textContent =
@@ -1028,7 +1068,7 @@ function submitIntention() {
   // Populate and fade in daily mantra
   const tm = document.getElementById('today-matters');
   const mt = document.getElementById('mantra-text');
-  mt.textContent = val ? '\u201c' + val + '\u201d' : '\u201ctoday matters. now is important.\u201d';
+  mt.textContent = '\u201c' + getDailyMantra(todayKey) + '\u201d';
   tm.style.display = 'block';
   requestAnimationFrame(() => {
     requestAnimationFrame(() => tm.classList.add('visible'));
