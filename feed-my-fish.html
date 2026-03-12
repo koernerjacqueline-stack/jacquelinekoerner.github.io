@@ -252,7 +252,7 @@
 
   <canvas id="pond-canvas"></canvas>
 
-  <button id="back-inside">← back inside</button>
+  <button id="back-inside">↓ back inside</button>
 
   <p class="fed-msg" id="fed-msg"></p>
 
@@ -621,30 +621,32 @@ function drawDoorSlide(progress) {
   ctx.restore();
 
   const ease = 1 - Math.pow(1 - progress, 3);
-  const halfW = W * 0.5;
+  // Match bedroom door dimensions exactly: wx=W*0.10, ww=W*0.80
+  const wx = W * 0.10, pw = W * 0.40;  // each panel = half the door width
+  const paper = themeName === 'night' ? '#0e1220' : themeName === 'dusk' ? '#2a1820' : '#ebebeb';
 
-  const drawPanel = (x, pw) => {
-    // Warm washi paper — the doors themselves can have fill (it's the prop)
-    ctx.fillStyle = '#e8dcca'; ctx.fillRect(x, 0, pw, H);
-    const tex = ctx.createLinearGradient(x, 0, x + pw, 0);
-    tex.addColorStop(0, 'rgba(0,0,0,0.06)'); tex.addColorStop(0.5, 'rgba(255,255,255,0.04)'); tex.addColorStop(1, 'rgba(0,0,0,0.06)');
-    ctx.fillStyle = tex; ctx.fillRect(x, 0, pw, H);
-    ctx.strokeStyle = 'rgba(90,55,18,0.22)'; ctx.lineWidth = 1.5;
+  const drawPanel = (x) => {
+    ctx.lineCap = 'square'; ctx.lineJoin = 'miter';
+    // Paper fill
+    ctx.fillStyle = paper; ctx.fillRect(x, 0, pw, H);
+    // Shoji grid — faint
+    ctx.strokeStyle = INK(0.13); ctx.lineWidth = 0.9;
     ctx.beginPath(); ctx.moveTo(x + pw * 0.5, 0); ctx.lineTo(x + pw * 0.5, H); ctx.stroke();
-    for (let r = 1; r < 7; r++) {
-      const y = (r / 7) * H;
+    for (let r = 1; r < 6; r++) {
+      const y = (r / 6) * H;
       ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + pw, y); ctx.stroke();
     }
-    ctx.strokeStyle = '#6a3c12'; ctx.lineWidth = 5; ctx.strokeRect(x, 0, pw, H);
-    ctx.strokeStyle = '#8a5420'; ctx.lineWidth = 2; ctx.strokeRect(x + 3, 3, pw - 6, H - 6);
-    const ss = x < halfW ? x + pw : x, sd = x < halfW ? -1 : 1;
-    const sg = ctx.createLinearGradient(ss, 0, ss + sd * pw * 0.12, 0);
-    sg.addColorStop(0, 'rgba(0,0,0,0.22)'); sg.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = sg;
-    ctx.fillRect(x < halfW ? ss - pw * 0.12 : ss, 0, pw * 0.12, H);
+    // Inner bevel
+    ctx.strokeStyle = INK(0.32); ctx.lineWidth = 1.1;
+    ctx.strokeRect(x + 5, 5, pw - 10, H - 10);
+    // Outer frame
+    ctx.strokeStyle = INK(0.76); ctx.lineWidth = 4.5;
+    ctx.strokeRect(x, 0, pw, H);
   };
-  drawPanel(-halfW * ease, halfW);
-  drawPanel(halfW + halfW * ease, halfW);
+
+  // Left panel slides from wx to wx−pw; right from wx+pw to wx+2pw
+  drawPanel(wx - pw * ease);
+  drawPanel(wx + pw * (1 + ease));
 }
 
 // ─── Pond — border only, very faint interior ──────────────────────
