@@ -13,13 +13,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
   <link rel="icon" id="favicon" type="image/svg+xml" href="favicon-work.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,800;1,9..144,300&family=Inter:wght@300;400&family=JetBrains+Mono:wght@300;400&family=Spectral:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Rock+Salt&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400&family=JetBrains+Mono:wght@300;400&family=Spectral:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
   <style>
-    @font-face {
-      font-family: 'InkHand';
-      src: url('InkHand.woff2') format('woff2'), url('InkHand.ttf') format('truetype');
-      font-weight: 400;
-    }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -28,13 +23,13 @@
       --paper: #ebebeb;
       --muted: #909090;
       --rule: rgba(0,0,0,0.1);
-      --serif: 'Fraunces', Georgia, serif;
+      --serif: 'Crimson Pro', Georgia, serif;
       --sans: 'Inter', system-ui, sans-serif;
       --mono: 'JetBrains Mono', monospace;
     }
 
-    [data-mode="work"] { --paper: #ffffff; --serif: 'Crimson Pro', Georgia, serif; }
-    [data-mode="zen"]  { --paper: #ebebeb; --serif: 'Spectral', Georgia, serif; }
+    [data-mode="work"] { --paper: #ffffff; --serif: 'Crimson Pro', Georgia, serif; --accent: #2e3d7e; }
+    [data-mode="zen"]  { --paper: #ebebeb; --serif: 'Spectral', Georgia, serif; --accent: #744848; }
 
     html { scroll-behavior: smooth; }
 
@@ -112,20 +107,14 @@
       align-items: baseline;
     }
     .nav-name {
+      font-family: var(--serif);
       font-size: 1rem;
       font-style: normal;
       font-weight: 400;
       text-transform: uppercase;
       text-decoration: none;
+      color: var(--accent);
       transition: color 0.3s ease;
-    }
-    [data-mode="work"] .nav-name {
-      font-family: 'Crimson Pro', Georgia, serif;
-      color: #2e3d7e;
-    }
-    [data-mode="zen"] .nav-name {
-      font-family: 'Spectral', Georgia, serif;
-      color: var(--ink);
     }
     .nav-links {
       display: flex;
@@ -194,15 +183,15 @@
       line-height: 1.2;
     }
     .hero-name-work {
-      font-weight: 600;
+      font-weight: 400;
       font-style: normal;
-      color: #1e3a6e;
+      color: var(--accent);
     }
     .hero-name-zen {
       font-weight: 300;
       font-style: normal;
       text-transform: none;
-      color: #111111;
+      color: var(--accent);
     }
     .cursor {
       display: inline-block;
@@ -212,14 +201,13 @@
     }
     .hero-desc {
       font-size: 1.1rem;
-      font-family: var(--serif);
+      font-family: var(--sans);
       font-weight: 300;
       font-style: normal;
       line-height: 1.65;
       color: var(--muted);
       max-width: 520px;
     }
-    [data-mode="zen"] .hero-desc { font-style: normal; font-family: var(--sans); }
 
     /* Custom site cursor */
     body { cursor: none; }
@@ -294,22 +282,14 @@
     }
 
     /* Mode-specific section labels & subheads */
-    [data-mode="work"] .section-label,
-    [data-mode="work"] .about-subhead {
-      font-family: 'Crimson Pro', Georgia, serif;
+    .section-label,
+    .about-subhead {
+      font-family: var(--serif);
       font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      color: #2e3d7e;
-    }
-    [data-mode="zen"] .section-label,
-    [data-mode="zen"] .about-subhead {
-      font-family: 'Spectral', Georgia, serif;
-      font-size: 0.88rem;
       font-weight: 400;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #744848;
+      color: var(--accent);
     }
 
     /* Cards */
@@ -335,9 +315,6 @@
       font-family: var(--serif);
       font-weight: 400;
       margin-bottom: 0.35rem;
-    }
-    [data-mode="zen"] .card-title {
-      font-family: var(--sans);
     }
     .card-meta {
       font-family: var(--mono);
@@ -408,7 +385,7 @@
 
     /* Reading carousel */
     .reading-section {
-      margin-top: 2.5rem;
+      margin-top: 4rem;
     }
     .reading-carousel {
       display: flex;
@@ -450,9 +427,6 @@
       font-weight: 400;
       margin-top: 0.6rem;
       line-height: 1.3;
-    }
-    [data-mode="zen"] .reading-title {
-      font-family: var(--sans);
     }
     .reading-author {
       font-family: var(--sans);
@@ -631,13 +605,15 @@ function HeroSection({ mode, onHeroComplete }) {
   const workDesc = 'Product and design leader. Systems thinker. Focused on client experience across complex platforms.';
   const zenDesc = 'Artist, reader, wanderer. Interests and creative pursuits, copy coming soon.';
   const WORK_NAME = 'Jacqueline\nKoerner';
+  const ZEN_NAME = 'Jacqueline\nKoerner';
 
   const [typedName, setTypedName] = useState('');
   const [nameDone, setNameDone] = useState(false);
   const [typedText, setTypedText] = useState('');
+  const [typedZenName, setTypedZenName] = useState('');
+  const [zenNameDone, setZenNameDone] = useState(false);
   const [typedZenText, setTypedZenText] = useState('');
   const [descReady, setDescReady] = useState(false);
-  const [zenRevealed, setZenRevealed] = useState(0);
   const workStarted = useRef(false);
   const zenStarted = useRef(false);
 
@@ -670,26 +646,33 @@ function HeroSection({ mode, onHeroComplete }) {
     return () => clearTimeout(t);
   }, [mode]);
 
-  // Zen: stamp letters instantly with human jitter, then description
+  // Zen: type name then description (same style as work)
   useEffect(() => {
     if (mode !== 'zen') return;
     if (zenStarted.current) return;
     zenStarted.current = true;
-    ZEN_LETTERS.forEach((def, i) => {
-      const jitter = Math.random() * 500 - 250;
-      setTimeout(() => setZenRevealed(i + 1), Math.max(0, def.d + jitter));
-    });
-    const last = ZEN_LETTERS[ZEN_LETTERS.length - 1];
-    setTimeout(() => { onHeroComplete && onHeroComplete(); }, last.d + 300);
-    setTimeout(() => {
-      setDescReady(true);
-      let j = 0;
-      const descIv = setInterval(() => {
-        j++;
-        setTypedZenText(zenDesc.slice(0, j));
-        if (j >= zenDesc.length) clearInterval(descIv);
-      }, 45);
-    }, last.d + 900);
+    const t = setTimeout(() => {
+      let i = 0;
+      const nameIv = setInterval(() => {
+        i++;
+        setTypedZenName(ZEN_NAME.slice(0, i));
+        if (i >= ZEN_NAME.length) {
+          clearInterval(nameIv);
+          setZenNameDone(true);
+          onHeroComplete && onHeroComplete();
+          setTimeout(() => {
+            setDescReady(true);
+            let j = 0;
+            const descIv = setInterval(() => {
+              j++;
+              setTypedZenText(zenDesc.slice(0, j));
+              if (j >= zenDesc.length) clearInterval(descIv);
+            }, 30);
+          }, 500);
+        }
+      }, 55);
+    }, 400);
+    return () => clearTimeout(t);
   }, [mode]);
 
   const renderTypedName = () => {
@@ -701,12 +684,14 @@ function HeroSection({ mode, onHeroComplete }) {
     ));
   };
 
-  const renderZenName = () => ZEN_LETTERS.slice(0, zenRevealed).map((def, i) => (
-    <React.Fragment key={i}>
-      <span style={{opacity: def.o}}>{def.c}</span>
-      {i === 9 && <br/>}
-    </React.Fragment>
-  ));
+  const renderZenName = () => {
+    const parts = typedZenName.split('\n');
+    return parts.map((part, i) => (
+      <React.Fragment key={i}>
+        {part}{i < parts.length - 1 && <br/>}
+      </React.Fragment>
+    ));
+  };
 
   return (
     <div className="hero">
@@ -716,7 +701,9 @@ function HeroSection({ mode, onHeroComplete }) {
             {renderTypedName()}{!nameDone && <span className="cursor">|</span>}
           </h1>
         ) : (
-          <h1 className="hero-name hero-name-zen">{renderZenName()}</h1>
+          <h1 className="hero-name hero-name-zen">
+            {renderZenName()}{!zenNameDone && <span className="cursor">|</span>}
+          </h1>
         )}
       </div>
       {mode === 'work' && descReady && <p className="hero-desc">{typedText}</p>}
