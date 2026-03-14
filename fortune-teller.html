@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){var m=localStorage.getItem('siteMode')||'work';document.documentElement.setAttribute('data-mode',m);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fortune teller — Jacqueline Koerner</title>
+  <link rel="icon" id="favicon" type="image/svg+xml" href="favicon-work.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Source+Sans+3:wght@300;400;600&family=Caveat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a1a;
+      --paper: #ffffff;
+      --paper-warm: #ebebeb;
+      --muted: #888;
+      --accent: #2a5298;
+      --serif: 'Crimson Pro', Georgia, serif;
+      --sans: 'Source Sans 3', system-ui, sans-serif;
+      --hand: 'Caveat', cursive;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      min-height: 100vh;
+      line-height: 1.7;
+      transition: background-color 0.5s ease;
+    }
+
+    [data-mode="zen"] body { background: var(--paper-warm); }
+
+    .container { max-width: 680px; margin: 0 auto; padding: 0 2rem; }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 2.5rem 0 0;
+    }
+
+    .back {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back:hover { color: var(--accent); }
+
+    .mode-switch {
+      display: flex;
+      background: rgba(0,0,0,0.06);
+      border-radius: 4px;
+      padding: 2px;
+      border: none;
+      cursor: pointer;
+      gap: 0;
+      font-family: inherit;
+    }
+    .ms-opt {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 3px 10px;
+      border-radius: 3px;
+      transition: background 0.2s, color 0.2s;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .ms-opt.active {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-family: var(--serif);
+      font-weight: 300;
+      margin: 3rem 0 0.5rem;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .meta {
+      font-size: 0.72rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    .about-text {
+      font-size: 1.1rem;
+      font-family: var(--serif);
+      line-height: 1.8;
+    }
+    .about-text p + p { margin-top: 1.2rem; }
+
+    /* ── Fortune teller ── */
+    .fortune-wrap {
+      margin: 3rem 0;
+      padding: 3rem 0;
+      border-top: 1px solid rgba(28,26,23,0.1);
+      border-bottom: 1px solid rgba(28,26,23,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .ft-container {
+      width: 300px;
+      height: 300px;
+      position: relative;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .ft-container svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .ft-edge {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .ft-fold {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 0.8;
+      stroke-linecap: round;
+      stroke-dasharray: 8 5;
+      opacity: 0.3;
+    }
+
+    .ft-flap {
+      fill: rgba(0,0,0,0.001);
+      stroke: none;
+      cursor: pointer;
+      transition: fill 0.2s ease;
+    }
+
+    .ft-flap:hover { fill: rgba(42, 82, 152, 0.06); }
+    .ft-flap.selected { fill: rgba(42, 82, 152, 0.1); }
+    .ft-flap.dimmed { opacity: 0.15; }
+
+    .ft-label {
+      font-family: var(--hand);
+      font-size: 36px;
+      fill: var(--ink);
+      text-anchor: middle;
+      dominant-baseline: central;
+      pointer-events: none;
+      user-select: none;
+      opacity: 0;
+    }
+
+    .ft-inner-label {
+      font-family: var(--hand);
+      font-size: 28px;
+      fill: var(--accent);
+      text-anchor: middle;
+      dominant-baseline: central;
+      pointer-events: none;
+      user-select: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .ft-inner-label.visible { opacity: 1; }
+
+    .ft-fortune {
+      font-family: var(--hand);
+      font-size: 30px;
+      font-weight: 600;
+      fill: var(--ink);
+      text-anchor: middle;
+      dominant-baseline: central;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.8s ease 0.4s;
+    }
+    .ft-fortune.visible { opacity: 1; }
+
+    /* Backing shape behind fortune text for contrast */
+    .ft-fortune-bg {
+      fill: var(--paper);
+      opacity: 0;
+      transition: opacity 0.6s ease 0.2s;
+    }
+    [data-mode="zen"] .ft-fortune-bg { fill: var(--paper-warm); }
+    .ft-fortune-bg.visible { opacity: 0.85; }
+
+    .ft-dot {
+      fill: var(--ink);
+      opacity: 0;
+    }
+
+    .prompt {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--muted);
+      text-align: center;
+      min-height: 1.5em;
+      transition: opacity 0.25s ease;
+    }
+
+    .play-again {
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      background: none;
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      padding: 6px 18px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.3s, background 0.2s, color 0.2s;
+      pointer-events: none;
+    }
+    .play-again.visible { opacity: 1; pointer-events: auto; }
+    .play-again:hover { background: var(--accent); color: var(--paper); }
+
+    .ft-container.locked .ft-flap { pointer-events: none; cursor: default; }
+    .ft-container.locked .ft-flap:hover { fill: transparent; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a href="index.html" class="back">&larr; Back to portfolio</a>
+      <button class="mode-switch" id="mode-btn" aria-label="Toggle work/zen mode">
+        <span class="ms-opt" data-m="work">work</span>
+        <span class="ms-opt" data-m="zen">zen</span>
+      </button>
+    </div>
+
+    <h1>Fortune teller</h1>
+    <p class="subtitle">A paper oracle, folded and unfolded</p>
+    <p class="meta">Design &middot; March 2026</p>
+
+    <div class="fortune-wrap">
+      <div class="ft-container" id="ft-container">
+        <svg id="ft-svg" viewBox="0 0 400 400"></svg>
+      </div>
+      <p class="prompt" id="prompt">pick a number</p>
+      <button class="play-again" id="play-again">fold again</button>
+    </div>
+
+    <div class="about-text">
+      <p>
+        The paper fortune teller, a schoolyard oracle made from a single folded sheet. Pick a number, watch it open and close, pick again, and peek beneath the flap. The future was always in your hands.
+      </p>
+      <p>
+        This is a recreation built with SVG and vanilla JavaScript. Each fold and reveal is animated to capture the tactile rhythm of the original paper game.
+      </p>
+    </div>
+
+    <div style="height: 6rem;"></div>
+  </div>
+
+<script>
+  /* ── Mode toggle ── */
+  (function() {
+    var html = document.documentElement;
+    var btn  = document.getElementById('mode-btn');
+
+    function setMode(m) {
+      html.setAttribute('data-mode', m);
+      localStorage.setItem('siteMode', m);
+      btn.querySelectorAll('.ms-opt').forEach(function(el) {
+        el.classList.toggle('active', el.getAttribute('data-m') === m);
+      });
+      var fav = document.getElementById('favicon');
+      if (fav) fav.href = 'favicon-' + m + '.svg';
+    }
+
+    setMode(html.getAttribute('data-mode') || 'work');
+    btn.addEventListener('click', function() {
+      setMode(html.getAttribute('data-mode') === 'work' ? 'zen' : 'work');
+    });
+  })();
+
+  /* ── Fortune Teller ── */
+  const svg       = document.getElementById('ft-svg');
+  const ftBox     = document.getElementById('ft-container');
+  const promptEl  = document.getElementById('prompt');
+  const againBtn  = document.getElementById('play-again');
+  const NS        = 'http://www.w3.org/2000/svg';
+
+  /* Geometry — diamond centered in a 400x400 viewBox */
+  const CX = 200, CY = 200, R = 145;
+  const V = {
+    top:    [CX, CY - R],
+    right:  [CX + R, CY],
+    bottom: [CX, CY + R],
+    left:   [CX - R, CY],
+    center: [CX, CY],
+  };
+
+  /* Segments: each is a triangular flap from vertex → vertex → center */
+  const SEGS = [
+    { pts: [V.top, V.left, V.center],     outer: '1', inner: '5' },
+    { pts: [V.top, V.right, V.center],    outer: '2', inner: '6' },
+    { pts: [V.right, V.bottom, V.center], outer: '3', inner: '7' },
+    { pts: [V.bottom, V.left, V.center],  outer: '4', inner: '8' },
+  ];
+
+  /* Placeholder fortunes (to be replaced later) */
+  const FORTUNES = [
+    'trust the process',
+    'look closer',
+    'not yet, but soon',
+    'the answer is behind you',
+  ];
+
+  /* ── State ── */
+  let state = 'pick-outer';
+
+  /* ── SVG helpers ── */
+  function el(tag, attrs) {
+    const e = document.createElementNS(NS, tag);
+    for (const [k, v] of Object.entries(attrs || {})) e.setAttribute(k, v);
+    return e;
+  }
+
+  /* Slightly wobbly line for hand-drawn feel */
+  function handLine(x1, y1, x2, y2) {
+    const mx = (x1 + x2) / 2 + (Math.random() - 0.5) * 2;
+    const my = (y1 + y2) / 2 + (Math.random() - 0.5) * 2;
+    return `M${x1},${y1} Q${mx.toFixed(1)},${my.toFixed(1)} ${x2},${y2}`;
+  }
+
+  /* Triangle centroid, shifted outward from center */
+  function labelPos(pts, shift) {
+    const cx = (pts[0][0] + pts[1][0] + pts[2][0]) / 3;
+    const cy = (pts[0][1] + pts[1][1] + pts[2][1]) / 3;
+    const dx = cx - CX, dy = cy - CY;
+    return [cx + dx * (shift || 0.35), cy + dy * (shift || 0.35)];
+  }
+
+  /* ── Build the SVG ── */
+  function build() {
+    svg.innerHTML = '';
+    state = 'pick-outer';
+
+    const gFlaps  = el('g', { id: 'g-flaps' });
+    const gEdges  = el('g', { id: 'g-edges' });
+    const gFolds  = el('g', { id: 'g-folds' });
+    const gOuter  = el('g', { id: 'g-outer' });
+    const gInner  = el('g', { id: 'g-inner' });
+    const gDots   = el('g', { id: 'g-dots' });
+    const gFortune = el('g', { id: 'g-fortune' });
+
+    /* Hit-area flaps */
+    SEGS.forEach((seg, i) => {
+      const poly = el('polygon', {
+        class: 'ft-flap',
+        points: seg.pts.map(p => p.join(',')).join(' '),
+        'data-idx': i,
+      });
+      poly.addEventListener('click', () => onFlap(i));
+      gFlaps.appendChild(poly);
+    });
+
+    /* Outer edges (hand-drawn ink strokes) */
+    const edges = [
+      [V.top, V.right], [V.right, V.bottom],
+      [V.bottom, V.left], [V.left, V.top],
+    ];
+    edges.forEach(([a, b], i) => {
+      gEdges.appendChild(el('path', {
+        class: 'ft-edge',
+        d: handLine(...a, ...b),
+        'data-draw-delay': i * 120,
+      }));
+    });
+
+    /* Fold lines (dashed) */
+    const folds = [[V.top, V.bottom], [V.left, V.right]];
+    folds.forEach(([a, b], i) => {
+      gFolds.appendChild(el('path', {
+        class: 'ft-fold',
+        d: handLine(...a, ...b),
+        'data-draw-delay': 500 + i * 150,
+      }));
+    });
+
+    /* Corner dots */
+    [V.top, V.right, V.bottom, V.left, V.center].forEach(([x, y]) => {
+      gDots.appendChild(el('circle', {
+        class: 'ft-dot',
+        cx: x, cy: y, r: 2.5,
+      }));
+    });
+
+    /* Outer labels (1-4) */
+    SEGS.forEach((seg, i) => {
+      const [x, y] = labelPos(seg.pts, 0.4);
+      const t = el('text', { class: 'ft-label', x, y, 'data-idx': i });
+      t.textContent = seg.outer;
+      gOuter.appendChild(t);
+    });
+
+    /* Inner labels (5-8), hidden initially */
+    SEGS.forEach((seg, i) => {
+      const [x, y] = labelPos(seg.pts, 0.2);
+      const t = el('text', { class: 'ft-inner-label', x, y, 'data-idx': i });
+      t.textContent = seg.inner;
+      gInner.appendChild(t);
+    });
+
+    /* Background pill behind fortune text for contrast */
+    const bg = el('rect', {
+      class: 'ft-fortune-bg',
+      id: 'fortune-bg',
+      x: CX - 100, y: CY - 18, width: 200, height: 40, rx: 6,
+    });
+    gFortune.appendChild(bg);
+
+    /* Fortune text — offset slightly below center */
+    const ft = el('text', { class: 'ft-fortune', x: CX, y: CY + 3, id: 'fortune-text' });
+    ft.textContent = '';
+    gFortune.appendChild(ft);
+
+    /* Flaps above labels for click detection; fortune text on top of all */
+    svg.append(gEdges, gFolds, gDots, gOuter, gInner, gFlaps, gFortune);
+
+    animateDrawIn();
+  }
+
+  /* ── Draw-in animation ── */
+  function animateDrawIn() {
+    requestAnimationFrame(() => {
+      /* Stroke draw-in for edges and folds */
+      svg.querySelectorAll('.ft-edge, .ft-fold').forEach(path => {
+        const len = path.getTotalLength();
+        const delay = parseInt(path.getAttribute('data-draw-delay') || 0);
+        path.style.strokeDasharray = len;
+        path.style.strokeDashoffset = len;
+        path.getBoundingClientRect(); /* force reflow */
+        path.style.transition = `stroke-dashoffset 0.7s ease ${delay}ms`;
+        path.style.strokeDashoffset = '0';
+      });
+
+      /* Dots fade in */
+      setTimeout(() => {
+        svg.querySelectorAll('.ft-dot').forEach((dot, i) => {
+          dot.style.transition = `opacity 0.3s ease ${i * 60}ms`;
+          dot.style.opacity = '1';
+        });
+      }, 600);
+
+      /* Outer labels fade in */
+      setTimeout(() => {
+        svg.querySelectorAll('.ft-label').forEach((lbl, i) => {
+          lbl.style.transition = `opacity 0.4s ease ${i * 80}ms`;
+          lbl.style.opacity = '1';
+        });
+      }, 900);
+    });
+  }
+
+  /* ── Click handler ── */
+  function onFlap(idx) {
+    if (state === 'pick-outer') {
+      state = 'counting';
+      highlight(idx);
+      const count = parseInt(SEGS[idx].outer);
+      runCounting(count);
+    } else if (state === 'pick-inner') {
+      state = 'reveal';
+      highlight(idx);
+      revealFortune(idx);
+    }
+  }
+
+  function highlight(idx) {
+    svg.querySelectorAll('.ft-flap').forEach((f, i) => {
+      f.classList.toggle('selected', i === idx);
+    });
+  }
+
+  /* ── Counting (open-close) animation ── */
+  async function runCounting(count) {
+    ftBox.classList.add('locked');
+    setPrompt('');
+
+    for (let i = 0; i < count; i++) {
+      await squish(i % 2 === 0 ? 'h' : 'v');
+    }
+
+    /* Transition to inner state */
+    ftBox.style.transform = '';
+    svg.querySelectorAll('.ft-flap').forEach(f => f.classList.remove('selected'));
+
+    /* Swap outer → inner labels */
+    svg.querySelectorAll('.ft-label').forEach(lbl => {
+      lbl.style.transition = 'opacity 0.3s ease';
+      lbl.style.opacity = '0';
+    });
+    setTimeout(() => {
+      svg.querySelectorAll('.ft-inner-label').forEach(lbl => lbl.classList.add('visible'));
+    }, 250);
+
+    ftBox.classList.remove('locked');
+    state = 'pick-inner';
+    setPrompt('now pick again');
+  }
+
+  function squish(dir) {
+    return new Promise(resolve => {
+      const sx = dir === 'h' ? 1.2 : 0.8;
+      const sy = dir === 'h' ? 0.8 : 1.2;
+      ftBox.style.transform = `scaleX(${sx}) scaleY(${sy})`;
+
+      setTimeout(() => {
+        ftBox.style.transform = 'scaleX(1) scaleY(1)';
+        setTimeout(resolve, 350);
+      }, 350);
+    });
+  }
+
+  /* ── Fortune reveal ── */
+  function revealFortune(idx) {
+    ftBox.classList.add('locked');
+
+    /* Hide inner labels */
+    svg.querySelectorAll('.ft-inner-label').forEach(lbl => lbl.classList.remove('visible'));
+
+    /* Fade fold lines, dots, and edges */
+    svg.querySelectorAll('.ft-fold, .ft-dot').forEach(el => {
+      el.style.transition = 'opacity 0.6s ease';
+      el.style.opacity = '0';
+    });
+    svg.querySelectorAll('.ft-edge').forEach(el => {
+      el.style.transition = 'opacity 0.6s ease';
+      el.style.opacity = '0.15';
+    });
+
+    /* Dim other flaps */
+    svg.querySelectorAll('.ft-flap').forEach((f, i) => {
+      if (i !== idx) {
+        f.classList.add('dimmed');
+        f.style.transition = 'opacity 0.5s ease';
+      }
+    });
+
+    /* Peel the selected flap: animate its center vertex toward outer edge */
+    const flap = svg.querySelectorAll('.ft-flap')[idx];
+    const seg  = SEGS[idx];
+    const [v1, v2, v3] = seg.pts; /* v3 is center */
+    const targetX = (v1[0] + v2[0]) / 2;
+    const targetY = (v1[1] + v2[1]) / 2;
+
+    const dur   = 800;
+    const start = performance.now();
+
+    function frame(now) {
+      const t = Math.min((now - start) / dur, 1);
+      const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+
+      const cx = v3[0] + (targetX - v3[0]) * ease;
+      const cy = v3[1] + (targetY - v3[1]) * ease;
+
+      flap.setAttribute('points',
+        `${v1[0]},${v1[1]} ${v2[0]},${v2[1]} ${cx.toFixed(1)},${cy.toFixed(1)}`
+      );
+      flap.style.opacity = 1 - ease * 0.8;
+
+      if (t < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        showFortune(idx);
+      }
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  function showFortune(idx) {
+    document.getElementById('fortune-bg').classList.add('visible');
+    const fortuneEl = document.getElementById('fortune-text');
+    fortuneEl.textContent = FORTUNES[idx] || '...';
+    fortuneEl.classList.add('visible');
+
+    setPrompt('');
+    againBtn.classList.add('visible');
+  }
+
+  /* ── Reset ── */
+  againBtn.addEventListener('click', () => {
+    againBtn.classList.remove('visible');
+
+    /* Fade out, rebuild, fade in */
+    ftBox.style.transition = 'opacity 0.3s ease';
+    ftBox.style.opacity = '0';
+    ftBox.classList.remove('locked');
+
+    setTimeout(() => {
+      ftBox.style.transform = '';
+      build();
+      ftBox.style.opacity = '1';
+      setPrompt('pick a number');
+    }, 300);
+  });
+
+  /* ── Prompt helper ── */
+  function setPrompt(text) {
+    promptEl.style.opacity = '0';
+    setTimeout(() => {
+      promptEl.textContent = text;
+      promptEl.style.opacity = '1';
+    }, 200);
+  }
+
+  /* ── Launch ── */
+  build();
+</script>
+
+</body>
+</html>
