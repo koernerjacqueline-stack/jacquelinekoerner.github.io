@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <script>(function(){var m=localStorage.getItem('siteMode')||'work';document.documentElement.setAttribute('data-mode',m);})();</script>
+  <script>(function(){document.documentElement.setAttribute('data-mode','work');})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Nobody Asked for Denim Ice Cream — Jacqueline Koerner</title>
   <link rel="icon" id="favicon" type="image/svg+xml" href="favicon-work.svg">
@@ -151,15 +151,11 @@
   <div class="container">
     <div class="top-bar">
       <a href="index.html" class="back">← Back to portfolio</a>
-      <button class="mode-switch" id="mode-btn" aria-label="Toggle work/zen mode">
-        <span class="ms-opt" data-m="work">work</span>
-        <span class="ms-opt" data-m="zen">zen</span>
-      </button>
     </div>
 
     <h1>Nobody Asked for Denim Ice Cream</h1>
     <p class="subtitle">A ¥500 sign and a very blue cone in Enoshima</p>
-    <p class="meta">Product observations · Enoshima · March 2026</p>
+    <p class="meta">Product observations · Enoshima · March 11, 2026</p>
 
     <div class="about-text">
       <p>
@@ -221,28 +217,7 @@
     <div style="height: 6rem;"></div>
   </div>
 
-<script>
-  (function() {
-    var html = document.documentElement;
-    var btn  = document.getElementById('mode-btn');
-
-    function setMode(m) {
-      html.setAttribute('data-mode', m);
-      localStorage.setItem('siteMode', m);
-      btn.querySelectorAll('.ms-opt').forEach(function(el) {
-        el.classList.toggle('active', el.getAttribute('data-m') === m);
-      });
-      var fav = document.getElementById('favicon');
-      if (fav) fav.href = 'favicon-' + m + '.svg';
-    }
-
-    setMode(html.getAttribute('data-mode') || 'work');
-
-    btn.addEventListener('click', function() {
-      setMode(html.getAttribute('data-mode') === 'work' ? 'zen' : 'work');
-    });
-  })();
-</script>
+<script>(function(){var fav=document.getElementById('favicon');if(fav)fav.href='favicon-work.svg';})();</script>
 
 </body>
 </html>

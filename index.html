@@ -13,13 +13,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
   <link rel="icon" id="favicon" type="image/svg+xml" href="favicon-work.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,800;1,9..144,300&family=Inter:wght@300;400&family=JetBrains+Mono:wght@300;400&family=Spectral:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Rock+Salt&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400&family=JetBrains+Mono:wght@300;400&family=Spectral:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
   <style>
-    @font-face {
-      font-family: 'InkHand';
-      src: url('InkHand.woff2') format('woff2'), url('InkHand.ttf') format('truetype');
-      font-weight: 400;
-    }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -28,13 +23,13 @@
       --paper: #ebebeb;
       --muted: #909090;
       --rule: rgba(0,0,0,0.1);
-      --serif: 'Fraunces', Georgia, serif;
+      --serif: 'Crimson Pro', Georgia, serif;
       --sans: 'Inter', system-ui, sans-serif;
       --mono: 'JetBrains Mono', monospace;
     }
 
-    [data-mode="work"] { --paper: #ffffff; --serif: 'Crimson Pro', Georgia, serif; }
-    [data-mode="zen"]  { --paper: #ebebeb; --serif: 'Spectral', Georgia, serif; }
+    [data-mode="work"] { --paper: #ffffff; --serif: 'Crimson Pro', Georgia, serif; --accent: #2e3d7e; }
+    [data-mode="zen"]  { --paper: #ebebeb; --serif: 'Crimson Pro', Georgia, serif; --accent: #744848; }
 
     html { scroll-behavior: smooth; }
 
@@ -112,20 +107,14 @@
       align-items: baseline;
     }
     .nav-name {
+      font-family: var(--serif);
       font-size: 1rem;
       font-style: normal;
       font-weight: 400;
       text-transform: uppercase;
       text-decoration: none;
+      color: var(--accent);
       transition: color 0.3s ease;
-    }
-    [data-mode="work"] .nav-name {
-      font-family: 'Crimson Pro', Georgia, serif;
-      color: #2e3d7e;
-    }
-    [data-mode="zen"] .nav-name {
-      font-family: 'Spectral', Georgia, serif;
-      color: var(--ink);
     }
     .nav-links {
       display: flex;
@@ -189,20 +178,20 @@
       display: none;
     }
     .hero-name {
-      font-size: clamp(2.4rem, 6.6vw, 4.56rem);
+      font-size: clamp(2.4rem, 7.5vw, 5.2rem);
       font-family: var(--serif);
       line-height: 1.2;
     }
     .hero-name-work {
-      font-weight: 600;
+      font-weight: 400;
       font-style: normal;
-      color: #1e3a6e;
+      color: var(--accent);
     }
     .hero-name-zen {
       font-weight: 300;
       font-style: normal;
       text-transform: none;
-      color: #111111;
+      color: var(--accent);
     }
     .cursor {
       display: inline-block;
@@ -211,15 +200,14 @@
       margin-left: 2px;
     }
     .hero-desc {
-      font-size: 1.1rem;
-      font-family: var(--serif);
+      font-size: 0.95rem;
+      font-family: var(--sans);
       font-weight: 300;
       font-style: normal;
       line-height: 1.65;
       color: var(--muted);
       max-width: 520px;
     }
-    [data-mode="zen"] .hero-desc { font-style: normal; font-family: var(--sans); }
 
     /* Custom site cursor */
     body { cursor: none; }
@@ -261,7 +249,6 @@
       padding: 4rem 0;
       border-top: 1px solid var(--rule);
     }
-    section:first-of-type { border-top: none; }
 
     .section-label {
       font-family: var(--mono);
@@ -275,7 +262,7 @@
 
     /* About */
     .about-text {
-      font-size: 1rem;
+      font-size: 0.88rem;
       font-family: var(--sans);
       font-weight: 300;
       line-height: 1.8;
@@ -294,22 +281,14 @@
     }
 
     /* Mode-specific section labels & subheads */
-    [data-mode="work"] .section-label,
-    [data-mode="work"] .about-subhead {
-      font-family: 'Crimson Pro', Georgia, serif;
+    .section-label,
+    .about-subhead {
+      font-family: var(--serif);
       font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      color: #2e3d7e;
-    }
-    [data-mode="zen"] .section-label,
-    [data-mode="zen"] .about-subhead {
-      font-family: 'Spectral', Georgia, serif;
-      font-size: 0.88rem;
       font-weight: 400;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #744848;
+      color: var(--accent);
     }
 
     /* Cards */
@@ -331,13 +310,10 @@
     .card:hover { opacity: 0.55; }
     .card-left { flex: 1; }
     .card-title {
-      font-size: 1.15rem;
+      font-size: 1.28rem;
       font-family: var(--serif);
       font-weight: 400;
       margin-bottom: 0.35rem;
-    }
-    [data-mode="zen"] .card-title {
-      font-family: var(--sans);
     }
     .card-meta {
       font-family: var(--mono);
@@ -388,7 +364,7 @@
       border-color: var(--ink);
     }
     .now-entry p {
-      font-size: 1rem;
+      font-size: 0.88rem;
       font-family: var(--sans);
       font-weight: 300;
       line-height: 1.8;
@@ -408,7 +384,7 @@
 
     /* Reading carousel */
     .reading-section {
-      margin-top: 2.5rem;
+      margin-top: 4rem;
     }
     .reading-carousel {
       display: flex;
@@ -450,9 +426,6 @@
       font-weight: 400;
       margin-top: 0.6rem;
       line-height: 1.3;
-    }
-    [data-mode="zen"] .reading-title {
-      font-family: var(--sans);
     }
     .reading-author {
       font-family: var(--sans);
@@ -496,6 +469,9 @@
       padding: 4rem 0 3rem;
       border-top: 1px solid var(--rule);
     }
+    .footer-connect {
+      margin-bottom: 3rem;
+    }
     .footer-inner {
       display: flex;
       justify-content: space-between;
@@ -507,6 +483,15 @@
       font-weight: 300;
       color: var(--muted);
       letter-spacing: 0.06em;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .footer-headshot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      object-fit: cover;
     }
     .footer-links {
       display: flex;
@@ -520,8 +505,13 @@
       text-decoration: none;
       letter-spacing: 0.04em;
       transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
     }
     .footer-links a:hover { color: var(--ink); }
+    .footer-links a svg { width: 13px; height: 13px; }
+    .footer-links a:hover svg { fill: var(--ink); }
 
     @media (max-width: 520px) {
       .hero { padding: 5rem 0 3rem; }
@@ -548,24 +538,31 @@ const data = {
   writing: [
     {
       title: "Nobody Asked for Denim Ice Cream",
-      meta: "Product observations · Enoshima · March 2026",
+      meta: "Product observations · Enoshima · March 11, 2026",
       url: "denim-soft-serve.html"
     },
     {
       title: "Our Guides Forgot the Foyer",
-      meta: "Tiny experiments · March 2026",
+      meta: "Tiny experiments · Osaka · March 8, 2026",
       url: "getting-online.html"
+    },
+  ],
+  writingZen: [
+    {
+      title: "I'm a Legal Alien",
+      meta: "Personal observations · Austin · March 14, 2026",
+      url: "legal-alien.html"
     },
   ],
   designWork: [
     {
-      title: "Figma Make — Design portfolio",
-      meta: "jacquelinekoerner.figma.site",
+      title: "Product Design Work Samples",
+      meta: "Project examples ranging from process to research to deliverables and outcomes.",
       url: "https://jacquelinekoerner.figma.site"
     },
     {
-      title: "Split-flap display",
-      meta: "Split flap display animation created with Claude Code + Cursor.",
+      title: "Split-Flap Display",
+      meta: "The new hello world. Broadly accessible visual animation.",
       url: "split-flap.html"
     },
   ],
@@ -599,45 +596,19 @@ const data = {
   ],
 };
 
-// Zen stamp: instant appearance, no fade. Delay = time since page load.
-// ~1s between first letter and next within each group; ~0.5s for following letters.
-// Small jitter added at runtime for human feel.
-// Groups: Jacq / ueline / Koer / ner — 400ms ink-reload pauses.
-const ZEN_LETTERS = [
-  // Jacq
-  { c:'J', o:1.00, d:0    },
-  { c:'a', o:0.82, d:1000 },
-  { c:'c', o:0.68, d:1670 },
-  { c:'q', o:0.52, d:2170 },
-  // ink reload → ueline (starts ~2570)
-  { c:'u', o:1.00, d:2570 },
-  { c:'e', o:0.80, d:3570 },
-  { c:'l', o:0.65, d:4240 },
-  { c:'i', o:0.55, d:4740 },
-  { c:'n', o:0.44, d:5240 },
-  { c:'e', o:0.32, d:5570 },
-  // line break after index 9 — ink reload → Koer (starts ~5970)
-  { c:'K', o:1.00, d:5970 },
-  { c:'o', o:0.84, d:6970 },
-  { c:'e', o:0.68, d:7640 },
-  { c:'r', o:0.52, d:8140 },
-  // ink reload → ner (starts ~8540)
-  { c:'n', o:1.00, d:8540 },
-  { c:'e', o:0.78, d:9540 },
-  { c:'r', o:0.58, d:10200 },
-];
-
 function HeroSection({ mode, onHeroComplete }) {
   const workDesc = 'Product and design leader. Systems thinker. Focused on client experience across complex platforms.';
-  const zenDesc = 'Artist, reader, wanderer. Interests and creative pursuits, copy coming soon.';
-  const WORK_NAME = 'Jacqueline\nKoerner';
+  const zenDesc = 'Reader, writer, listener, artist. Life long learner and frequent nomad. Happiest when active, in nature and with animals.';
+  const WORK_NAME = 'Jacqueline Koerner';
+  const ZEN_NAME = 'Jacqueline Koerner';
 
   const [typedName, setTypedName] = useState('');
   const [nameDone, setNameDone] = useState(false);
   const [typedText, setTypedText] = useState('');
+  const [typedZenName, setTypedZenName] = useState('');
+  const [zenNameDone, setZenNameDone] = useState(false);
   const [typedZenText, setTypedZenText] = useState('');
   const [descReady, setDescReady] = useState(false);
-  const [zenRevealed, setZenRevealed] = useState(0);
   const workStarted = useRef(false);
   const zenStarted = useRef(false);
 
@@ -670,26 +641,33 @@ function HeroSection({ mode, onHeroComplete }) {
     return () => clearTimeout(t);
   }, [mode]);
 
-  // Zen: stamp letters instantly with human jitter, then description
+  // Zen: type name then description (same style as work)
   useEffect(() => {
     if (mode !== 'zen') return;
     if (zenStarted.current) return;
     zenStarted.current = true;
-    ZEN_LETTERS.forEach((def, i) => {
-      const jitter = Math.random() * 500 - 250;
-      setTimeout(() => setZenRevealed(i + 1), Math.max(0, def.d + jitter));
-    });
-    const last = ZEN_LETTERS[ZEN_LETTERS.length - 1];
-    setTimeout(() => { onHeroComplete && onHeroComplete(); }, last.d + 300);
-    setTimeout(() => {
-      setDescReady(true);
-      let j = 0;
-      const descIv = setInterval(() => {
-        j++;
-        setTypedZenText(zenDesc.slice(0, j));
-        if (j >= zenDesc.length) clearInterval(descIv);
-      }, 45);
-    }, last.d + 900);
+    const t = setTimeout(() => {
+      let i = 0;
+      const nameIv = setInterval(() => {
+        i++;
+        setTypedZenName(ZEN_NAME.slice(0, i));
+        if (i >= ZEN_NAME.length) {
+          clearInterval(nameIv);
+          setZenNameDone(true);
+          onHeroComplete && onHeroComplete();
+          setTimeout(() => {
+            setDescReady(true);
+            let j = 0;
+            const descIv = setInterval(() => {
+              j++;
+              setTypedZenText(zenDesc.slice(0, j));
+              if (j >= zenDesc.length) clearInterval(descIv);
+            }, 30);
+          }, 500);
+        }
+      }, 55);
+    }, 400);
+    return () => clearTimeout(t);
   }, [mode]);
 
   const renderTypedName = () => {
@@ -701,12 +679,14 @@ function HeroSection({ mode, onHeroComplete }) {
     ));
   };
 
-  const renderZenName = () => ZEN_LETTERS.slice(0, zenRevealed).map((def, i) => (
-    <React.Fragment key={i}>
-      <span style={{opacity: def.o}}>{def.c}</span>
-      {i === 9 && <br/>}
-    </React.Fragment>
-  ));
+  const renderZenName = () => {
+    const parts = typedZenName.split('\n');
+    return parts.map((part, i) => (
+      <React.Fragment key={i}>
+        {part}{i < parts.length - 1 && <br/>}
+      </React.Fragment>
+    ));
+  };
 
   return (
     <div className="hero">
@@ -716,7 +696,9 @@ function HeroSection({ mode, onHeroComplete }) {
             {renderTypedName()}{!nameDone && <span className="cursor">|</span>}
           </h1>
         ) : (
-          <h1 className="hero-name hero-name-zen">{renderZenName()}</h1>
+          <h1 className="hero-name hero-name-zen">
+            {renderZenName()}{!zenNameDone && <span className="cursor">|</span>}
+          </h1>
         )}
       </div>
       {mode === 'work' && descReady && <p className="hero-desc">{typedText}</p>}
@@ -821,7 +803,9 @@ function buildGrid(g) {
     const x2=cx+w/2+rnd(-2,2), y2=cy+h/2+rnd(-2,2), x3=cx-w/2+rnd(-2,2), y3=cy+h/2+rnd(-2,2);
     for (let i = 0, n = ri(rnd,3,5); i < n; i++) {
       const dx=rnd(-2,2), dy=rnd(-1,1);
-      const p = svgEl('path', { d:`M${f(x0+dx)},${f(y0+dy)} L${f(x1+dx)},${f(y1+dy)} L${f(x2+dx)},${f(y2+dy)} L${f(x3+dx)},${f(y3+dy)} Z`, fill:'none', stroke:`rgba(28,22,14,${f(rnd(.25,.65))})`, 'stroke-width':f(rnd(1.2,2.8)), 'stroke-linecap':'round' });
+      const colors = [[116,72,72],[160,130,100],[140,110,80],[120,110,105]];
+      const cl = colors[Math.floor(rnd(0,colors.length-0.01))];
+      const p = svgEl('path', { d:`M${f(x0+dx)},${f(y0+dy)} L${f(x1+dx)},${f(y1+dy)} L${f(x2+dx)},${f(y2+dy)} L${f(x3+dx)},${f(y3+dy)} Z`, fill:'none', stroke:`rgba(${cl[0]},${cl[1]},${cl[2]},${f(rnd(.25,.65))})`, 'stroke-width':f(rnd(1.2,2.8)), 'stroke-linecap':'round' });
       prep(p, Math.round((w+h)*2+20), f(rnd(1.2,2.2)), f((r*14+c)*.04+i*.01));
       grp.appendChild(p);
     }
@@ -837,7 +821,7 @@ function buildWaves(g) {
     const y = 40 + (i/17)*370, amp=rnd(4,14), fr=rnd(.008,.016), ph=rnd(0,Math.PI*2);
     let d = `M 30,${f(y)}`;
     for (let x=30; x<=770; x+=6) d += ` L${x},${f(y+Math.sin(x*fr+ph)*amp+rnd(-1.2,1.2))}`;
-    const p = svgEl('path', { d, fill:'none', stroke:`rgba(30,22,12,${f(rnd(.35,.72))})`, 'stroke-width':f(rnd(1.4,3.2)), 'stroke-linecap':'round' });
+    const p = svgEl('path', { d, fill:'none', stroke:`rgba(116,72,72,${f(rnd(.35,.72))})`, 'stroke-width':f(rnd(1.4,3.2)), 'stroke-linecap':'round' });
     prep(p, 760, f(rnd(4.5,7)), f(i*.35));
     grp.appendChild(p);
   }
@@ -892,7 +876,7 @@ function buildWavesWork(g) {
     for (let x = 34; x <= 770; x += 4) d += ` L${x},${f(y + Math.sin(x*fr+ph)*amp)}`;
     const p = svgEl('path', { d, fill:'none', stroke:`rgba(20,20,20,${f(rnd(.2,.55))})`,
       'stroke-width':f(rnd(.7,2.0)), 'stroke-linecap':'round', 'stroke-linejoin':'round' });
-    prep(p, 760, f(rnd(3.5,5.5)), f(i*.28));
+    prep(p, 760, f(rnd(1.5,2.5)), f(i*.12));
     grp.appendChild(p);
   }
   g.appendChild(grp);
@@ -995,7 +979,7 @@ function App() {
       <div className="container">
         <HeroSection mode={mode} onHeroComplete={() => setHeroComplete(true)} />
 
-        <SketchAnim key={`sk1-${mode}`} id="sk1" viewBox="0 0 600 600" ratio="1/1" label="Grid Study I"
+        <SketchAnim key={`sk1-${mode}`} id="sk1" viewBox="0 0 600 600" ratio="1/1" label="Grid Study"
           heroComplete={heroComplete}
           filterEl={mode === 'zen' ? <filter id="sk-f1" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".08" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
           buildFn={mode === 'work' ? buildGridWork : buildGrid} />
@@ -1005,7 +989,7 @@ function App() {
           {mode === 'work' ? (
             <div className="about-text">
               <p>
-                I'm a product and design leader with a background in wealth and asset management, focused on systems thinking and client experience across complex platforms. I thrive in discovery, using research methods and data to clarify direction, validate hypotheses, and drive strong business outcomes.
+                I've spent my career in product and design in start ups and small companies. I thrive in discovery, using research methods and data to clarify direction, validate hypotheses, and drive strong business outcomes.
               </p>
 
               <div className="about-subhead">Product Philosophy</div>
@@ -1022,22 +1006,23 @@ function App() {
               <p>
                 I grow others through curiosity, respect, and caring personally, with the goal of expanding individual autonomy and modeling behaviors that foster alignment. This approach enables thoughtfully interconnected work that is greater than the sum of its parts.
               </p>
+
             </div>
           ) : (
             <div className="about-text">
-              <p>Interests, creative pursuits, and what I'm like outside of work. Copy coming soon.</p>
+              <p>My professional life keeps me busy and gives me a strong sense of purpose, but I increasingly find myself investing in hobbies.</p>
+              <p>Most days you can find me running and lifting, reading and writing. Other times I'm painting, swimming, scuba diving, or sailing. I love the quiet and I've learned I prefer to walk uphill.</p>
+              <p>I teach and mentor regularly and am always looking for ways to give back. I've lived in eight states with a short stint abroad as well, and I'm currently based in Austin, TX, with my boyfriend and two cats.</p>
             </div>
           )}
         </section>
 
-        {mode === 'work' && (
-          <section id="writing" className="scroll-reveal">
-            <div className="section-label">Writing</div>
-            <div className="cards">
-              {data.writing.map((item, i) => <Card key={i} {...item} />)}
-            </div>
-          </section>
-        )}
+        <section id="writing" className="scroll-reveal">
+          <div className="section-label">Writing</div>
+          <div className="cards">
+            {(mode === 'work' ? data.writing : data.writingZen).map((item, i) => <Card key={i} {...item} />)}
+          </div>
+        </section>
 
         <SketchAnim key={`sk2-${mode}`} id="sk2" viewBox="0 0 800 450" ratio="16/9" label="Undulation"
           heroComplete={heroComplete}
@@ -1049,14 +1034,9 @@ function App() {
           <div className="cards">
             {(mode === 'work' ? data.designWork : data.designZen).map((item, i) => <Card key={i} {...item} />)}
           </div>
-          {mode === 'work' && (
-            <p style={{marginTop:'1.5rem', fontFamily:'var(--mono)', fontSize:'0.62rem', color:'var(--muted)', lineHeight:1.6}}>
-              Explorations in Figma — interfaces, concepts, prototypes.
-            </p>
-          )}
         </section>
 
-        <SketchAnim key={`sk3-${mode}`} id="sk3" viewBox="0 0 600 600" ratio="4/3" label="Vertical Field"
+        <SketchAnim key={`sk3-${mode}`} id="sk3" viewBox={mode === 'work' ? "0 100 600 380" : "0 30 600 460"} ratio={mode === 'work' ? "600/380" : "600/460"} label="Vertical Field"
           heroComplete={heroComplete}
           filterEl={mode === 'zen' ? <filter id="sk-f3" x="-4%" y="-4%" width="108%" height="108%"><feTurbulence type="turbulence" baseFrequency=".02 .08" numOctaves="5" seed="12" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
           buildFn={mode === 'work' ? buildVertWork : buildVert} />
@@ -1096,16 +1076,22 @@ function App() {
               ))}
             </div>
           </div>
+
         </section>
       </div>
 
       <footer>
         <div className="container">
+          <p className="about-text footer-connect">
+            {mode === 'work'
+              ? "I'm always excited to connect with others who are passionate about design, strategy, and building meaningful products. If you're exploring new ideas or opportunities, I'd love to chat."
+              : "I love connecting with people who are curious about learning, art, neuroscience, or navigating change. If you're up for a deep conversation or a good-faith debate, I'd love to chat."}
+          </p>
           <div className="footer-inner">
-            <span className="footer-note">Jacqueline Koerner © 2026</span>
+            <span className="footer-note"><img className="footer-headshot" src={mode === 'work' ? 'headshot-work.jpg' : 'headshot-zen.jpg'} alt="" />Jacqueline Koerner © 2026</span>
             <div className="footer-links">
-              <a href="https://jacquelinekoerner.figma.site" target="_blank" rel="noopener noreferrer">Figma</a>
-              <a href="mailto:koernerjacqueline@gmail.com">Email</a>
+              <a href="mailto:koernerjacqueline@gmail.com"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Email</a>
+              {mode === 'work' && <a href="https://www.linkedin.com/in/jacquelinekoerner/" target="_blank" rel="noopener noreferrer"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>LinkedIn</a>}
             </div>
           </div>
         </div>
