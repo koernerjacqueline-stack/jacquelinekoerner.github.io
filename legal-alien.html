@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <script>(function(){var m=localStorage.getItem('siteMode')||'work';document.documentElement.setAttribute('data-mode',m);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>I'm a Legal Alien — Jacqueline Koerner</title>
+  <link rel="icon" id="favicon" type="image/svg+xml" href="favicon-work.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a1a;
+      --paper: #ffffff;
+      --paper-warm: #ebebeb;
+      --muted: #888;
+      --accent: #2a5298;
+      --serif: 'Crimson Pro', Georgia, serif;
+      --sans: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      min-height: 100vh;
+      line-height: 1.7;
+      transition: background-color 0.5s ease;
+    }
+
+    [data-mode="zen"] body { background: var(--paper-warm); }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 2.5rem 0 0;
+    }
+
+    .back {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back:hover { color: var(--accent); }
+
+    .mode-switch {
+      display: flex;
+      background: rgba(0,0,0,0.06);
+      border-radius: 4px;
+      padding: 2px;
+      border: none;
+      cursor: pointer;
+      gap: 0;
+      font-family: inherit;
+    }
+    .ms-opt {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 3px 10px;
+      border-radius: 3px;
+      transition: background 0.2s, color 0.2s;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .ms-opt.active {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-family: var(--serif);
+      font-weight: 300;
+      margin: 3rem 0 0.5rem;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .meta {
+      font-size: 0.72rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    .about-text {
+      font-size: 1.1rem;
+      font-family: var(--serif);
+      line-height: 1.8;
+    }
+    .about-text p + p { margin-top: 1.2rem; }
+
+    .about-subhead {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 2.5rem 0 0.5rem;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a href="index.html" class="back">&larr; Back to portfolio</a>
+      <button class="mode-switch" id="mode-btn" aria-label="Toggle work/zen mode">
+        <span class="ms-opt" data-m="work">work</span>
+        <span class="ms-opt" data-m="zen">zen</span>
+      </button>
+    </div>
+
+    <h1>I'm a Legal Alien</h1>
+    <p class="subtitle">On feeling foreign and starting anyway</p>
+    <p class="meta">Personal observations &middot; March 2026 &middot; Osaka</p>
+
+    <div class="about-text">
+      <p>
+        Spending 12 days abroad alone, in a country that uses characters versus recognizable letter forms, comes with moments of self doubt. On the first day I monkey-see-monkey-do'd my way into ordering food from a touch screen display on the street before entering the restaurant of individually divided seats to eat. As I ate I swiveled my head around to see what to do with my used dishes. I was afraid. Partly to seem rude, but also to seem weak.
+      </p>
+      <p>
+        Why? Part of me thinks this is evolutionary, less survival of the fittest than elimination of the weakest. However, this was far from life and death.
+      </p>
+
+      <div class="about-subhead">The downward spiral</div>
+      <p>
+        I remember joining a new competitive soccer team at one point growing up and being the worst on the team. My confidence got worse and worse. I quit trying at practice. It was a downward spiral. When I rejoined my school team, I was better than average by comparison and was actually willing to try and fail, and as a result, get better.
+      </p>
+
+      <div class="about-subhead">Stream of conscious</div>
+      <p>
+        Read just about anything out there and it will say learn by doing, shots on goal, build in public. That's what this is for me. I could easily spend 100 hours editing a single blog post. We're now going stream of conscious daily for 10 to 20 minutes with AI support. Will it be deeply novel? Probably not. Will it help me get better? Yes.
+      </p>
+
+      <div class="about-subhead">Mile one is the hardest</div>
+      <p>
+        What I've found consistently in life is that participation matters and you simply have to start. Motivation peaks from there. I don't want to go to the gym. One mile in I'm annoyed. Two, ok. Three, fine. By mile seven I'm happy. I'm currently training for a marathon and can easily run upward of 13 miles below my zone 4 heart rate, but mile one is still the hardest.
+      </p>
+
+      <div class="about-subhead">Broaden the range</div>
+      <p>
+        Just accept you're going to feel foreign and out of place all the time in life. You may never find "your thing." You may be largely average at most. But you'll never regret trying, and you're always better for broadening your range.
+      </p>
+      <p>
+        A few classes I've taken of late: bonsai (was told this is for grandpas), sushi and ramen making (I hardly cook today), calligraphy (I'm left handed and it's designed very much to go the other way). Years ago I even took a no-gi jiu jitsu class. I wrestled men with face and hand tattoos on a Friday night. I'm proud of myself for these, and while I may never do some of them again, I'm sure the neural connectivity and plasticity forming as a result is more than enough of a reward.
+      </p>
+      <p>
+        You should commit for a while to at least a few things. I played piano for upward of 10 years because my mom said one day you'll be 30 and want to sit down at a party and play piano. That did happen once and it was actually pretty cool.
+      </p>
+      <p>
+        Let yourself be weird and out of place. No one really cares. Don't operate out of fear.
+      </p>
+    </div>
+
+    <div style="height: 6rem;"></div>
+  </div>
+
+<script>
+  (function() {
+    var html = document.documentElement;
+    var btn  = document.getElementById('mode-btn');
+
+    function setMode(m) {
+      html.setAttribute('data-mode', m);
+      localStorage.setItem('siteMode', m);
+      btn.querySelectorAll('.ms-opt').forEach(function(el) {
+        el.classList.toggle('active', el.getAttribute('data-m') === m);
+      });
+      var fav = document.getElementById('favicon');
+      if (fav) fav.href = 'favicon-' + m + '.svg';
+    }
+
+    setMode(html.getAttribute('data-mode') || 'work');
+
+    btn.addEventListener('click', function() {
+      setMode(html.getAttribute('data-mode') === 'work' ? 'zen' : 'work');
+    });
+  })();
+</script>
+
+</body>
+</html>
