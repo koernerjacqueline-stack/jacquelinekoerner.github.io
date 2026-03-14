@@ -13,7 +13,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
   <link rel="icon" id="favicon" type="image/svg+xml" href="favicon-work.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,800;1,9..144,300&family=Inter:wght@300;400&family=JetBrains+Mono:wght@300;400&family=Palette+Mosaic&family=Rock+Salt&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,800;1,9..144,300&family=Inter:wght@300;400&family=JetBrains+Mono:wght@300;400&family=Spectral:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Rock+Salt&display=swap" rel="stylesheet">
   <style>
     @font-face {
       font-family: 'InkHand';
@@ -34,7 +34,7 @@
     }
 
     [data-mode="work"] { --paper: #ffffff; --serif: 'Crimson Pro', Georgia, serif; }
-    [data-mode="zen"]  { --paper: #ebebeb; --serif: 'Palette Mosaic', Georgia, serif; }
+    [data-mode="zen"]  { --paper: #ebebeb; --serif: 'Spectral', Georgia, serif; }
 
     html { scroll-behavior: smooth; }
 
@@ -124,8 +124,8 @@
       color: #2e3d7e;
     }
     [data-mode="zen"] .nav-name {
-      font-family: 'Palette Mosaic', Georgia, serif;
-      color: #744848;
+      font-family: 'Spectral', Georgia, serif;
+      color: var(--ink);
     }
     .nav-links {
       display: flex;
@@ -201,7 +201,7 @@
     .hero-name-zen {
       font-weight: 300;
       font-style: normal;
-      text-transform: uppercase;
+      text-transform: none;
       color: #111111;
     }
     .cursor {
@@ -304,7 +304,7 @@
     }
     [data-mode="zen"] .section-label,
     [data-mode="zen"] .about-subhead {
-      font-family: 'Palette Mosaic', Georgia, serif;
+      font-family: 'Spectral', Georgia, serif;
       font-size: 0.88rem;
       font-weight: 400;
       letter-spacing: 0.02em;
@@ -600,31 +600,31 @@ const data = {
 };
 
 // Zen stamp: instant appearance, no fade. Delay = time since page load.
-// 3s between first letter and next within each group; 1.5–2s for following letters.
+// ~1s between first letter and next within each group; ~0.5s for following letters.
 // Small jitter added at runtime for human feel.
-// Groups: JACQ / UELINE / KOER / NER — 1200ms ink-reload pauses.
+// Groups: Jacq / ueline / Koer / ner — 400ms ink-reload pauses.
 const ZEN_LETTERS = [
-  // JACQ
-  { c:'J', o:1.00, d:0     },
-  { c:'A', o:0.82, d:3000  },
-  { c:'C', o:0.68, d:5000  },
-  { c:'Q', o:0.52, d:6500  },
-  // ink reload → UELINE (starts ~7700)
-  { c:'U', o:1.00, d:7700  },
-  { c:'E', o:0.80, d:10700 },
-  { c:'L', o:0.65, d:12700 },
-  { c:'I', o:0.55, d:14200 },
-  { c:'N', o:0.44, d:15500 },
-  { c:'E', o:0.32, d:16700 },
-  // line break after index 9 — ink reload → KOER (starts ~17900)
-  { c:'K', o:1.00, d:17900 },
-  { c:'O', o:0.84, d:20900 },
-  { c:'E', o:0.68, d:22900 },
-  { c:'R', o:0.52, d:24400 },
-  // ink reload → NER (starts ~25600)
-  { c:'N', o:1.00, d:25600 },
-  { c:'E', o:0.78, d:28600 },
-  { c:'R', o:0.58, d:30600 },
+  // Jacq
+  { c:'J', o:1.00, d:0    },
+  { c:'a', o:0.82, d:1000 },
+  { c:'c', o:0.68, d:1670 },
+  { c:'q', o:0.52, d:2170 },
+  // ink reload → ueline (starts ~2570)
+  { c:'u', o:1.00, d:2570 },
+  { c:'e', o:0.80, d:3570 },
+  { c:'l', o:0.65, d:4240 },
+  { c:'i', o:0.55, d:4740 },
+  { c:'n', o:0.44, d:5240 },
+  { c:'e', o:0.32, d:5570 },
+  // line break after index 9 — ink reload → Koer (starts ~5970)
+  { c:'K', o:1.00, d:5970 },
+  { c:'o', o:0.84, d:6970 },
+  { c:'e', o:0.68, d:7640 },
+  { c:'r', o:0.52, d:8140 },
+  // ink reload → ner (starts ~8540)
+  { c:'n', o:1.00, d:8540 },
+  { c:'e', o:0.78, d:9540 },
+  { c:'r', o:0.58, d:10200 },
 ];
 
 function HeroSection({ mode, onHeroComplete }) {
