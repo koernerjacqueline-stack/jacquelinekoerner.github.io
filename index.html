@@ -351,21 +351,56 @@
     }
 
     /* Now section */
-    .now-block p {
+    .now-timeline {
+      position: relative;
+      padding-left: 1.6rem;
+    }
+    .now-timeline::before {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: var(--rule);
+    }
+    .now-entry {
+      position: relative;
+      padding-bottom: 2rem;
+    }
+    .now-entry:last-child { padding-bottom: 0; }
+    .now-entry::before {
+      content: '';
+      position: absolute;
+      left: -1.6rem;
+      top: 7px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: 1.5px solid var(--muted);
+      background: var(--paper);
+    }
+    .now-entry:first-child::before {
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+    .now-entry p {
       font-size: 1rem;
       font-family: var(--sans);
       font-weight: 300;
       line-height: 1.8;
       color: var(--ink);
     }
-    .now-block p + p { margin-top: 1rem; }
+    .now-entry:not(:first-child) p {
+      color: var(--muted);
+    }
     .now-date {
       font-family: var(--mono);
       font-size: 0.6rem;
       font-weight: 300;
       color: var(--muted);
       letter-spacing: 0.1em;
-      margin-top: 1.5rem;
+      margin-top: 0.5rem;
     }
 
     /* Footer */
@@ -924,11 +959,15 @@ function App() {
 
         <section id="now" className="scroll-reveal">
           <div className="section-label">Now</div>
-          <div className="now-block">
-            <p>
-              Currently in Japan between chapters. Building this portfolio to learn by doing. Tiny experiments.
-            </p>
-            <div className="now-date">Updated March 2026 · Osaka</div>
+          <div className="now-timeline">
+            <div className="now-entry">
+              <p>Back in ATX. SXSW weekend and gearing up to start something new on Monday.</p>
+              <div className="now-date">March 14, 2026 · Austin</div>
+            </div>
+            <div className="now-entry">
+              <p>In Japan between chapters. Building this portfolio to learn by doing. Tiny experiments.</p>
+              <div className="now-date">March 2026 · Osaka</div>
+            </div>
           </div>
         </section>
       </div>
