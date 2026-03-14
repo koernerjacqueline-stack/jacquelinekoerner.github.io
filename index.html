@@ -351,22 +351,135 @@
     }
 
     /* Now section */
-    .now-block p {
+    .now-timeline {
+      position: relative;
+      padding-left: 1.6rem;
+    }
+    .now-timeline::before {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: var(--rule);
+    }
+    .now-entry {
+      position: relative;
+      padding-bottom: 2rem;
+    }
+    .now-entry:last-child { padding-bottom: 0; }
+    .now-entry::before {
+      content: '';
+      position: absolute;
+      left: -1.6rem;
+      top: 7px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: 1.5px solid var(--muted);
+      background: var(--paper);
+    }
+    .now-entry:first-child::before {
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+    .now-entry p {
       font-size: 1rem;
       font-family: var(--sans);
       font-weight: 300;
       line-height: 1.8;
       color: var(--ink);
     }
-    .now-block p + p { margin-top: 1rem; }
+    .now-entry:not(:first-child) p {
+      color: var(--muted);
+    }
     .now-date {
       font-family: var(--mono);
       font-size: 0.6rem;
       font-weight: 300;
       color: var(--muted);
       letter-spacing: 0.1em;
-      margin-top: 1.5rem;
+      margin-top: 0.5rem;
     }
+
+    /* Reading list (timeline style) */
+    .reading-timeline {
+      position: relative;
+      padding-left: 1.6rem;
+      margin-top: 0.5rem;
+    }
+    .reading-timeline::before {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: var(--rule);
+    }
+    .reading-entry {
+      position: relative;
+      padding-bottom: 1.4rem;
+    }
+    .reading-entry:last-child { padding-bottom: 0; }
+    .reading-entry::before {
+      content: '';
+      position: absolute;
+      left: -1.6rem;
+      top: 7px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: 1.5px solid var(--muted);
+      background: var(--paper);
+    }
+    .reading-entry:last-child::before {
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+    .reading-title {
+      font-family: var(--serif);
+      font-size: 0.95rem;
+      font-weight: 400;
+    }
+    [data-mode="zen"] .reading-title {
+      font-family: var(--sans);
+    }
+    .reading-author {
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: var(--muted);
+      margin-top: 0.1rem;
+    }
+    .reading-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 0.8rem;
+      margin-top: 0.25rem;
+    }
+    .reading-date {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+    .reading-links {
+      display: flex;
+      gap: 0.6rem;
+    }
+    .reading-links a {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      font-weight: 300;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    .reading-links a:hover { color: var(--ink); }
 
     /* Footer */
     footer {
@@ -462,6 +575,17 @@ const data = {
       meta: "A paper oracle, folded and unfolded.",
       url: "fortune-teller.html"
     },
+  ],
+  reading: [
+    { title: "The Psychology of Wealth", author: "Charles Richards", date: "Feb 14", link: "https://www.amazon.com/Psychology-Wealth-Understand-Relationship-Prosperity/dp/0071789294", linkLabel: "Amazon" },
+    { title: "Don't Believe Everything You Think", author: "Joseph Nguyen", date: "Feb 21", link: "https://josephnguyen.org/", linkLabel: "Author", spotify: "https://open.spotify.com/show/2mYF76NwIQLm8kduFc25VD" },
+    { title: "Beyond Thoughts", author: "Joseph Nguyen", date: "Feb 24", link: "https://josephnguyen.org/", linkLabel: "Author" },
+    { title: "The Barrington Guide to Property Management Accounting", author: "Phillip Barrington", date: "Feb 28", link: "https://www.amazon.com/Barrington-Guide-Property-Management-Accounting/dp/B0CV4BKRGG", linkLabel: "Amazon" },
+    { title: "Build to Rent", author: "Charlie Kriegel", date: "Mar 1", link: "https://www.amazon.com/Build-Rent-How-Institutional-Investor/dp/B0C436YL2Y", linkLabel: "Amazon" },
+    { title: "Ikigai", author: "Héctor García & Francesc Miralles", date: "Mar 3", link: "https://www.amazon.com/Ikigai-Japanese-Secret-Long-Happy/dp/0143130722", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/23x3EHbvOPmdbyvV99asFD" },
+    { title: "The Overthinker's Guide to Making Decisions", author: "Joseph Nguyen", date: "Mar 7", link: "https://josephnguyen.org/", linkLabel: "Author" },
+    { title: "Ender's Game", author: "Orson Scott Card", date: "Mar 10", link: "https://www.amazon.com/Enders-Ender-Quintet-Orson-Scott/dp/0812550706", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/7AeRwpjKg6vdHkkgOjJnT5" },
+    { title: "The First 90 Days", author: "Michael Watkins", date: "Mar 14", link: "https://www.amazon.com/First-90-Days-Strategies-Expanded/dp/1422188612", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/4fFs0XiLq3G5eOiodIe2Do" },
   ],
 };
 
@@ -929,11 +1053,32 @@ function App() {
 
         <section id="now" className="scroll-reveal">
           <div className="section-label">Now</div>
-          <div className="now-block">
-            <p>
-              Currently in Japan between chapters. Building this portfolio to learn by doing. Tiny experiments.
-            </p>
-            <div className="now-date">Updated March 2026 · Osaka</div>
+          <div className="now-timeline">
+            <div className="now-entry">
+              <p>Back in ATX. SXSW weekend and gearing up to start something new on Monday.</p>
+              <div className="now-date">March 14, 2026 · Austin</div>
+            </div>
+            <div className="now-entry">
+              <p>In Japan between chapters. Building this portfolio to learn by doing. Tiny experiments.</p>
+              <div className="now-date">March 2026 · Osaka</div>
+            </div>
+
+            <div className="about-subhead">What I'm Reading</div>
+            <div className="reading-timeline">
+              {data.reading.map((book, i) => (
+                <div key={i} className="reading-entry">
+                  <div className="reading-title">{book.title}</div>
+                  <div className="reading-author">{book.author}</div>
+                  <div className="reading-meta">
+                    <span className="reading-date">{book.date}</span>
+                    <span className="reading-links">
+                      {book.spotify && <a href={book.spotify} target="_blank" rel="noopener noreferrer">Spotify</a>}
+                      <a href={book.link} target="_blank" rel="noopener noreferrer">{book.linkLabel}</a>
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       </div>
