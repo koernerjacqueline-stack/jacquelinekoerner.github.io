@@ -249,7 +249,6 @@
       padding: 4rem 0;
       border-top: 1px solid var(--rule);
     }
-    section:first-of-type { border-top: none; }
 
     .section-label {
       font-family: var(--mono);
@@ -470,6 +469,9 @@
       padding: 4rem 0 3rem;
       border-top: 1px solid var(--rule);
     }
+    .footer-connect {
+      margin-bottom: 3rem;
+    }
     .footer-inner {
       display: flex;
       justify-content: space-between;
@@ -533,8 +535,8 @@ const data = {
   ],
   designWork: [
     {
-      title: "Figma Make — Design Portfolio",
-      meta: "jacquelinekoerner.figma.site",
+      title: "Product Design Work Samples",
+      meta: "Project examples ranging from process to research to deliverables and outcomes.",
       url: "https://jacquelinekoerner.figma.site"
     },
     {
@@ -966,7 +968,7 @@ function App() {
           {mode === 'work' ? (
             <div className="about-text">
               <p>
-                I'm a product and design leader with a background in wealth and asset management, focused on systems thinking and client experience across complex platforms. I thrive in discovery, using research methods and data to clarify direction, validate hypotheses, and drive strong business outcomes.
+                I've spent my career in product and design in start ups and small companies. I thrive in discovery, using research methods and data to clarify direction, validate hypotheses, and drive strong business outcomes.
               </p>
 
               <div className="about-subhead">Product Philosophy</div>
@@ -1055,14 +1057,14 @@ function App() {
             </div>
           </div>
 
-          <p className="about-text" style={{marginTop: '2.5rem'}}>
-            I'm always excited to connect with others who are passionate about design, strategy, and building meaningful products. If you're exploring new ideas or opportunities, I'd love to chat.
-          </p>
         </section>
       </div>
 
       <footer>
         <div className="container">
+          <p className="about-text footer-connect">
+            I'm always excited to connect with others who are passionate about design, strategy, and building meaningful products. If you're exploring new ideas or opportunities, I'd love to chat.
+          </p>
           <div className="footer-inner">
             <span className="footer-note">Jacqueline Koerner © 2026</span>
             <div className="footer-links">
