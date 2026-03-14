@@ -1,0 +1,51 @@
+<svg width="680" height="280" viewBox="0 0 680 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    text { font-family: 'Source Sans 3', system-ui, sans-serif; }
+    .label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; fill: #888; }
+    .item { font-size: 14px; font-weight: 300; fill: #1a1a1a; }
+    .heading { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; fill: #2a5298; }
+    .bar-pos { fill: #2a5298; opacity: 0.15; }
+    .bar-neg { fill: #1a1a1a; opacity: 0.08; }
+    .divider { stroke: #1a1a1a; stroke-opacity: 0.1; stroke-width: 1; }
+  </style>
+
+  <!-- Title -->
+  <text x="340" y="30" text-anchor="middle" class="label" style="font-size: 12px;">Relationship equity ledger</text>
+
+  <!-- Divider -->
+  <line x1="340" y1="50" x2="340" y2="260" class="divider" stroke-dasharray="4 4" />
+
+  <!-- Left: Deposits -->
+  <text x="170" y="68" text-anchor="middle" class="heading">Deposits</text>
+
+  <rect x="40" y="82" width="260" height="32" rx="4" class="bar-pos" />
+  <text x="56" y="103" class="item">Clear, honest pricing</text>
+
+  <rect x="40" y="122" width="220" height="32" rx="4" class="bar-pos" />
+  <text x="56" y="143" class="item">Transparent messaging</text>
+
+  <rect x="40" y="162" width="240" height="32" rx="4" class="bar-pos" />
+  <text x="56" y="183" class="item">Easy to leave (confidence signal)</text>
+
+  <rect x="40" y="202" width="200" height="32" rx="4" class="bar-pos" />
+  <text x="56" y="223" class="item">Useful product updates</text>
+
+  <!-- Right: Withdrawals -->
+  <text x="510" y="68" text-anchor="middle" class="heading" style="color: #1a1a1a; fill: #1a1a1a;">Withdrawals</text>
+
+  <rect x="380" y="82" width="260" height="32" rx="4" class="bar-neg" />
+  <text x="396" y="103" class="item">Hidden unsubscribe link</text>
+
+  <rect x="380" y="122" width="220" height="32" rx="4" class="bar-neg" />
+  <text x="396" y="143" class="item">Dark patterns in exit flow</text>
+
+  <rect x="380" y="162" width="240" height="32" rx="4" class="bar-neg" />
+  <text x="396" y="183" class="item">Guilt-based retention copy</text>
+
+  <rect x="380" y="202" width="200" height="32" rx="4" class="bar-neg" />
+  <text x="396" y="223" class="item">Irrelevant email frequency</text>
+
+  <!-- Balance line -->
+  <line x1="40" y1="252" x2="640" y2="252" class="divider" />
+  <text x="340" y="272" text-anchor="middle" class="label">Balance determines: return, recommend, or never engage again</text>
+</svg>

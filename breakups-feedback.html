@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <script>(function(){document.documentElement.setAttribute('data-mode','work');})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Breakups Are Feedback — Jacqueline Koerner</title>
+  <link rel="icon" id="favicon" type="image/svg+xml" href="favicon-work.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Source+Sans+3:wght@300;400;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a1a;
+      --paper: #ffffff;
+      --paper-warm: #ebebeb;
+      --muted: #888;
+      --accent: #2a5298;
+      --serif: 'Crimson Pro', Georgia, serif;
+      --sans: 'Source Sans 3', system-ui, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      min-height: 100vh;
+      line-height: 1.7;
+      transition: background-color 0.5s ease;
+    }
+
+    [data-mode="zen"] body { background: var(--paper-warm); }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 2.5rem 0 0;
+    }
+
+    .back {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back:hover { color: var(--accent); }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-family: var(--serif);
+      font-weight: 300;
+      margin: 3rem 0 0.5rem;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .meta {
+      font-size: 0.72rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    .about-text {
+      font-size: 1.1rem;
+      font-family: var(--serif);
+      line-height: 1.8;
+    }
+    .about-text p + p { margin-top: 1.2rem; }
+
+    .about-subhead {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 2.5rem 0 0.5rem;
+    }
+
+    .map-wrap {
+      margin: 3rem 0;
+      padding: 2rem 0;
+      border-top: 1px solid rgba(28,26,23,0.1);
+      border-bottom: 1px solid rgba(28,26,23,0.1);
+    }
+    .map-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .map-caption {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 1rem;
+      font-family: var(--sans);
+    }
+
+    .map-wrap-row {
+      margin: 3rem 0;
+      padding: 2rem 0;
+      border-top: 1px solid rgba(28,26,23,0.1);
+      border-bottom: 1px solid rgba(28,26,23,0.1);
+      display: flex;
+      gap: 1rem;
+    }
+    .map-wrap-row img {
+      flex: 1;
+      min-width: 0;
+      height: auto;
+      display: block;
+    }
+
+    pre {
+      background: #f6f6f6;
+      border-radius: 6px;
+      padding: 1.2rem 1.5rem;
+      overflow-x: auto;
+      margin: 2rem 0;
+      border: 1px solid rgba(28,26,23,0.08);
+    }
+    code {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--ink);
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a href="index.html" class="back">&larr; Back to portfolio</a>
+    </div>
+
+    <h1>Breakups Are Feedback</h1>
+    <p class="subtitle">The unsubscribe link was technically there, but it took a second look to confirm it existed</p>
+    <p class="meta">Product observations &middot; Austin &middot; March 15, 2026</p>
+
+    <div class="about-text">
+      <p>
+        It sat at the bottom of the email in tiny text, colored just close enough to the background that it almost disappeared. I had bought the board game during the holidays as a gift for my family and it turned out to be a huge hit. The company only sells this one game and its expansion pack, and I already owned both, so the marketing emails no longer served much purpose.
+      </p>
+    </div>
+
+    <div class="map-wrap">
+      <img src="breakups-hidden-link.jpg" alt="An email footer with an unsubscribe link nearly invisible against the background color." />
+      <p class="map-caption">The unsubscribe link, technically present.</p>
+    </div>
+
+    <div class="about-text">
+      <p>
+        Once I clicked it, the experience changed completely. The unsubscribe page asked for my email and offered two buttons, unsubscribe or update your preferences. One click later the process was finished.
+      </p>
+    </div>
+
+    <div class="map-wrap-row">
+      <img src="breakups-unsubscribe-page.jpg" alt="An unsubscribe page with an email field and two buttons: unsubscribe or update preferences." />
+      <img src="breakups-confirmation.jpg" alt="A confirmation page after unsubscribing." />
+    </div>
+
+    <div class="about-text">
+      <p>
+        For something the company clearly did not want me to do, they made it surprisingly easy once I found it. The friction was not in the process itself. It was in discovering that the option existed.
+      </p>
+
+      <div class="about-subhead">Leaving</div>
+      <p>
+        When someone decides to stop using a product they are providing the clearest signal they ever will about its value. They have experienced the system long enough to form expectations, and something about the relationship no longer works. That moment contains information about what changed, what was missing, or what was no longer useful.
+      </p>
+      <p>
+        Many products treat this moment as something to suppress rather than understand. The goal becomes delaying the decision instead of learning from it. A hidden unsubscribe link does not make leaving impossible. It simply makes it inconvenient enough that some people postpone the task and remain on the list longer. In the short term this works. In the long term it prevents learning.
+      </p>
+      <p>
+        In healthy relationships endings produce clarity. People explain what worked and what did not. In less healthy ones they disengage quietly because the conversation feels pointless. Products create the same dynamic. When leaving feels adversarial, people conserve energy and exit silently.
+      </p>
+
+      <div class="about-subhead">The relationship ledger</div>
+      <p>
+        Every interaction between a product and its users accumulates trust or withdraws from it. Clear pricing builds trust. Honest messaging builds trust. Making it easy to leave also builds trust because it signals confidence that people will return if the product continues to deliver value.
+      </p>
+      <p>
+        Friction in the exit flow does the opposite.
+      </p>
+      <p>
+        Over time these interactions function like a ledger. The balance determines whether someone returns later, recommends the product to a friend, or decides never to engage again.
+      </p>
+    </div>
+
+    <div class="map-wrap">
+      <img src="breakups-ledger.svg" alt="Diagram showing a relationship equity ledger: trust-building interactions on one side, friction on the other." />
+      <p class="map-caption">The relationship equity ledger.</p>
+    </div>
+
+    <div class="about-text">
+      <p>
+        This dynamic becomes even more visible as agents begin acting on behalf of users. A person might postpone unsubscribing because it requires locating the link or navigating settings pages. An agent executing a user's intent will simply perform the action immediately. What appears today as retention may simply be delay.
+      </p>
+      <p>
+        More importantly, unless systems are designed to capture it, agents will leave without explaining why. Instead of thinking about cancellation as a final screen in a user interface, it can be treated as a structured interaction between systems where reasoning travels with the action.
+      </p>
+    </div>
+
+    <pre><code>POST /subscription/cancel
+{
+  "reason_code": "already_purchased",
+  "confidence": 0.92
+}</code></pre>
+
+    <div class="map-wrap">
+      <img src="breakups-signal-flow.svg" alt="Diagram showing the flow from intent to cancellation to signal to learning." />
+      <p class="map-caption">Intent, cancellation, signal, learning.</p>
+    </div>
+
+    <div class="about-text">
+      <p>
+        Even simple signals such as cost, lack of use, or missing capability would dramatically improve how quickly products learn. Cancellation is not just the end of a relationship with a system. It is a moment where the system can understand what it failed to provide and what might be built differently next.
+      </p>
+      <p>
+        The systems that improve fastest are the ones that learn from their breakups.
+      </p>
+    </div>
+
+    <div style="height: 6rem;"></div>
+  </div>
+
+<script>(function(){var fav=document.getElementById('favicon');if(fav)fav.href='favicon-work.svg';})();</script>
+
+</body>
+</html>
