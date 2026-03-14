@@ -403,6 +403,46 @@
       margin-top: 0.5rem;
     }
 
+    /* Reading list */
+    .reading-list { margin-top: 0.5rem; }
+    .reading-item {
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .reading-item:last-child { border-bottom: none; }
+    .reading-title {
+      font-family: var(--serif);
+      font-size: 0.95rem;
+      font-weight: 400;
+    }
+    .reading-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 0.8rem;
+      margin-top: 0.25rem;
+    }
+    .reading-date {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+    .reading-links {
+      display: flex;
+      gap: 0.6rem;
+    }
+    .reading-links a {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      font-weight: 300;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    .reading-links a:hover { color: var(--ink); }
+
     /* Footer */
     footer {
       padding: 4rem 0 3rem;
@@ -492,6 +532,22 @@ const data = {
       meta: "Nine ink koi, slowly swimming.",
       url: "koi-study.html"
     },
+    {
+      title: "Fortune Teller",
+      meta: "A paper oracle, folded and unfolded.",
+      url: "fortune-teller.html"
+    },
+  ],
+  reading: [
+    { title: "The First 90 Days", date: "Mar 14", amazon: "https://www.amazon.com/First-90-Days-Strategies-Expanded/dp/1422188612", spotify: "https://open.spotify.com/show/4fFs0XiLq3G5eOiodIe2Do" },
+    { title: "Ender's Game", date: "Mar 10", amazon: "https://www.amazon.com/Enders-Ender-Quintet-Orson-Scott/dp/0812550706", spotify: "https://open.spotify.com/show/7AeRwpjKg6vdHkkgOjJnT5" },
+    { title: "The Overthinker's Guide to Making Decisions", date: "Mar 7", amazon: "https://www.amazon.com/Overthinkers-Guide-Making-Decisions-without/dp/B0DXD7TML1" },
+    { title: "Ikigai: The Japanese Secret to a Long and Happy Life", date: "Mar 3", amazon: "https://www.amazon.com/Ikigai-Japanese-Secret-Long-Happy/dp/0143130722", spotify: "https://open.spotify.com/show/23x3EHbvOPmdbyvV99asFD" },
+    { title: "Build to Rent: A How-To Guide for the Institutional Investor", date: "Mar 1", amazon: "https://www.amazon.com/Build-Rent-How-Institutional-Investor/dp/B0C436YL2Y" },
+    { title: "The Barrington Guide to Property Management Accounting", date: "Feb 28", amazon: "https://www.amazon.com/Barrington-Guide-Property-Management-Accounting/dp/B0CV4BKRGG" },
+    { title: "Beyond Thoughts", date: "Feb 24", amazon: "https://www.amazon.com/beyond-thoughts-exploration-Beyond-Suffering/dp/B0BJTVH33L" },
+    { title: "Don't Believe Everything You Think", date: "Feb 21", amazon: "https://www.amazon.com/Dont-Believe-Everything-Think-Expanded/dp/B0D47VYQMY", spotify: "https://open.spotify.com/show/2mYF76NwIQLm8kduFc25VD" },
+    { title: "The Psychology of Wealth", date: "Feb 14", amazon: "https://www.amazon.com/Psychology-Wealth-Understand-Relationship-Prosperity/dp/0071789294" },
   ],
 };
 
@@ -967,6 +1023,22 @@ function App() {
             <div className="now-entry">
               <p>In Japan between chapters. Building this portfolio to learn by doing. Tiny experiments.</p>
               <div className="now-date">March 2026 · Osaka</div>
+            </div>
+
+            <div className="about-subhead">What I'm Reading</div>
+            <div className="reading-list">
+              {data.reading.map((book, i) => (
+                <div key={i} className="reading-item">
+                  <div className="reading-title">{book.title}</div>
+                  <div className="reading-meta">
+                    <span className="reading-date">{book.date}</span>
+                    <span className="reading-links">
+                      {book.spotify && <a href={book.spotify} target="_blank" rel="noopener noreferrer">spotify</a>}
+                      <a href={book.amazon} target="_blank" rel="noopener noreferrer">amazon</a>
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
