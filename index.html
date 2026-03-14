@@ -20,7 +20,7 @@
 
     :root {
       --ink: #111111;
-      --paper: #ebebeb;
+      --paper: #faf9f7;
       --muted: #909090;
       --rule: rgba(0,0,0,0.1);
       --serif: 'Crimson Pro', Georgia, serif;
@@ -29,7 +29,7 @@
     }
 
     [data-mode="work"] { --paper: #ffffff; --serif: 'Crimson Pro', Georgia, serif; --accent: #2e3d7e; }
-    [data-mode="zen"]  { --paper: #ebebeb; --serif: 'Crimson Pro', Georgia, serif; --accent: #744848; }
+    [data-mode="zen"]  { --paper: #faf9f7; --serif: 'Crimson Pro', Georgia, serif; --accent: #003314; }
 
     html { scroll-behavior: smooth; }
 
@@ -52,6 +52,10 @@
       opacity: 0.045;
       pointer-events: none;
       z-index: 9999;
+    }
+    [data-mode="zen"] body::after {
+      opacity: 0.08;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
     }
 
     #root { position: relative; }
@@ -191,8 +195,9 @@
       font-weight: 400;
       font-style: normal;
       text-transform: none;
-      color: var(--accent);
+      color: var(--ink);
     }
+    [data-mode="zen"] .nav-name { color: #744848; }
     .cursor {
       display: inline-block;
       font-weight: 300;

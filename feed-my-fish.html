@@ -11,10 +11,10 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --paper: #ebebeb;
+      --paper: #faf9f7;
       --ink: #1a1a1a;
       --muted: #999;
-      --accent: #744848;
+      --accent: #003314;
       --serif: 'Crimson Pro', Georgia, serif;
       --sans: 'Source Sans 3', system-ui, sans-serif;
     }
@@ -623,7 +623,7 @@ function drawDoorSlide(progress) {
   const ease = 1 - Math.pow(1 - progress, 3);
   // Match bedroom door dimensions exactly: wx=W*0.10, ww=W*0.80
   const wx = W * 0.10, pw = W * 0.40;  // each panel = half the door width
-  const paper = themeName === 'night' ? '#0e1220' : themeName === 'dusk' ? '#2a1820' : '#ebebeb';
+  const paper = themeName === 'night' ? '#0e1220' : themeName === 'dusk' ? '#2a1820' : '#faf9f7';
 
   const drawPanel = (x) => {
     ctx.lineCap = 'square'; ctx.lineJoin = 'miter';
