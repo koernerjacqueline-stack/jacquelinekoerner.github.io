@@ -483,6 +483,15 @@
       font-weight: 300;
       color: var(--muted);
       letter-spacing: 0.06em;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .footer-headshot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      object-fit: cover;
     }
     .footer-links {
       display: flex;
@@ -496,8 +505,13 @@
       text-decoration: none;
       letter-spacing: 0.04em;
       transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
     }
     .footer-links a:hover { color: var(--ink); }
+    .footer-links a svg { width: 13px; height: 13px; }
+    .footer-links a:hover svg { fill: var(--ink); }
 
     @media (max-width: 520px) {
       .hero { padding: 5rem 0 3rem; }
@@ -524,19 +538,19 @@ const data = {
   writing: [
     {
       title: "Nobody Asked for Denim Ice Cream",
-      meta: "Product observations · Enoshima · March 2026",
+      meta: "Product observations · Enoshima · March 11, 2026",
       url: "denim-soft-serve.html"
     },
     {
       title: "Our Guides Forgot the Foyer",
-      meta: "Tiny experiments · Osaka · March 2026",
+      meta: "Tiny experiments · Osaka · March 8, 2026",
       url: "getting-online.html"
     },
   ],
   writingZen: [
     {
       title: "I'm a Legal Alien",
-      meta: "Personal observations · Austin · March 2026",
+      meta: "Personal observations · Austin · March 14, 2026",
       url: "legal-alien.html"
     },
   ],
@@ -1074,10 +1088,10 @@ function App() {
               : "I love connecting with people who are curious about learning, art, neuroscience, or navigating change. If you're up for a deep conversation or a good-faith debate, I'd love to chat."}
           </p>
           <div className="footer-inner">
-            <span className="footer-note">Jacqueline Koerner © 2026</span>
+            <span className="footer-note"><img className="footer-headshot" src={mode === 'work' ? 'headshot-work.jpg' : 'headshot-zen.jpg'} alt="" />Jacqueline Koerner © 2026</span>
             <div className="footer-links">
-              <a href="https://jacquelinekoerner.figma.site" target="_blank" rel="noopener noreferrer">Figma</a>
-              <a href="mailto:koernerjacqueline@gmail.com">Email</a>
+              <a href="mailto:koernerjacqueline@gmail.com"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Email</a>
+              {mode === 'work' && <a href="https://www.linkedin.com/in/jacquelinekoerner/" target="_blank" rel="noopener noreferrer"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>LinkedIn</a>}
             </div>
           </div>
         </div>
