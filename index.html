@@ -403,76 +403,82 @@
       margin-top: 0.5rem;
     }
 
-    /* Reading list (timeline style) */
-    .reading-timeline {
-      position: relative;
-      padding-left: 1.6rem;
-      margin-top: 0.5rem;
+    /* Reading carousel */
+    .reading-section {
+      margin-top: 2.5rem;
     }
-    .reading-timeline::before {
-      content: '';
-      position: absolute;
-      left: 4px;
-      top: 8px;
-      bottom: 8px;
-      width: 1px;
-      background: var(--rule);
+    .reading-carousel {
+      display: flex;
+      gap: 1.5rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.5rem;
+      margin: 0 -2rem;
+      padding-left: 2rem;
+      padding-right: 2rem;
+      scrollbar-width: none;
     }
-    .reading-entry {
-      position: relative;
-      padding-bottom: 1.4rem;
+    .reading-carousel::-webkit-scrollbar { display: none; }
+    .reading-card {
+      flex: 0 0 130px;
+      scroll-snap-align: start;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
     }
-    .reading-entry:last-child { padding-bottom: 0; }
-    .reading-entry::before {
-      content: '';
-      position: absolute;
-      left: -1.6rem;
-      top: 7px;
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      border: 1.5px solid var(--muted);
-      background: var(--paper);
+    .reading-cover {
+      width: 130px;
+      height: 195px;
+      object-fit: cover;
+      border-radius: 2px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      transition: box-shadow 0.2s, transform 0.2s;
     }
-    .reading-entry:last-child::before {
-      background: var(--ink);
-      border-color: var(--ink);
+    .reading-card:hover .reading-cover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      transform: translateY(-2px);
     }
     .reading-title {
       font-family: var(--serif);
-      font-size: 0.95rem;
+      font-size: 0.75rem;
       font-weight: 400;
+      margin-top: 0.6rem;
+      line-height: 1.3;
     }
     [data-mode="zen"] .reading-title {
       font-family: var(--sans);
     }
     .reading-author {
       font-family: var(--sans);
-      font-size: 0.75rem;
+      font-size: 0.6rem;
       font-weight: 300;
       color: var(--muted);
-      margin-top: 0.1rem;
+      margin-top: 0.15rem;
     }
     .reading-meta {
       display: flex;
       align-items: baseline;
-      gap: 0.8rem;
-      margin-top: 0.25rem;
+      gap: 0.5rem;
+      margin-top: 0.2rem;
+      flex-wrap: wrap;
     }
     .reading-date {
       font-family: var(--mono);
-      font-size: 0.55rem;
+      font-size: 0.5rem;
       font-weight: 300;
       color: var(--muted);
       letter-spacing: 0.06em;
     }
     .reading-links {
       display: flex;
-      gap: 0.6rem;
+      gap: 0.4rem;
     }
-    .reading-links a {
+    .reading-links a,
+    .reading-links span {
       font-family: var(--mono);
-      font-size: 0.55rem;
+      font-size: 0.5rem;
       font-weight: 300;
       color: var(--muted);
       text-decoration: none;
@@ -577,15 +583,15 @@ const data = {
     },
   ],
   reading: [
-    { title: "The Psychology of Wealth", author: "Charles Richards", date: "Feb 14", link: "https://www.amazon.com/Psychology-Wealth-Understand-Relationship-Prosperity/dp/0071789294", linkLabel: "Amazon" },
-    { title: "Don't Believe Everything You Think", author: "Joseph Nguyen", date: "Feb 21", link: "https://josephnguyen.org/", linkLabel: "Author", spotify: "https://open.spotify.com/show/2mYF76NwIQLm8kduFc25VD" },
-    { title: "Beyond Thoughts", author: "Joseph Nguyen", date: "Feb 24", link: "https://josephnguyen.org/", linkLabel: "Author" },
-    { title: "The Barrington Guide to Property Management Accounting", author: "Phillip Barrington", date: "Feb 28", link: "https://www.amazon.com/Barrington-Guide-Property-Management-Accounting/dp/B0CV4BKRGG", linkLabel: "Amazon" },
-    { title: "Build to Rent", author: "Charlie Kriegel", date: "Mar 1", link: "https://www.amazon.com/Build-Rent-How-Institutional-Investor/dp/B0C436YL2Y", linkLabel: "Amazon" },
-    { title: "Ikigai", author: "Héctor García & Francesc Miralles", date: "Mar 3", link: "https://www.amazon.com/Ikigai-Japanese-Secret-Long-Happy/dp/0143130722", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/23x3EHbvOPmdbyvV99asFD" },
-    { title: "The Overthinker's Guide to Making Decisions", author: "Joseph Nguyen", date: "Mar 7", link: "https://josephnguyen.org/", linkLabel: "Author" },
-    { title: "Ender's Game", author: "Orson Scott Card", date: "Mar 10", link: "https://www.amazon.com/Enders-Ender-Quintet-Orson-Scott/dp/0812550706", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/7AeRwpjKg6vdHkkgOjJnT5" },
-    { title: "The First 90 Days", author: "Michael Watkins", date: "Mar 14", link: "https://www.amazon.com/First-90-Days-Strategies-Expanded/dp/1422188612", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/4fFs0XiLq3G5eOiodIe2Do" },
+    { title: "The Psychology of Wealth", author: "Charles Richards", date: "Feb 14", cover: "https://m.media-amazon.com/images/P/0071789294.jpg", link: "https://www.amazon.com/Psychology-Wealth-Understand-Relationship-Prosperity/dp/0071789294", linkLabel: "Amazon" },
+    { title: "Don't Believe Everything You Think", author: "Joseph Nguyen", date: "Feb 21", cover: "https://m.media-amazon.com/images/P/B09WPP7R6S.jpg", link: "https://josephnguyen.org/", linkLabel: "Author", spotify: "https://open.spotify.com/show/2mYF76NwIQLm8kduFc25VD" },
+    { title: "Beyond Thoughts", author: "Joseph Nguyen", date: "Feb 24", cover: "https://m.media-amazon.com/images/P/B0BJTVH33L.jpg", link: "https://josephnguyen.org/", linkLabel: "Author" },
+    { title: "The Barrington Guide to Property Management Accounting", author: "Phillip Barrington", date: "Feb 28", cover: "https://m.media-amazon.com/images/P/B0CV4BKRGG.jpg", link: "https://www.amazon.com/Barrington-Guide-Property-Management-Accounting/dp/B0CV4BKRGG", linkLabel: "Amazon" },
+    { title: "Build to Rent", author: "Charlie Kriegel", date: "Mar 1", cover: "https://m.media-amazon.com/images/P/B0C436YL2Y.jpg", link: "https://www.amazon.com/Build-Rent-How-Institutional-Investor/dp/B0C436YL2Y", linkLabel: "Amazon" },
+    { title: "Ikigai", author: "Héctor García & Francesc Miralles", date: "Mar 3", cover: "https://m.media-amazon.com/images/P/0143130722.jpg", link: "https://www.amazon.com/Ikigai-Japanese-Secret-Long-Happy/dp/0143130722", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/23x3EHbvOPmdbyvV99asFD" },
+    { title: "The Overthinker's Guide to Making Decisions", author: "Joseph Nguyen", date: "Mar 7", cover: "https://m.media-amazon.com/images/P/B0DXD7TML1.jpg", link: "https://josephnguyen.org/", linkLabel: "Author" },
+    { title: "Ender's Game", author: "Orson Scott Card", date: "Mar 10", cover: "https://m.media-amazon.com/images/P/0812550706.jpg", link: "https://www.amazon.com/Enders-Ender-Quintet-Orson-Scott/dp/0812550706", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/7AeRwpjKg6vdHkkgOjJnT5" },
+    { title: "The First 90 Days", author: "Michael Watkins", date: "Mar 14", cover: "https://m.media-amazon.com/images/P/1422188612.jpg", link: "https://www.amazon.com/First-90-Days-Strategies-Expanded/dp/1422188612", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/4fFs0XiLq3G5eOiodIe2Do" },
   ],
 };
 
@@ -1063,20 +1069,26 @@ function App() {
               <div className="now-date">March 2026 · Osaka</div>
             </div>
 
-            <div className="about-subhead">What I'm Reading</div>
-            <div className="reading-timeline">
-              {data.reading.map((book, i) => (
-                <div key={i} className="reading-entry">
+          </div>
+
+          <div className="reading-section">
+            <div className="about-subhead" style={{marginTop: 0}}>What I'm Reading</div>
+            <div className="reading-carousel">
+              {data.reading.slice().reverse().map((book, i) => (
+                <a key={i} className="reading-card" href={book.link} target="_blank" rel="noopener noreferrer">
+                  <img className="reading-cover" src={book.cover} alt={book.title} loading="lazy" />
                   <div className="reading-title">{book.title}</div>
                   <div className="reading-author">{book.author}</div>
                   <div className="reading-meta">
                     <span className="reading-date">{book.date}</span>
                     <span className="reading-links">
-                      {book.spotify && <a href={book.spotify} target="_blank" rel="noopener noreferrer">Spotify</a>}
-                      <a href={book.link} target="_blank" rel="noopener noreferrer">{book.linkLabel}</a>
+                      {book.spotify && (
+                        <a href={book.spotify} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>Spotify</a>
+                      )}
+                      <span>{book.linkLabel}</span>
                     </span>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           </div>
