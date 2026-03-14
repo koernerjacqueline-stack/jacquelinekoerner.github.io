@@ -523,11 +523,6 @@ const { useState, useEffect, useRef } = React;
 const data = {
   writing: [
     {
-      title: "I'm a Legal Alien",
-      meta: "Personal observations · Austin · March 2026",
-      url: "legal-alien.html"
-    },
-    {
       title: "Nobody Asked for Denim Ice Cream",
       meta: "Product observations · Enoshima · March 2026",
       url: "denim-soft-serve.html"
@@ -536,6 +531,13 @@ const data = {
       title: "Our Guides Forgot the Foyer",
       meta: "Tiny experiments · Osaka · March 2026",
       url: "getting-online.html"
+    },
+  ],
+  writingZen: [
+    {
+      title: "I'm a Legal Alien",
+      meta: "Personal observations · Austin · March 2026",
+      url: "legal-alien.html"
     },
   ],
   designWork: [
@@ -1000,14 +1002,12 @@ function App() {
           )}
         </section>
 
-        {mode === 'work' && (
-          <section id="writing" className="scroll-reveal">
-            <div className="section-label">Writing</div>
-            <div className="cards">
-              {data.writing.map((item, i) => <Card key={i} {...item} />)}
-            </div>
-          </section>
-        )}
+        <section id="writing" className="scroll-reveal">
+          <div className="section-label">Writing</div>
+          <div className="cards">
+            {(mode === 'work' ? data.writing : data.writingZen).map((item, i) => <Card key={i} {...item} />)}
+          </div>
+        </section>
 
         <SketchAnim key={`sk2-${mode}`} id="sk2" viewBox="0 0 800 450" ratio="16/9" label="Undulation"
           heroComplete={heroComplete}
