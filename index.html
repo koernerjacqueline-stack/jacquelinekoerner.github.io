@@ -200,7 +200,7 @@
       margin-left: 2px;
     }
     .hero-desc {
-      font-size: 1.1rem;
+      font-size: 0.95rem;
       font-family: var(--sans);
       font-weight: 300;
       font-style: normal;
@@ -263,7 +263,7 @@
 
     /* About */
     .about-text {
-      font-size: 1rem;
+      font-size: 0.88rem;
       font-family: var(--sans);
       font-weight: 300;
       line-height: 1.8;
@@ -311,7 +311,7 @@
     .card:hover { opacity: 0.55; }
     .card-left { flex: 1; }
     .card-title {
-      font-size: 1.15rem;
+      font-size: 1.28rem;
       font-family: var(--serif);
       font-weight: 400;
       margin-bottom: 0.35rem;
@@ -365,7 +365,7 @@
       border-color: var(--ink);
     }
     .now-entry p {
-      font-size: 1rem;
+      font-size: 0.88rem;
       font-family: var(--sans);
       font-weight: 300;
       line-height: 1.8;
@@ -533,12 +533,12 @@ const data = {
   ],
   designWork: [
     {
-      title: "Figma Make — Design portfolio",
+      title: "Figma Make — Design Portfolio",
       meta: "jacquelinekoerner.figma.site",
       url: "https://jacquelinekoerner.figma.site"
     },
     {
-      title: "Split-flap display",
+      title: "Split-Flap Display",
       meta: "Split flap display animation created with Claude Code + Cursor.",
       url: "split-flap.html"
     },
@@ -573,37 +573,9 @@ const data = {
   ],
 };
 
-// Zen stamp: instant appearance, no fade. Delay = time since page load.
-// ~1s between first letter and next within each group; ~0.5s for following letters.
-// Small jitter added at runtime for human feel.
-// Groups: Jacq / ueline / Koer / ner — 400ms ink-reload pauses.
-const ZEN_LETTERS = [
-  // Jacq
-  { c:'J', o:1.00, d:0    },
-  { c:'a', o:0.82, d:1000 },
-  { c:'c', o:0.68, d:1670 },
-  { c:'q', o:0.52, d:2170 },
-  // ink reload → ueline (starts ~2570)
-  { c:'u', o:1.00, d:2570 },
-  { c:'e', o:0.80, d:3570 },
-  { c:'l', o:0.65, d:4240 },
-  { c:'i', o:0.55, d:4740 },
-  { c:'n', o:0.44, d:5240 },
-  { c:'e', o:0.32, d:5570 },
-  // line break after index 9 — ink reload → Koer (starts ~5970)
-  { c:'K', o:1.00, d:5970 },
-  { c:'o', o:0.84, d:6970 },
-  { c:'e', o:0.68, d:7640 },
-  { c:'r', o:0.52, d:8140 },
-  // ink reload → ner (starts ~8540)
-  { c:'n', o:1.00, d:8540 },
-  { c:'e', o:0.78, d:9540 },
-  { c:'r', o:0.58, d:10200 },
-];
-
 function HeroSection({ mode, onHeroComplete }) {
   const workDesc = 'Product and design leader. Systems thinker. Focused on client experience across complex platforms.';
-  const zenDesc = 'Artist, reader, wanderer. Interests and creative pursuits, copy coming soon.';
+  const zenDesc = 'Artist, reader, wanderer. Running, painting, diving, and sailing through life.';
   const WORK_NAME = 'Jacqueline\nKoerner';
   const ZEN_NAME = 'Jacqueline\nKoerner';
 
@@ -879,7 +851,7 @@ function buildWavesWork(g) {
     for (let x = 34; x <= 770; x += 4) d += ` L${x},${f(y + Math.sin(x*fr+ph)*amp)}`;
     const p = svgEl('path', { d, fill:'none', stroke:`rgba(20,20,20,${f(rnd(.2,.55))})`,
       'stroke-width':f(rnd(.7,2.0)), 'stroke-linecap':'round', 'stroke-linejoin':'round' });
-    prep(p, 760, f(rnd(3.5,5.5)), f(i*.28));
+    prep(p, 760, f(rnd(1.5,2.5)), f(i*.12));
     grp.appendChild(p);
   }
   g.appendChild(grp);
@@ -982,7 +954,7 @@ function App() {
       <div className="container">
         <HeroSection mode={mode} onHeroComplete={() => setHeroComplete(true)} />
 
-        <SketchAnim key={`sk1-${mode}`} id="sk1" viewBox="0 0 600 600" ratio="1/1" label="Grid Study I"
+        <SketchAnim key={`sk1-${mode}`} id="sk1" viewBox="0 0 600 600" ratio="1/1" label="Grid Study"
           heroComplete={heroComplete}
           filterEl={mode === 'zen' ? <filter id="sk-f1" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".08" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
           buildFn={mode === 'work' ? buildGridWork : buildGrid} />
@@ -1009,10 +981,15 @@ function App() {
               <p>
                 I grow others through curiosity, respect, and caring personally, with the goal of expanding individual autonomy and modeling behaviors that foster alignment. This approach enables thoughtfully interconnected work that is greater than the sum of its parts.
               </p>
+
+              <p style={{marginTop: '1.8rem'}}>
+                I'm always excited to connect with others who are passionate about design, strategy, and building meaningful products. If you're exploring new ideas or opportunities, I'd love to chat.
+              </p>
             </div>
           ) : (
             <div className="about-text">
-              <p>Interests, creative pursuits, and what I'm like outside of work. Copy coming soon.</p>
+              <p>Outside of work, you can usually find me running and lifting, reading and writing, painting, or on the water scuba diving or sailing. I also enjoy teaching and mentoring in UX, and I'm always looking for ways to give back.</p>
+              <p>I'm currently based in Austin, TX, with my boyfriend and two cats.</p>
             </div>
           )}
         </section>
@@ -1036,14 +1013,9 @@ function App() {
           <div className="cards">
             {(mode === 'work' ? data.designWork : data.designZen).map((item, i) => <Card key={i} {...item} />)}
           </div>
-          {mode === 'work' && (
-            <p style={{marginTop:'1.5rem', fontFamily:'var(--mono)', fontSize:'0.62rem', color:'var(--muted)', lineHeight:1.6}}>
-              Explorations in Figma — interfaces, concepts, prototypes.
-            </p>
-          )}
         </section>
 
-        <SketchAnim key={`sk3-${mode}`} id="sk3" viewBox="0 0 600 600" ratio="4/3" label="Vertical Field"
+        <SketchAnim key={`sk3-${mode}`} id="sk3" viewBox={mode === 'work' ? "0 100 600 380" : "0 30 600 460"} ratio={mode === 'work' ? "600/380" : "600/460"} label="Vertical Field"
           heroComplete={heroComplete}
           filterEl={mode === 'zen' ? <filter id="sk-f3" x="-4%" y="-4%" width="108%" height="108%"><feTurbulence type="turbulence" baseFrequency=".02 .08" numOctaves="5" seed="12" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
           buildFn={mode === 'work' ? buildVertWork : buildVert} />
