@@ -29,7 +29,7 @@
     }
 
     [data-mode="work"] { --paper: #ffffff; --serif: 'Crimson Pro', Georgia, serif; --accent: #2e3d7e; }
-    [data-mode="zen"]  { --paper: #ebebeb; --serif: 'Spectral', Georgia, serif; --accent: #744848; }
+    [data-mode="zen"]  { --paper: #ebebeb; --serif: 'Crimson Pro', Georgia, serif; --accent: #744848; }
 
     html { scroll-behavior: smooth; }
 
@@ -178,7 +178,7 @@
       display: none;
     }
     .hero-name {
-      font-size: clamp(2.4rem, 6.6vw, 4.56rem);
+      font-size: clamp(2.4rem, 7.5vw, 5.2rem);
       font-family: var(--serif);
       line-height: 1.2;
     }
@@ -575,7 +575,7 @@ const data = {
 
 function HeroSection({ mode, onHeroComplete }) {
   const workDesc = 'Product and design leader. Systems thinker. Focused on client experience across complex platforms.';
-  const zenDesc = 'Artist, reader, wanderer. Running, painting, diving, and sailing through life.';
+  const zenDesc = 'Reader, writer, listener, artist. Life long learner and frequent nomad. Happiest when active, in nature and with animals.';
   const WORK_NAME = 'Jacqueline Koerner';
   const ZEN_NAME = 'Jacqueline Koerner';
 
@@ -780,7 +780,9 @@ function buildGrid(g) {
     const x2=cx+w/2+rnd(-2,2), y2=cy+h/2+rnd(-2,2), x3=cx-w/2+rnd(-2,2), y3=cy+h/2+rnd(-2,2);
     for (let i = 0, n = ri(rnd,3,5); i < n; i++) {
       const dx=rnd(-2,2), dy=rnd(-1,1);
-      const p = svgEl('path', { d:`M${f(x0+dx)},${f(y0+dy)} L${f(x1+dx)},${f(y1+dy)} L${f(x2+dx)},${f(y2+dy)} L${f(x3+dx)},${f(y3+dy)} Z`, fill:'none', stroke:`rgba(116,72,72,${f(rnd(.25,.65))})`, 'stroke-width':f(rnd(1.2,2.8)), 'stroke-linecap':'round' });
+      const colors = [[116,72,72],[160,130,100],[140,110,80],[120,110,105]];
+      const cl = colors[Math.floor(rnd(0,colors.length-0.01))];
+      const p = svgEl('path', { d:`M${f(x0+dx)},${f(y0+dy)} L${f(x1+dx)},${f(y1+dy)} L${f(x2+dx)},${f(y2+dy)} L${f(x3+dx)},${f(y3+dy)} Z`, fill:'none', stroke:`rgba(${cl[0]},${cl[1]},${cl[2]},${f(rnd(.25,.65))})`, 'stroke-width':f(rnd(1.2,2.8)), 'stroke-linecap':'round' });
       prep(p, Math.round((w+h)*2+20), f(rnd(1.2,2.2)), f((r*14+c)*.04+i*.01));
       grp.appendChild(p);
     }
