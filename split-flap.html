@@ -14,7 +14,7 @@
     :root {
       --ink: #1a1a1a;
       --paper: #ffffff;
-      --paper-warm: #ebebeb;
+      --paper-warm: #faf9f7;
       --muted: #888;
       --accent: #2a5298;
       --serif: 'Crimson Pro', Georgia, serif;
@@ -232,6 +232,30 @@
       border-radius: 4px 4px 0 0;
       pointer-events: none;
     }
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0 0.5rem;
+    }
+    .title-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 4px;
+      background: #2a5298;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .title-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+    .title-row h1 {
+      margin: 0;
+    }
+
   </style>
 </head>
 <body>
@@ -240,7 +264,16 @@
       <a href="index.html" class="back">← Back to portfolio</a>
     </div>
 
-    <h1>Split-flap display</h1>
+    <div class="title-row">
+      <div class="title-icon">
+        <svg viewBox="0 0 32 32" fill="none">
+          <rect x="6" y="8" width="20" height="16" rx="2" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5"/>
+          <line x1="6" y1="16" x2="26" y2="16" stroke="rgba(255,255,255,0.85)" stroke-width="1.5"/>
+          <text x="16" y="14" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="7" font-family="serif">A</text>
+        </svg>
+      </div>
+      <h1>Split-flap display</h1>
+    </div>
     <p class="subtitle">An airport departure board, rendered in code</p>
     <p class="meta">Design · March 2026</p>
 

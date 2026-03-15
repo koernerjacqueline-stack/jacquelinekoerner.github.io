@@ -14,7 +14,7 @@
     :root {
       --ink: #1a1a1a;
       --paper: #ffffff;
-      --paper-warm: #ebebeb;
+      --paper-warm: #faf9f7;
       --muted: #888;
       --accent: #2a5298;
       --serif: 'Crimson Pro', Georgia, serif;
@@ -33,6 +33,7 @@
     }
 
     [data-mode="zen"] body { background: var(--paper-warm); }
+    [data-mode="zen"] { --accent: #003314; }
 
     .container { max-width: 680px; margin: 0 auto; padding: 0 2rem; }
 
@@ -249,6 +250,30 @@
 
     .ft-container.locked .ft-flap { pointer-events: none; cursor: default; }
     .ft-container.locked .ft-flap:hover { fill: transparent; }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0 0.5rem;
+    }
+    .title-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 4px;
+      background: #003314;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .title-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+    .title-row h1 {
+      margin: 0;
+    }
   </style>
 </head>
 <body>
@@ -257,7 +282,15 @@
       <a href="index.html" class="back">&larr; Back to portfolio</a>
     </div>
 
-    <h1>Fortune teller</h1>
+    <div class="title-row">
+      <div class="title-icon">
+        <svg viewBox="0 0 32 32" fill="none">
+          <path d="M16 4l12 12-12 12L4 16Z" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M16 4v24M4 16h24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+      </div>
+      <h1>Fortune teller</h1>
+    </div>
     <p class="subtitle">A paper oracle, folded and unfolded</p>
     <p class="meta">Design &middot; March 2026</p>
 

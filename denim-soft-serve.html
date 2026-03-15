@@ -14,7 +14,7 @@
     :root {
       --ink: #1a1a1a;
       --paper: #ffffff;
-      --paper-warm: #ebebeb;
+      --paper-warm: #faf9f7;
       --muted: #888;
       --accent: #2a5298;
       --serif: 'Crimson Pro', Georgia, serif;
@@ -145,6 +145,30 @@
       margin-top: 1rem;
       font-family: var(--sans);
     }
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0 0.5rem;
+    }
+    .title-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 4px;
+      background: #2a5298;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .title-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+    .title-row h1 {
+      margin: 0;
+    }
+
   </style>
 </head>
 <body>
@@ -153,7 +177,16 @@
       <a href="index.html" class="back">← Back to portfolio</a>
     </div>
 
-    <h1>Nobody Asked for Denim Ice Cream</h1>
+    <div class="title-row">
+      <div class="title-icon">
+        <svg viewBox="0 0 32 32" fill="none">
+          <path d="M10 4h12v6c0 2-1 4-2 6l1 12H11l1-12c-1-2-2-4-2-6Z" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M10 4h12" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M13 16h6" stroke="rgba(255,255,255,0.85)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+      </div>
+      <h1>Nobody Asked for Denim Ice Cream</h1>
+    </div>
     <p class="subtitle">A ¥500 sign and a very blue cone in Enoshima</p>
     <p class="meta">Product observations · Enoshima · March 11, 2026</p>
 

@@ -20,7 +20,7 @@
 
     :root {
       --ink: #111111;
-      --paper: #ebebeb;
+      --paper: #faf9f7;
       --muted: #909090;
       --rule: rgba(0,0,0,0.1);
       --serif: 'Crimson Pro', Georgia, serif;
@@ -29,7 +29,7 @@
     }
 
     [data-mode="work"] { --paper: #ffffff; --serif: 'Crimson Pro', Georgia, serif; --accent: #2e3d7e; }
-    [data-mode="zen"]  { --paper: #ebebeb; --serif: 'Crimson Pro', Georgia, serif; --accent: #744848; }
+    [data-mode="zen"]  { --paper: #faf9f7; --serif: 'Crimson Pro', Georgia, serif; --accent: #003314; }
 
     html { scroll-behavior: smooth; }
 
@@ -52,6 +52,10 @@
       opacity: 0.045;
       pointer-events: none;
       z-index: 9999;
+    }
+    [data-mode="zen"] body::after {
+      opacity: 0.08;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
     }
 
     #root { position: relative; }
@@ -177,6 +181,15 @@
     .hero-photo {
       display: none;
     }
+    .hero-mark {
+      display: block;
+      width: 28px;
+      height: 4px;
+      border-radius: 1px;
+      margin-bottom: 1rem;
+    }
+    [data-mode="work"] .hero-mark { background: rgba(0,0,0,0.12); }
+    [data-mode="zen"] .hero-mark { background: var(--accent); opacity: 0.15; }
     .hero-name {
       font-size: clamp(2.4rem, 7.5vw, 5.2rem);
       font-family: var(--serif);
@@ -188,11 +201,12 @@
       color: var(--accent);
     }
     .hero-name-zen {
-      font-weight: 300;
+      font-weight: 400;
       font-style: normal;
       text-transform: none;
-      color: var(--accent);
+      color: var(--ink);
     }
+    [data-mode="zen"] .nav-name { color: #744848; }
     .cursor {
       display: inline-block;
       font-weight: 300;
@@ -298,8 +312,8 @@
     }
     .card {
       display: flex;
-      justify-content: space-between;
-      align-items: baseline;
+      align-items: center;
+      gap: 1rem;
       padding: 1.4rem 0;
       border-bottom: 1px solid var(--rule);
       text-decoration: none;
@@ -308,6 +322,20 @@
       cursor: pointer;
     }
     .card:hover { opacity: 0.55; }
+    .card-thumb {
+      width: 100px;
+      height: 72px;
+      border-radius: 4px;
+      background: var(--accent);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-thumb svg {
+      width: 32px;
+      height: 32px;
+    }
     .card-left { flex: 1; }
     .card-title {
       font-size: 1.28rem;
@@ -327,6 +355,23 @@
       color: var(--muted);
       margin-left: 1rem;
       flex-shrink: 0;
+    }
+
+    /* Page breaks */
+    .page-break {
+      width: 100%;
+      margin: 3rem 0;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+    .page-break img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+    }
+    .page-break-sepia img {
+      filter: sepia(80%) saturate(0.6) contrast(0.9);
     }
 
     /* Now section */
@@ -513,10 +558,61 @@
     .footer-links a svg { width: 13px; height: 13px; }
     .footer-links a:hover svg { fill: var(--ink); }
 
+    /* Mobile hamburger */
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 1001;
+    }
+    .hamburger span {
+      display: block;
+      width: 18px;
+      height: 1.5px;
+      background: var(--ink);
+      margin: 4px 0;
+      transition: transform 0.25s ease, opacity 0.2s ease;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+    .mobile-nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--paper);
+      z-index: 1000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .mobile-nav-overlay.visible { opacity: 1; }
+    .mobile-nav-overlay a {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .mobile-nav-overlay a:hover { color: var(--accent); }
+
     @media (max-width: 520px) {
       .hero { padding: 5rem 0 3rem; }
-.footer-inner { flex-direction: column; gap: 1rem; align-items: flex-start; }
-      .nav-links { gap: 1.2rem; }
+      .footer-inner { flex-direction: column; gap: 1rem; align-items: flex-start; }
+      .nav-links { display: none; }
+      .hamburger { display: block; }
+      .mobile-nav-overlay.open { display: flex; }
+      .card-thumb { width: 80px; height: 56px; }
+      .card-thumb svg { width: 24px; height: 24px; }
     }
   </style>
 </head>
@@ -537,50 +633,65 @@ const { useState, useEffect, useRef } = React;
 const data = {
   writing: [
     {
+      title: "Breakups Are Feedback",
+      meta: "Product observations · Austin · March 15, 2026",
+      url: "breakups-feedback.html",
+      icon: <path d="M16 28C16 28 4 20 4 11a6 6 0 0 1 12-1 6 6 0 0 1 12 1c0 9-12 17-12 17Z" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>,
+      icon2: <line x1="22" y1="8" x2="10" y2="24" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/>
+    },
+    {
       title: "Nobody Asked for Denim Ice Cream",
       meta: "Product observations · Enoshima · March 11, 2026",
-      url: "denim-soft-serve.html"
+      url: "denim-soft-serve.html",
+      icon: <><path d="M10 4h12v6c0 2-1 4-2 6l1 12H11l1-12c-1-2-2-4-2-6Z" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinejoin="round"/><path d="M10 4h12" stroke="rgba(255,255,255,0.85)" strokeWidth="2" strokeLinecap="round"/><path d="M13 16h6" stroke="rgba(255,255,255,0.85)" strokeWidth="1" strokeLinecap="round" opacity="0.5"/></>
     },
     {
       title: "Our Guides Forgot the Foyer",
       meta: "Tiny experiments · Osaka · March 8, 2026",
-      url: "getting-online.html"
+      url: "getting-online.html",
+      icon: <><path d="M4 8l12-4 12 4v18l-12 4-12-4Z" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinejoin="round"/><path d="M16 4v22" stroke="rgba(255,255,255,0.85)" strokeWidth="1" opacity="0.5"/><path d="M4 8l12 4 12-4" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1" strokeLinejoin="round" opacity="0.5"/></>
     },
   ],
   writingZen: [
     {
       title: "I'm a Legal Alien",
       meta: "Personal observations · Austin · March 14, 2026",
-      url: "legal-alien.html"
+      url: "legal-alien.html",
+      icon: <><ellipse cx="16" cy="16" rx="10" ry="5" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5"/><ellipse cx="16" cy="16" rx="4" ry="2" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1" opacity="0.5"/><path d="M12 12c1-4 3-6 4-6s3 2 4 6" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/><path d="M8 18l-2 6M24 18l2 6" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/></>
     },
   ],
   designWork: [
     {
       title: "Product Design Work Samples",
       meta: "Project examples ranging from process to research to deliverables and outcomes.",
-      url: "https://jacquelinekoerner.figma.site"
+      url: "https://jacquelinekoerner.figma.site",
+      icon: <><path d="M10 4v24" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/><path d="M10 16l12-10" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/><path d="M10 16l12 2" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/></>
     },
     {
       title: "Split-Flap Display",
       meta: "The new hello world. Broadly accessible visual animation.",
-      url: "split-flap.html"
+      url: "split-flap.html",
+      icon: <><rect x="6" y="8" width="20" height="16" rx="2" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5"/><line x1="6" y1="16" x2="26" y2="16" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5"/><text x="16" y="14" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="7" fontFamily="serif">A</text></>
     },
   ],
   designZen: [
     {
       title: "Feed My Fish",
       meta: "Morning ritual. Koi pond. A daily habit dressed as a game.",
-      url: "feed-my-fish.html"
+      url: "feed-my-fish.html",
+      icon: <path d="M6 16c4-6 10-6 16 0-6 6-12 6-16 0Zm16 0c-2-1-4 1-4 1" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     },
     {
       title: "Koi Study",
       meta: "Nine ink koi, slowly swimming.",
-      url: "koi-study.html"
+      url: "koi-study.html",
+      icon: <><path d="M4 20c4-4 8-2 12 0s8 4 12 0" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/><path d="M4 14c4-4 8-2 12 0s8 4 12 0" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/></>
     },
     {
       title: "Fortune Teller",
       meta: "A paper oracle, folded and unfolded.",
-      url: "fortune-teller.html"
+      url: "fortune-teller.html",
+      icon: <><path d="M16 4l12 12-12 12L4 16Z" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinejoin="round"/><path d="M16 4v24M4 16h24" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1" strokeLinecap="round" opacity="0.5"/></>
     },
   ],
   reading: [
@@ -593,6 +704,7 @@ const data = {
     { title: "The Overthinker's Guide to Making Decisions", author: "Joseph Nguyen", date: "Mar 7", cover: "https://m.media-amazon.com/images/P/B0DXD7TML1.jpg", link: "https://josephnguyen.org/", linkLabel: "Author" },
     { title: "Ender's Game", author: "Orson Scott Card", date: "Mar 10", cover: "https://m.media-amazon.com/images/P/0812550706.jpg", link: "https://www.amazon.com/Enders-Ender-Quintet-Orson-Scott/dp/0812550706", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/7AeRwpjKg6vdHkkgOjJnT5" },
     { title: "The First 90 Days", author: "Michael Watkins", date: "Mar 14", cover: "https://m.media-amazon.com/images/P/1422188612.jpg", link: "https://www.amazon.com/First-90-Days-Strategies-Expanded/dp/1422188612", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/4fFs0XiLq3G5eOiodIe2Do" },
+    { title: "Tiny Experiments", author: "Anne-Laure Le Cunff", date: "Mar 15", cover: "https://m.media-amazon.com/images/P/0593715136.jpg", link: "https://www.amazon.com/Tiny-Experiments-Freely-Goal-Obsessed-World/dp/0593715136", linkLabel: "Amazon" },
   ],
 };
 
@@ -690,6 +802,7 @@ function HeroSection({ mode, onHeroComplete }) {
 
   return (
     <div className="hero">
+      <span className="hero-mark"></span>
       <div className="hero-top">
         {mode === 'work' ? (
           <h1 className="hero-name hero-name-work">
@@ -817,11 +930,13 @@ function buildGrid(g) {
 function buildWaves(g) {
   const rnd = makeRnd(99);
   const grp = svgEl('g', { filter: 'url(#sk-f2)' });
+  const colors = [[116,72,72],[80,110,70],[50,90,55],[100,120,80],[116,72,72],[60,100,60]];
   for (let i = 0; i < 18; i++) {
     const y = 40 + (i/17)*370, amp=rnd(4,14), fr=rnd(.008,.016), ph=rnd(0,Math.PI*2);
     let d = `M 30,${f(y)}`;
     for (let x=30; x<=770; x+=6) d += ` L${x},${f(y+Math.sin(x*fr+ph)*amp+rnd(-1.2,1.2))}`;
-    const p = svgEl('path', { d, fill:'none', stroke:`rgba(116,72,72,${f(rnd(.35,.72))})`, 'stroke-width':f(rnd(1.4,3.2)), 'stroke-linecap':'round' });
+    const cl = colors[Math.floor(rnd(0,colors.length-0.01))];
+    const p = svgEl('path', { d, fill:'none', stroke:`rgba(${cl[0]},${cl[1]},${cl[2]},${f(rnd(.35,.72))})`, 'stroke-width':f(rnd(1.4,3.2)), 'stroke-linecap':'round' });
     prep(p, 760, f(rnd(4.5,7)), f(i*.35));
     grp.appendChild(p);
   }
@@ -906,9 +1021,14 @@ function buildVertWork(g) {
   requestAnimationFrame(() => grp.querySelectorAll('path').forEach(p => p.style.strokeDashoffset = '0'));
 }
 
-function Card({ title, meta, url }) {
+function Card({ title, meta, url, icon, icon2 }) {
   const inner = (
     <div className="card">
+      {icon && (
+        <div className="card-thumb">
+          <svg viewBox="0 0 32 32" fill="none">{icon}{icon2}</svg>
+        </div>
+      )}
       <div className="card-left">
         <div className="card-title">{title}</div>
         <div className="card-meta">{meta}</div>
@@ -924,6 +1044,7 @@ function App() {
   const [mode, setMode] = useState(() => localStorage.getItem('siteMode') || 'work');
   const [fading, setFading] = useState(false);
   const [heroComplete, setHeroComplete] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-mode', mode);
@@ -973,8 +1094,21 @@ function App() {
               </button>
             </li>
           </ul>
+          <button className={`hamburger${menuOpen ? ' open' : ''}`} onClick={() => setMenuOpen(o => !o)} aria-label="Menu">
+            <span></span><span></span><span></span>
+          </button>
         </div>
       </nav>
+      <div className={`mobile-nav-overlay${menuOpen ? ' open' : ''}${menuOpen ? ' visible' : ''}`}>
+        <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
+        <a href="#writing" onClick={() => setMenuOpen(false)}>Writing</a>
+        <a href="#design" onClick={() => setMenuOpen(false)}>Design</a>
+        <a href="#now" onClick={() => setMenuOpen(false)}>Now</a>
+        <button className="mode-switch" onClick={() => { toggleMode(); setMenuOpen(false); }} style={{marginTop: '1rem'}}>
+          <span className={`ms-option${mode === 'work' ? ' active' : ''}`}>work</span>
+          <span className={`ms-option${mode === 'zen' ? ' active' : ''}`}>zen</span>
+        </button>
+      </div>
 
       <div className="container">
         <HeroSection mode={mode} onHeroComplete={() => setHeroComplete(true)} />
@@ -983,6 +1117,10 @@ function App() {
           heroComplete={heroComplete}
           filterEl={mode === 'zen' ? <filter id="sk-f1" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".08" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
           buildFn={mode === 'work' ? buildGridWork : buildGrid} />
+
+        <div className="page-break scroll-reveal">
+          <img src={mode === 'work' ? 'pagebreak-work-0.jpg' : 'pagebreak-zen-0.jpg'} alt="" loading="lazy" />
+        </div>
 
         <section id="about" className="scroll-reveal">
           <div className="section-label">About</div>
@@ -1024,6 +1162,10 @@ function App() {
           </div>
         </section>
 
+        <div className="page-break scroll-reveal">
+          <img src={mode === 'work' ? 'pagebreak-work-1.jpg' : 'pagebreak-zen-1.jpg'} alt="" loading="lazy" />
+        </div>
+
         <SketchAnim key={`sk2-${mode}`} id="sk2" viewBox="0 0 800 450" ratio="16/9" label="Undulation"
           heroComplete={heroComplete}
           filterEl={mode === 'zen' ? <filter id="sk-f2" x="-2%" y="-2%" width="104%" height="104%"><feTurbulence type="fractalNoise" baseFrequency=".035 .06" numOctaves="4" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
@@ -1035,6 +1177,10 @@ function App() {
             {(mode === 'work' ? data.designWork : data.designZen).map((item, i) => <Card key={i} {...item} />)}
           </div>
         </section>
+
+        <div className={`page-break scroll-reveal${mode === 'zen' ? ' page-break-sepia' : ''}`}>
+          <img src={mode === 'work' ? 'pagebreak-work-2.jpg' : 'pagebreak-zen-2.jpg'} alt="" loading="lazy" />
+        </div>
 
         <SketchAnim key={`sk3-${mode}`} id="sk3" viewBox={mode === 'work' ? "0 100 600 380" : "0 30 600 460"} ratio={mode === 'work' ? "600/380" : "600/460"} label="Vertical Field"
           heroComplete={heroComplete}
