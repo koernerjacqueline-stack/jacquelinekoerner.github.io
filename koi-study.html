@@ -197,6 +197,12 @@
     .title-row h1 {
       margin: 0;
     }
+
+    @media (pointer: coarse) {
+      body { cursor: auto; }
+      a, button { cursor: auto; }
+      #site-cursor { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -354,7 +360,7 @@
 
 <div class="container">
   <div class="caption">
-    <span class="caption-note">Move your cursor to lead them.</span>
+    <span class="caption-note">Move your cursor to lead them. On mobile, tap or drag.</span>
     <span class="caption-tag">KOI — 04</span>
   </div>
 </div>
@@ -508,6 +514,17 @@
     cur.y = (e.clientY - r.top)  / r.height * SVG_H;
   });
   svgEl.addEventListener('mouseleave', () => { cur.x = cur.y = -9999; });
+
+  /* ── Touch support for mobile ── */
+  function touchToSVG(e) {
+    const t = e.touches[0];
+    const r = svgEl.getBoundingClientRect();
+    cur.x = (t.clientX - r.left) / r.width  * SVG_W;
+    cur.y = (t.clientY - r.top)  / r.height * SVG_H;
+  }
+  svgEl.addEventListener('touchstart', e => { touchToSVG(e); e.preventDefault(); }, { passive: false });
+  svgEl.addEventListener('touchmove',  e => { touchToSVG(e); e.preventDefault(); }, { passive: false });
+  svgEl.addEventListener('touchend',   () => { cur.x = cur.y = -9999; });
 
   /* ── Animation loop ── */
   let prev = null;
