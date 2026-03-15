@@ -303,8 +303,8 @@
     }
     .card {
       display: flex;
-      justify-content: space-between;
-      align-items: baseline;
+      align-items: center;
+      gap: 1rem;
       padding: 1.4rem 0;
       border-bottom: 1px solid var(--rule);
       text-decoration: none;
@@ -313,6 +313,20 @@
       cursor: pointer;
     }
     .card:hover { opacity: 0.55; }
+    .card-thumb {
+      width: 100px;
+      height: 72px;
+      border-radius: 4px;
+      background: var(--accent);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-thumb svg {
+      width: 32px;
+      height: 32px;
+    }
     .card-left { flex: 1; }
     .card-title {
       font-size: 1.28rem;
@@ -332,6 +346,20 @@
       color: var(--muted);
       margin-left: 1rem;
       flex-shrink: 0;
+    }
+
+    /* Page breaks */
+    .page-break {
+      width: 100%;
+      margin: 3rem 0;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+    .page-break img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
     }
 
     /* Now section */
@@ -544,53 +572,63 @@ const data = {
     {
       title: "Breakups Are Feedback",
       meta: "Product observations · Austin · March 15, 2026",
-      url: "breakups-feedback.html"
+      url: "breakups-feedback.html",
+      icon: <path d="M16 28C16 28 4 20 4 11a6 6 0 0 1 12-1 6 6 0 0 1 12 1c0 9-12 17-12 17Z" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>,
+      icon2: <line x1="22" y1="8" x2="10" y2="24" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/>
     },
     {
       title: "Nobody Asked for Denim Ice Cream",
       meta: "Product observations · Enoshima · March 11, 2026",
-      url: "denim-soft-serve.html"
+      url: "denim-soft-serve.html",
+      icon: <><path d="M12 14h8l1 14H11Z" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M10 14c0-4 2-6 6-6s6 2 6 6" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/><circle cx="16" cy="6" r="2" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5"/></>
     },
     {
       title: "Our Guides Forgot the Foyer",
       meta: "Tiny experiments · Osaka · March 8, 2026",
-      url: "getting-online.html"
+      url: "getting-online.html",
+      icon: <><path d="M6 6h20v20H6Z" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinejoin="round"/><path d="M6 6l10 8 10-8" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx="20" cy="20" r="4" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5"/><path d="M20 18v2.5h2" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></>
     },
   ],
   writingZen: [
     {
       title: "I'm a Legal Alien",
       meta: "Personal observations · Austin · March 14, 2026",
-      url: "legal-alien.html"
+      url: "legal-alien.html",
+      icon: <><ellipse cx="16" cy="12" rx="6" ry="8" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5"/><circle cx="13" cy="11" r="1.5" fill="rgba(255,255,255,0.85)"/><circle cx="19" cy="11" r="1.5" fill="rgba(255,255,255,0.85)"/><path d="M12 28l2-10h4l2 10" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M10 6c-2-4 0-4 2-3" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/><path d="M22 6c2-4 0-4-2-3" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/></>
     },
   ],
   designWork: [
     {
       title: "Product Design Work Samples",
       meta: "Project examples ranging from process to research to deliverables and outcomes.",
-      url: "https://jacquelinekoerner.figma.site"
+      url: "https://jacquelinekoerner.figma.site",
+      icon: <><path d="M10 4v24" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/><path d="M10 16l12-10" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/><path d="M10 16l12 2" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/></>
     },
     {
       title: "Split-Flap Display",
       meta: "The new hello world. Broadly accessible visual animation.",
-      url: "split-flap.html"
+      url: "split-flap.html",
+      icon: <><rect x="6" y="8" width="20" height="16" rx="2" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5"/><line x1="6" y1="16" x2="26" y2="16" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5"/><text x="16" y="14" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="7" fontFamily="serif">A</text></>
     },
   ],
   designZen: [
     {
       title: "Feed My Fish",
       meta: "Morning ritual. Koi pond. A daily habit dressed as a game.",
-      url: "feed-my-fish.html"
+      url: "feed-my-fish.html",
+      icon: <path d="M6 16c4-6 10-6 16 0-6 6-12 6-16 0Zm16 0c-2-1-4 1-4 1" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     },
     {
       title: "Koi Study",
       meta: "Nine ink koi, slowly swimming.",
-      url: "koi-study.html"
+      url: "koi-study.html",
+      icon: <><path d="M4 20c4-4 8-2 12 0s8 4 12 0" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/><path d="M4 14c4-4 8-2 12 0s8 4 12 0" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/></>
     },
     {
       title: "Fortune Teller",
       meta: "A paper oracle, folded and unfolded.",
-      url: "fortune-teller.html"
+      url: "fortune-teller.html",
+      icon: <><path d="M16 4l12 12-12 12L4 16Z" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinejoin="round"/><path d="M16 4v24M4 16h24" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1" strokeLinecap="round" opacity="0.5"/></>
     },
   ],
   reading: [
@@ -916,9 +954,14 @@ function buildVertWork(g) {
   requestAnimationFrame(() => grp.querySelectorAll('path').forEach(p => p.style.strokeDashoffset = '0'));
 }
 
-function Card({ title, meta, url }) {
+function Card({ title, meta, url, icon, icon2 }) {
   const inner = (
     <div className="card">
+      {icon && (
+        <div className="card-thumb">
+          <svg viewBox="0 0 32 32" fill="none">{icon}{icon2}</svg>
+        </div>
+      )}
       <div className="card-left">
         <div className="card-title">{title}</div>
         <div className="card-meta">{meta}</div>
@@ -1034,6 +1077,10 @@ function App() {
           </div>
         </section>
 
+        <div className="page-break scroll-reveal">
+          <img src={mode === 'work' ? 'pagebreak-work-1.jpg' : 'pagebreak-zen-1.jpg'} alt="" loading="lazy" />
+        </div>
+
         <SketchAnim key={`sk2-${mode}`} id="sk2" viewBox="0 0 800 450" ratio="16/9" label="Undulation"
           heroComplete={heroComplete}
           filterEl={mode === 'zen' ? <filter id="sk-f2" x="-2%" y="-2%" width="104%" height="104%"><feTurbulence type="fractalNoise" baseFrequency=".035 .06" numOctaves="4" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
@@ -1045,6 +1092,10 @@ function App() {
             {(mode === 'work' ? data.designWork : data.designZen).map((item, i) => <Card key={i} {...item} />)}
           </div>
         </section>
+
+        <div className="page-break scroll-reveal">
+          <img src={mode === 'work' ? 'pagebreak-work-2.jpg' : 'pagebreak-zen-2.jpg'} alt="" loading="lazy" />
+        </div>
 
         <SketchAnim key={`sk3-${mode}`} id="sk3" viewBox={mode === 'work' ? "0 100 600 380" : "0 30 600 460"} ratio={mode === 'work' ? "600/380" : "600/460"} label="Vertical Field"
           heroComplete={heroComplete}
