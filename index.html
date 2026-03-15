@@ -370,6 +370,9 @@
       object-fit: cover;
       display: block;
     }
+    .page-break-sepia img {
+      filter: sepia(80%) saturate(0.6) contrast(0.9);
+    }
 
     /* Now section */
     .now-timeline {
@@ -1115,6 +1118,10 @@ function App() {
           filterEl={mode === 'zen' ? <filter id="sk-f1" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".08" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
           buildFn={mode === 'work' ? buildGridWork : buildGrid} />
 
+        <div className="page-break scroll-reveal">
+          <img src={mode === 'work' ? 'pagebreak-work-0.jpg' : 'pagebreak-zen-0.jpg'} alt="" loading="lazy" />
+        </div>
+
         <section id="about" className="scroll-reveal">
           <div className="section-label">About</div>
           {mode === 'work' ? (
@@ -1171,7 +1178,7 @@ function App() {
           </div>
         </section>
 
-        <div className="page-break scroll-reveal">
+        <div className={`page-break scroll-reveal${mode === 'zen' ? ' page-break-sepia' : ''}`}>
           <img src={mode === 'work' ? 'pagebreak-work-2.jpg' : 'pagebreak-zen-2.jpg'} alt="" loading="lazy" />
         </div>
 
