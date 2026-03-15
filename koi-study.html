@@ -32,6 +32,7 @@
     }
 
     [data-mode="zen"] body { background: var(--paper-warm); }
+    [data-mode="zen"] { --accent: #003314; }
 
     /* Noise texture — preserved from original */
     body::after {
@@ -172,6 +173,30 @@
       white-space: nowrap;
       margin-left: 1.5rem;
     }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0 0.5rem;
+    }
+    .title-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 4px;
+      background: #003314;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .title-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+    .title-row h1 {
+      margin: 0;
+    }
   </style>
 </head>
 <body>
@@ -182,7 +207,15 @@
     <a href="index.html" class="back">← Back to portfolio</a>
   </div>
 
-  <h1>Koi Study</h1>
+  <div class="title-row">
+    <div class="title-icon">
+      <svg viewBox="0 0 32 32" fill="none">
+        <path d="M4 20c4-4 8-2 12 0s8 4 12 0" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M4 14c4-4 8-2 12 0s8 4 12 0" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>Koi Study</h1>
+  </div>
   <p class="subtitle">An ink study in nine movements</p>
   <p class="meta">Design · 2026</p>
 </div>

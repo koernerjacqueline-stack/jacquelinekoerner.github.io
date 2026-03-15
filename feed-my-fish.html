@@ -230,6 +230,30 @@
       padding: 0;
     }
 
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0 0.5rem;
+    }
+    .title-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 4px;
+      background: #003314;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .title-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+    .title-row .page-title {
+      margin: 0;
+    }
+
     @media (max-width: 400px) { .page { padding: 0 1rem 4rem; } }
   </style>
 </head>
@@ -244,7 +268,14 @@
   </div>
 
   <div class="title-block">
-    <div class="page-title">Feed my fish</div>
+    <div class="title-row" style="margin: 0;">
+      <div class="title-icon">
+        <svg viewBox="0 0 32 32" fill="none">
+          <path d="M6 16c4-6 10-6 16 0-6 6-12 6-16 0Zm16 0c-2-1-4 1-4 1" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="page-title">Feed my fish</div>
+    </div>
     <div class="page-date" id="today-date"></div>
   </div>
 

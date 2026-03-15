@@ -14,7 +14,7 @@
     :root {
       --ink: #1a1a1a;
       --paper: #ffffff;
-      --paper-warm: #ebebeb;
+      --paper-warm: #faf9f7;
       --muted: #888;
       --accent: #2a5298;
       --serif: 'Crimson Pro', Georgia, serif;
@@ -146,6 +146,30 @@
       font-family: var(--sans);
     }
 
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0 0.5rem;
+    }
+    .title-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 4px;
+      background: #2a5298;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .title-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+    .title-row h1 {
+      margin: 0;
+    }
+
   </style>
 </head>
 <body>
@@ -154,7 +178,16 @@
       <a href="index.html" class="back">← Back to portfolio</a>
     </div>
 
-    <h1>Our Guides Forgot the Foyer</h1>
+    <div class="title-row">
+      <div class="title-icon">
+        <svg viewBox="0 0 32 32" fill="none">
+          <path d="M4 8l12-4 12 4v18l-12 4-12-4Z" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M16 4v22" stroke="rgba(255,255,255,0.85)" stroke-width="1" opacity="0.5"/>
+          <path d="M4 8l12 4 12-4" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1" stroke-linejoin="round" opacity="0.5"/>
+        </svg>
+      </div>
+      <h1>Our Guides Forgot the Foyer</h1>
+    </div>
     <p class="subtitle">A destination starts a journey</p>
     <p class="meta">Case study · Tiny experiments · March 8, 2026</p>
 

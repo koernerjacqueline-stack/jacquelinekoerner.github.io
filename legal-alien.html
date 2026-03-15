@@ -135,6 +135,29 @@
       letter-spacing: 0.08em;
     }
 
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0 0.5rem;
+    }
+    .title-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 4px;
+      background: #003314;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .title-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+    .title-row h1 {
+      margin: 0;
+    }
   </style>
 </head>
 <body>
@@ -143,7 +166,17 @@
       <a href="index.html" class="back">&larr; Back to portfolio</a>
     </div>
 
-    <h1>I'm a Legal Alien</h1>
+    <div class="title-row">
+      <div class="title-icon">
+        <svg viewBox="0 0 32 32" fill="none">
+          <ellipse cx="16" cy="16" rx="10" ry="5" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5"/>
+          <ellipse cx="16" cy="16" rx="4" ry="2" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1" opacity="0.5"/>
+          <path d="M12 12c1-4 3-6 4-6s3 2 4 6" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M8 18l-2 6M24 18l2 6" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1>I'm a Legal Alien</h1>
+    </div>
     <p class="subtitle">On feeling foreign and starting anyway</p>
     <p class="meta">Personal observations &middot; March 14, 2026 &middot; Austin</p>
 
