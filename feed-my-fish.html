@@ -1085,6 +1085,15 @@ document.getElementById('back-inside').addEventListener('click', enterBedroom);
 
 // ─── Intention zone ───────────────────────────────────────────────
 function showIntentionZone() {
+  // At night, ask a reflective question instead
+  if (themeName === 'night' || themeName === 'dusk') {
+    const nightQs = [
+      'What went well today?',
+      'What could go differently tomorrow?',
+    ];
+    document.getElementById('intention-q').textContent =
+      nightQs[Math.floor(Math.random() * nightQs.length)];
+  }
   const iz = document.getElementById('intention-zone');
   iz.style.display = 'block';
   requestAnimationFrame(() => {
