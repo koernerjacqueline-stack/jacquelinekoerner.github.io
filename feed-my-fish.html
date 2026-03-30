@@ -11,10 +11,10 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --paper: #ebebeb;
+      --paper: #faf9f7;
       --ink: #1a1a1a;
       --muted: #999;
-      --accent: #744848;
+      --accent: #003314;
       --serif: 'Crimson Pro', Georgia, serif;
       --sans: 'Source Sans 3', system-ui, sans-serif;
     }
@@ -230,6 +230,30 @@
       padding: 0;
     }
 
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0 0.5rem;
+    }
+    .title-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 4px;
+      background: #003314;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .title-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+    .title-row .page-title {
+      margin: 0;
+    }
+
     @media (max-width: 400px) { .page { padding: 0 1rem 4rem; } }
   </style>
 </head>
@@ -244,7 +268,14 @@
   </div>
 
   <div class="title-block">
-    <div class="page-title">Feed my fish</div>
+    <div class="title-row" style="margin: 0;">
+      <div class="title-icon">
+        <svg viewBox="0 0 32 32" fill="none">
+          <path d="M6 16c4-6 10-6 16 0-6 6-12 6-16 0Zm16 0c-2-1-4 1-4 1" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="page-title">Feed my fish</div>
+    </div>
     <div class="page-date" id="today-date"></div>
   </div>
 
@@ -623,7 +654,7 @@ function drawDoorSlide(progress) {
   const ease = 1 - Math.pow(1 - progress, 3);
   // Match bedroom door dimensions exactly: wx=W*0.10, ww=W*0.80
   const wx = W * 0.10, pw = W * 0.40;  // each panel = half the door width
-  const paper = themeName === 'night' ? '#0e1220' : themeName === 'dusk' ? '#2a1820' : '#ebebeb';
+  const paper = themeName === 'night' ? '#0e1220' : themeName === 'dusk' ? '#2a1820' : '#faf9f7';
 
   const drawPanel = (x) => {
     ctx.lineCap = 'square'; ctx.lineJoin = 'miter';
@@ -1054,6 +1085,15 @@ document.getElementById('back-inside').addEventListener('click', enterBedroom);
 
 // ─── Intention zone ───────────────────────────────────────────────
 function showIntentionZone() {
+  // At night, ask a reflective question instead
+  if (themeName === 'night' || themeName === 'dusk') {
+    const nightQs = [
+      'What went well today?',
+      'What could go differently tomorrow?',
+    ];
+    document.getElementById('intention-q').textContent =
+      nightQs[Math.floor(Math.random() * nightQs.length)];
+  }
   const iz = document.getElementById('intention-zone');
   iz.style.display = 'block';
   requestAnimationFrame(() => {

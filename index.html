@@ -13,28 +13,23 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
   <link rel="icon" id="favicon" type="image/svg+xml" href="favicon-work.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,800;1,9..144,300&family=Inter:wght@300;400&family=JetBrains+Mono:wght@300;400&family=Palette+Mosaic&family=Rock+Salt&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400&family=JetBrains+Mono:wght@300;400&family=Spectral:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
   <style>
-    @font-face {
-      font-family: 'InkHand';
-      src: url('InkHand.woff2') format('woff2'), url('InkHand.ttf') format('truetype');
-      font-weight: 400;
-    }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --ink: #111111;
-      --paper: #ebebeb;
+      --paper: #faf9f7;
       --muted: #909090;
       --rule: rgba(0,0,0,0.1);
-      --serif: 'Fraunces', Georgia, serif;
+      --serif: 'Crimson Pro', Georgia, serif;
       --sans: 'Inter', system-ui, sans-serif;
       --mono: 'JetBrains Mono', monospace;
     }
 
-    [data-mode="work"] { --paper: #ffffff; --serif: 'Crimson Pro', Georgia, serif; }
-    [data-mode="zen"]  { --paper: #ebebeb; --serif: 'Palette Mosaic', Georgia, serif; }
+    [data-mode="work"] { --paper: #ffffff; --serif: 'Crimson Pro', Georgia, serif; --accent: #2e3d7e; }
+    [data-mode="zen"]  { --paper: #faf9f7; --serif: 'Crimson Pro', Georgia, serif; --accent: #003314; }
 
     html { scroll-behavior: smooth; }
 
@@ -57,6 +52,10 @@
       opacity: 0.045;
       pointer-events: none;
       z-index: 9999;
+    }
+    [data-mode="zen"] body::after {
+      opacity: 0.08;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
     }
 
     #root { position: relative; }
@@ -112,20 +111,14 @@
       align-items: baseline;
     }
     .nav-name {
+      font-family: var(--serif);
       font-size: 1rem;
       font-style: normal;
       font-weight: 400;
       text-transform: uppercase;
       text-decoration: none;
+      color: var(--accent);
       transition: color 0.3s ease;
-    }
-    [data-mode="work"] .nav-name {
-      font-family: 'Crimson Pro', Georgia, serif;
-      color: #2e3d7e;
-    }
-    [data-mode="zen"] .nav-name {
-      font-family: 'Palette Mosaic', Georgia, serif;
-      color: #744848;
     }
     .nav-links {
       display: flex;
@@ -188,22 +181,32 @@
     .hero-photo {
       display: none;
     }
+    .hero-mark {
+      display: block;
+      width: 28px;
+      height: 4px;
+      border-radius: 1px;
+      margin-bottom: 1rem;
+    }
+    [data-mode="work"] .hero-mark { background: rgba(0,0,0,0.12); }
+    [data-mode="zen"] .hero-mark { background: var(--accent); opacity: 0.15; }
     .hero-name {
-      font-size: clamp(2.4rem, 6.6vw, 4.56rem);
+      font-size: clamp(2.4rem, 7.5vw, 5.2rem);
       font-family: var(--serif);
       line-height: 1.2;
     }
     .hero-name-work {
-      font-weight: 600;
+      font-weight: 400;
       font-style: normal;
-      color: #1e3a6e;
+      color: var(--accent);
     }
     .hero-name-zen {
-      font-weight: 300;
+      font-weight: 400;
       font-style: normal;
-      text-transform: uppercase;
-      color: #111111;
+      text-transform: none;
+      color: var(--ink);
     }
+    [data-mode="zen"] .nav-name { color: #744848; }
     .cursor {
       display: inline-block;
       font-weight: 300;
@@ -211,15 +214,14 @@
       margin-left: 2px;
     }
     .hero-desc {
-      font-size: 1.1rem;
-      font-family: var(--serif);
+      font-size: 0.95rem;
+      font-family: var(--sans);
       font-weight: 300;
       font-style: normal;
       line-height: 1.65;
       color: var(--muted);
       max-width: 520px;
     }
-    [data-mode="zen"] .hero-desc { font-style: normal; font-family: var(--sans); }
 
     /* Custom site cursor */
     body { cursor: none; }
@@ -261,7 +263,6 @@
       padding: 4rem 0;
       border-top: 1px solid var(--rule);
     }
-    section:first-of-type { border-top: none; }
 
     .section-label {
       font-family: var(--mono);
@@ -275,7 +276,7 @@
 
     /* About */
     .about-text {
-      font-size: 1rem;
+      font-size: 0.88rem;
       font-family: var(--sans);
       font-weight: 300;
       line-height: 1.8;
@@ -294,22 +295,14 @@
     }
 
     /* Mode-specific section labels & subheads */
-    [data-mode="work"] .section-label,
-    [data-mode="work"] .about-subhead {
-      font-family: 'Crimson Pro', Georgia, serif;
+    .section-label,
+    .about-subhead {
+      font-family: var(--serif);
       font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      color: #2e3d7e;
-    }
-    [data-mode="zen"] .section-label,
-    [data-mode="zen"] .about-subhead {
-      font-family: 'Palette Mosaic', Georgia, serif;
-      font-size: 0.88rem;
       font-weight: 400;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #744848;
+      color: var(--accent);
     }
 
     /* Cards */
@@ -319,8 +312,8 @@
     }
     .card {
       display: flex;
-      justify-content: space-between;
-      align-items: baseline;
+      align-items: center;
+      gap: 1rem;
       padding: 1.4rem 0;
       border-bottom: 1px solid var(--rule);
       text-decoration: none;
@@ -329,9 +322,23 @@
       cursor: pointer;
     }
     .card:hover { opacity: 0.55; }
+    .card-thumb {
+      width: 100px;
+      height: 72px;
+      border-radius: 4px;
+      background: var(--accent);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-thumb svg {
+      width: 32px;
+      height: 32px;
+    }
     .card-left { flex: 1; }
     .card-title {
-      font-size: 1.15rem;
+      font-size: 1.28rem;
       font-family: var(--serif);
       font-weight: 400;
       margin-bottom: 0.35rem;
@@ -348,6 +355,23 @@
       color: var(--muted);
       margin-left: 1rem;
       flex-shrink: 0;
+    }
+
+    /* Page breaks */
+    .page-break {
+      width: 100%;
+      margin: 3rem 0;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+    .page-break img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+    }
+    .page-break-sepia img {
+      filter: sepia(80%) saturate(0.6) contrast(0.9);
     }
 
     /* Now section */
@@ -385,7 +409,7 @@
       border-color: var(--ink);
     }
     .now-entry p {
-      font-size: 1rem;
+      font-size: 0.88rem;
       font-family: var(--sans);
       font-weight: 300;
       line-height: 1.8;
@@ -403,76 +427,80 @@
       margin-top: 0.5rem;
     }
 
-    /* Reading list (timeline style) */
-    .reading-timeline {
-      position: relative;
-      padding-left: 1.6rem;
-      margin-top: 0.5rem;
+    /* Reading carousel */
+    .reading-section {
+      margin-top: 4rem;
     }
-    .reading-timeline::before {
-      content: '';
-      position: absolute;
-      left: 4px;
-      top: 8px;
-      bottom: 8px;
-      width: 1px;
-      background: var(--rule);
+    .reading-carousel {
+      display: flex;
+      gap: 1.5rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.5rem;
+      margin-top: 1.2rem;
+      scrollbar-width: none;
     }
-    .reading-entry {
-      position: relative;
-      padding-bottom: 1.4rem;
+    .reading-carousel::-webkit-scrollbar { display: none; }
+    .reading-card {
+      flex: 0 0 130px;
+      scroll-snap-align: start;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
     }
-    .reading-entry:last-child { padding-bottom: 0; }
-    .reading-entry::before {
-      content: '';
-      position: absolute;
-      left: -1.6rem;
-      top: 7px;
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      border: 1.5px solid var(--muted);
-      background: var(--paper);
+    .reading-cover {
+      width: 130px;
+      height: 195px;
+      object-fit: cover;
+      border-radius: 2px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      transition: box-shadow 0.2s, transform 0.2s;
     }
-    .reading-entry:last-child::before {
-      background: var(--ink);
-      border-color: var(--ink);
+    .reading-card:hover .reading-cover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      transform: translateY(-2px);
+    }
+    [data-mode="zen"] .reading-cover {
+      filter: grayscale(100%) sepia(30%) contrast(0.9);
     }
     .reading-title {
       font-family: var(--serif);
-      font-size: 0.95rem;
+      font-size: 0.75rem;
       font-weight: 400;
-    }
-    [data-mode="zen"] .reading-title {
-      font-family: var(--sans);
+      margin-top: 0.6rem;
+      line-height: 1.3;
     }
     .reading-author {
       font-family: var(--sans);
-      font-size: 0.75rem;
+      font-size: 0.6rem;
       font-weight: 300;
       color: var(--muted);
-      margin-top: 0.1rem;
+      margin-top: 0.15rem;
     }
     .reading-meta {
       display: flex;
       align-items: baseline;
-      gap: 0.8rem;
-      margin-top: 0.25rem;
+      gap: 0.5rem;
+      margin-top: 0.2rem;
+      flex-wrap: wrap;
     }
     .reading-date {
       font-family: var(--mono);
-      font-size: 0.55rem;
+      font-size: 0.5rem;
       font-weight: 300;
       color: var(--muted);
       letter-spacing: 0.06em;
     }
     .reading-links {
       display: flex;
-      gap: 0.6rem;
+      gap: 0.4rem;
     }
-    .reading-links a {
+    .reading-links a,
+    .reading-links span {
       font-family: var(--mono);
-      font-size: 0.55rem;
+      font-size: 0.5rem;
       font-weight: 300;
       color: var(--muted);
       text-decoration: none;
@@ -486,6 +514,9 @@
       padding: 4rem 0 3rem;
       border-top: 1px solid var(--rule);
     }
+    .footer-connect {
+      margin-bottom: 3rem;
+    }
     .footer-inner {
       display: flex;
       justify-content: space-between;
@@ -497,6 +528,15 @@
       font-weight: 300;
       color: var(--muted);
       letter-spacing: 0.06em;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .footer-headshot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      object-fit: cover;
     }
     .footer-links {
       display: flex;
@@ -510,13 +550,69 @@
       text-decoration: none;
       letter-spacing: 0.04em;
       transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
     }
     .footer-links a:hover { color: var(--ink); }
+    .footer-links a svg { width: 13px; height: 13px; }
+    .footer-links a:hover svg { fill: var(--ink); }
+
+    /* Mobile hamburger */
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 1001;
+    }
+    .hamburger span {
+      display: block;
+      width: 18px;
+      height: 1.5px;
+      background: var(--ink);
+      margin: 4px 0;
+      transition: transform 0.25s ease, opacity 0.2s ease;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+    .mobile-nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--paper);
+      z-index: 1000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .mobile-nav-overlay.visible { opacity: 1; }
+    .mobile-nav-overlay a {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .mobile-nav-overlay a:hover { color: var(--accent); }
 
     @media (max-width: 520px) {
       .hero { padding: 5rem 0 3rem; }
-.footer-inner { flex-direction: column; gap: 1rem; align-items: flex-start; }
-      .nav-links { gap: 1.2rem; }
+      .footer-inner { flex-direction: column; gap: 1rem; align-items: flex-start; }
+      .nav-links { display: none; }
+      .hamburger { display: block; }
+      .mobile-nav-overlay.open { display: flex; }
+      .card-thumb { width: 80px; height: 56px; }
+      .card-thumb svg { width: 24px; height: 24px; }
     }
   </style>
 </head>
@@ -537,98 +633,101 @@ const { useState, useEffect, useRef } = React;
 const data = {
   writing: [
     {
+      title: "Breakups Are Feedback",
+      meta: "Product observations · Austin · March 15, 2026",
+      url: "breakups-feedback.html",
+      icon: <path d="M16 28C16 28 4 20 4 11a6 6 0 0 1 12-1 6 6 0 0 1 12 1c0 9-12 17-12 17Z" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>,
+      icon2: <line x1="22" y1="8" x2="10" y2="24" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/>
+    },
+    {
       title: "Nobody Asked for Denim Ice Cream",
-      meta: "Product observations · Enoshima · March 2026",
-      url: "denim-soft-serve.html"
+      meta: "Product observations · Enoshima · March 11, 2026",
+      url: "denim-soft-serve.html",
+      icon: <><path d="M10 4h12v6c0 2-1 4-2 6l1 12H11l1-12c-1-2-2-4-2-6Z" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinejoin="round"/><path d="M10 4h12" stroke="rgba(255,255,255,0.85)" strokeWidth="2" strokeLinecap="round"/><path d="M13 16h6" stroke="rgba(255,255,255,0.85)" strokeWidth="1" strokeLinecap="round" opacity="0.5"/></>
     },
     {
       title: "Our Guides Forgot the Foyer",
-      meta: "Tiny experiments · March 2026",
-      url: "getting-online.html"
+      meta: "Tiny experiments · Osaka · March 8, 2026",
+      url: "getting-online.html",
+      icon: <><path d="M4 8l12-4 12 4v18l-12 4-12-4Z" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinejoin="round"/><path d="M16 4v22" stroke="rgba(255,255,255,0.85)" strokeWidth="1" opacity="0.5"/><path d="M4 8l12 4 12-4" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1" strokeLinejoin="round" opacity="0.5"/></>
+    },
+  ],
+  writingZen: [
+    {
+      title: "Play to Perform",
+      meta: "Personal observations · Austin · March 15, 2026",
+      url: "play-to-perform.html",
+      icon: <><rect x="4" y="11" width="5" height="10" rx="1" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5"/><rect x="23" y="11" width="5" height="10" rx="1" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5"/><line x1="9" y1="16" x2="23" y2="16" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/><line x1="2" y1="16" x2="4" y2="16" stroke="rgba(255,255,255,0.85)" strokeWidth="2" strokeLinecap="round"/><line x1="28" y1="16" x2="30" y2="16" stroke="rgba(255,255,255,0.85)" strokeWidth="2" strokeLinecap="round"/></>
+    },
+    {
+      title: "I'm a Legal Alien",
+      meta: "Personal observations · Austin · March 14, 2026",
+      url: "legal-alien.html",
+      icon: <><ellipse cx="16" cy="16" rx="10" ry="5" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5"/><ellipse cx="16" cy="16" rx="4" ry="2" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1" opacity="0.5"/><path d="M12 12c1-4 3-6 4-6s3 2 4 6" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/><path d="M8 18l-2 6M24 18l2 6" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/></>
     },
   ],
   designWork: [
     {
-      title: "Figma Make — Design portfolio",
-      meta: "jacquelinekoerner.figma.site",
-      url: "https://jacquelinekoerner.figma.site"
+      title: "Product Design Work Samples",
+      meta: "Project examples ranging from process to research to deliverables and outcomes.",
+      url: "https://jacquelinekoerner.figma.site",
+      icon: <><path d="M10 4v24" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/><path d="M10 16l12-10" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/><path d="M10 16l12 2" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/></>
     },
     {
-      title: "Split-flap display",
-      meta: "Split flap display animation created with Claude Code + Cursor.",
-      url: "split-flap.html"
+      title: "Split-Flap Display",
+      meta: "The new hello world. Broadly accessible visual animation.",
+      url: "split-flap.html",
+      icon: <><rect x="6" y="8" width="20" height="16" rx="2" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5"/><line x1="6" y1="16" x2="26" y2="16" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5"/><text x="16" y="14" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="7" fontFamily="serif">A</text></>
     },
   ],
   designZen: [
     {
       title: "Feed My Fish",
       meta: "Morning ritual. Koi pond. A daily habit dressed as a game.",
-      url: "feed-my-fish.html"
+      url: "feed-my-fish.html",
+      icon: <path d="M6 16c4-6 10-6 16 0-6 6-12 6-16 0Zm16 0c-2-1-4 1-4 1" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     },
     {
       title: "Koi Study",
       meta: "Nine ink koi, slowly swimming.",
-      url: "koi-study.html"
+      url: "koi-study.html",
+      icon: <><path d="M4 20c4-4 8-2 12 0s8 4 12 0" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/><path d="M4 14c4-4 8-2 12 0s8 4 12 0" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round"/></>
     },
     {
       title: "Fortune Teller",
       meta: "A paper oracle, folded and unfolded.",
-      url: "fortune-teller.html"
+      url: "fortune-teller.html",
+      icon: <><path d="M16 4l12 12-12 12L4 16Z" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinejoin="round"/><path d="M16 4v24M4 16h24" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1" strokeLinecap="round" opacity="0.5"/></>
     },
   ],
   reading: [
-    { title: "The Psychology of Wealth", author: "Charles Richards", date: "Feb 14", link: "https://www.amazon.com/Psychology-Wealth-Understand-Relationship-Prosperity/dp/0071789294", linkLabel: "Amazon" },
-    { title: "Don't Believe Everything You Think", author: "Joseph Nguyen", date: "Feb 21", link: "https://josephnguyen.org/", linkLabel: "Author", spotify: "https://open.spotify.com/show/2mYF76NwIQLm8kduFc25VD" },
-    { title: "Beyond Thoughts", author: "Joseph Nguyen", date: "Feb 24", link: "https://josephnguyen.org/", linkLabel: "Author" },
-    { title: "The Barrington Guide to Property Management Accounting", author: "Phillip Barrington", date: "Feb 28", link: "https://www.amazon.com/Barrington-Guide-Property-Management-Accounting/dp/B0CV4BKRGG", linkLabel: "Amazon" },
-    { title: "Build to Rent", author: "Charlie Kriegel", date: "Mar 1", link: "https://www.amazon.com/Build-Rent-How-Institutional-Investor/dp/B0C436YL2Y", linkLabel: "Amazon" },
-    { title: "Ikigai", author: "Héctor García & Francesc Miralles", date: "Mar 3", link: "https://www.amazon.com/Ikigai-Japanese-Secret-Long-Happy/dp/0143130722", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/23x3EHbvOPmdbyvV99asFD" },
-    { title: "The Overthinker's Guide to Making Decisions", author: "Joseph Nguyen", date: "Mar 7", link: "https://josephnguyen.org/", linkLabel: "Author" },
-    { title: "Ender's Game", author: "Orson Scott Card", date: "Mar 10", link: "https://www.amazon.com/Enders-Ender-Quintet-Orson-Scott/dp/0812550706", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/7AeRwpjKg6vdHkkgOjJnT5" },
-    { title: "The First 90 Days", author: "Michael Watkins", date: "Mar 14", link: "https://www.amazon.com/First-90-Days-Strategies-Expanded/dp/1422188612", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/4fFs0XiLq3G5eOiodIe2Do" },
-    { title: "A More Beautiful Question", author: "Warren Berger", date: "Mar 29", link: "https://www.amazon.com/More-Beautiful-Question-Inquiry-Breakthrough/dp/1632861054", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/3zUrRdjpoMLUuR4ZY90uXH" },
+    { title: "The Psychology of Money", author: "Morgan Housel", date: "Feb 14", cover: "https://m.media-amazon.com/images/P/0857197681.jpg", link: "https://www.amazon.com/Psychology-Money-Timeless-lessons-happiness/dp/0857197681", linkLabel: "Amazon" },
+    { title: "Don't Believe Everything You Think", author: "Joseph Nguyen", date: "Feb 21", cover: "https://m.media-amazon.com/images/P/B09WPP7R6S.jpg", link: "https://josephnguyen.org/", linkLabel: "Author", spotify: "https://open.spotify.com/show/2mYF76NwIQLm8kduFc25VD" },
+    { title: "Beyond Thoughts", author: "Joseph Nguyen", date: "Feb 24", cover: "https://m.media-amazon.com/images/P/B0BJTVH33L.jpg", link: "https://josephnguyen.org/", linkLabel: "Author" },
+    { title: "The Barrington Guide to Property Management Accounting", author: "Phillip Barrington", date: "Feb 28", cover: "https://m.media-amazon.com/images/P/B0CV4BKRGG.jpg", link: "https://www.amazon.com/Barrington-Guide-Property-Management-Accounting/dp/B0CV4BKRGG", linkLabel: "Amazon" },
+    { title: "Build to Rent", author: "Charlie Kriegel", date: "Mar 1", cover: "https://m.media-amazon.com/images/P/B0C436YL2Y.jpg", link: "https://www.amazon.com/Build-Rent-How-Institutional-Investor/dp/B0C436YL2Y", linkLabel: "Amazon" },
+    { title: "Ikigai", author: "Héctor García & Francesc Miralles", date: "Mar 3", cover: "https://m.media-amazon.com/images/P/0143130722.jpg", link: "https://www.amazon.com/Ikigai-Japanese-Secret-Long-Happy/dp/0143130722", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/23x3EHbvOPmdbyvV99asFD" },
+    { title: "The Overthinker's Guide to Making Decisions", author: "Joseph Nguyen", date: "Mar 7", cover: "https://m.media-amazon.com/images/P/B0DXD7TML1.jpg", link: "https://josephnguyen.org/", linkLabel: "Author" },
+    { title: "Ender's Game", author: "Orson Scott Card", date: "Mar 10", cover: "https://m.media-amazon.com/images/P/0812550706.jpg", link: "https://www.amazon.com/Enders-Ender-Quintet-Orson-Scott/dp/0812550706", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/7AeRwpjKg6vdHkkgOjJnT5" },
+    { title: "The First 90 Days", author: "Michael Watkins", date: "Mar 14", cover: "https://m.media-amazon.com/images/P/1422188612.jpg", link: "https://www.amazon.com/First-90-Days-Strategies-Expanded/dp/1422188612", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/4fFs0XiLq3G5eOiodIe2Do" },
+    { title: "Tiny Experiments", author: "Anne-Laure Le Cunff", date: "Mar 15", cover: "https://m.media-amazon.com/images/P/0593715136.jpg", link: "https://www.amazon.com/Tiny-Experiments-Freely-Goal-Obsessed-World/dp/0593715136", linkLabel: "Amazon" },
+    { title: "A More Beautiful Question", author: "Warren Berger", date: "Mar 29", cover: "https://m.media-amazon.com/images/P/1632861054.jpg", link: "https://www.amazon.com/More-Beautiful-Question-Inquiry-Breakthrough/dp/1632861054", linkLabel: "Amazon", spotify: "https://open.spotify.com/show/3zUrRdjpoMLUuR4ZY90uXH" },
   ],
 };
 
-// Zen stamp: instant appearance, no fade. Delay = time since page load.
-// 3s between first letter and next within each group; 1.5–2s for following letters.
-// Small jitter added at runtime for human feel.
-// Groups: JACQ / UELINE / KOER / NER — 1200ms ink-reload pauses.
-const ZEN_LETTERS = [
-  // JACQ
-  { c:'J', o:1.00, d:0     },
-  { c:'A', o:0.82, d:3000  },
-  { c:'C', o:0.68, d:5000  },
-  { c:'Q', o:0.52, d:6500  },
-  // ink reload → UELINE (starts ~7700)
-  { c:'U', o:1.00, d:7700  },
-  { c:'E', o:0.80, d:10700 },
-  { c:'L', o:0.65, d:12700 },
-  { c:'I', o:0.55, d:14200 },
-  { c:'N', o:0.44, d:15500 },
-  { c:'E', o:0.32, d:16700 },
-  // line break after index 9 — ink reload → KOER (starts ~17900)
-  { c:'K', o:1.00, d:17900 },
-  { c:'O', o:0.84, d:20900 },
-  { c:'E', o:0.68, d:22900 },
-  { c:'R', o:0.52, d:24400 },
-  // ink reload → NER (starts ~25600)
-  { c:'N', o:1.00, d:25600 },
-  { c:'E', o:0.78, d:28600 },
-  { c:'R', o:0.58, d:30600 },
-];
-
 function HeroSection({ mode, onHeroComplete }) {
   const workDesc = 'Product and design leader. Systems thinker. Focused on client experience across complex platforms.';
-  const zenDesc = 'Artist, reader, wanderer. Interests and creative pursuits, copy coming soon.';
-  const WORK_NAME = 'Jacqueline\nKoerner';
+  const zenDesc = 'Reader, writer, listener, artist. Lifelong learner and frequent nomad. Happiest when active, in nature and with animals.';
+  const WORK_NAME = 'Jacqueline Koerner';
+  const ZEN_NAME = 'Jacqueline Koerner';
 
   const [typedName, setTypedName] = useState('');
   const [nameDone, setNameDone] = useState(false);
   const [typedText, setTypedText] = useState('');
+  const [typedZenName, setTypedZenName] = useState('');
+  const [zenNameDone, setZenNameDone] = useState(false);
   const [typedZenText, setTypedZenText] = useState('');
   const [descReady, setDescReady] = useState(false);
-  const [zenRevealed, setZenRevealed] = useState(0);
   const workStarted = useRef(false);
   const zenStarted = useRef(false);
 
@@ -661,26 +760,33 @@ function HeroSection({ mode, onHeroComplete }) {
     return () => clearTimeout(t);
   }, [mode]);
 
-  // Zen: stamp letters instantly with human jitter, then description
+  // Zen: type name then description (same style as work)
   useEffect(() => {
     if (mode !== 'zen') return;
     if (zenStarted.current) return;
     zenStarted.current = true;
-    ZEN_LETTERS.forEach((def, i) => {
-      const jitter = Math.random() * 500 - 250;
-      setTimeout(() => setZenRevealed(i + 1), Math.max(0, def.d + jitter));
-    });
-    const last = ZEN_LETTERS[ZEN_LETTERS.length - 1];
-    setTimeout(() => { onHeroComplete && onHeroComplete(); }, last.d + 300);
-    setTimeout(() => {
-      setDescReady(true);
-      let j = 0;
-      const descIv = setInterval(() => {
-        j++;
-        setTypedZenText(zenDesc.slice(0, j));
-        if (j >= zenDesc.length) clearInterval(descIv);
-      }, 45);
-    }, last.d + 900);
+    const t = setTimeout(() => {
+      let i = 0;
+      const nameIv = setInterval(() => {
+        i++;
+        setTypedZenName(ZEN_NAME.slice(0, i));
+        if (i >= ZEN_NAME.length) {
+          clearInterval(nameIv);
+          setZenNameDone(true);
+          onHeroComplete && onHeroComplete();
+          setTimeout(() => {
+            setDescReady(true);
+            let j = 0;
+            const descIv = setInterval(() => {
+              j++;
+              setTypedZenText(zenDesc.slice(0, j));
+              if (j >= zenDesc.length) clearInterval(descIv);
+            }, 30);
+          }, 500);
+        }
+      }, 55);
+    }, 400);
+    return () => clearTimeout(t);
   }, [mode]);
 
   const renderTypedName = () => {
@@ -692,22 +798,27 @@ function HeroSection({ mode, onHeroComplete }) {
     ));
   };
 
-  const renderZenName = () => ZEN_LETTERS.slice(0, zenRevealed).map((def, i) => (
-    <React.Fragment key={i}>
-      <span style={{opacity: def.o}}>{def.c}</span>
-      {i === 9 && <br/>}
-    </React.Fragment>
-  ));
+  const renderZenName = () => {
+    const parts = typedZenName.split('\n');
+    return parts.map((part, i) => (
+      <React.Fragment key={i}>
+        {part}{i < parts.length - 1 && <br/>}
+      </React.Fragment>
+    ));
+  };
 
   return (
     <div className="hero">
+      <span className="hero-mark"></span>
       <div className="hero-top">
         {mode === 'work' ? (
           <h1 className="hero-name hero-name-work">
             {renderTypedName()}{!nameDone && <span className="cursor">|</span>}
           </h1>
         ) : (
-          <h1 className="hero-name hero-name-zen">{renderZenName()}</h1>
+          <h1 className="hero-name hero-name-zen">
+            {renderZenName()}{!zenNameDone && <span className="cursor">|</span>}
+          </h1>
         )}
       </div>
       {mode === 'work' && descReady && <p className="hero-desc">{typedText}</p>}
@@ -812,7 +923,9 @@ function buildGrid(g) {
     const x2=cx+w/2+rnd(-2,2), y2=cy+h/2+rnd(-2,2), x3=cx-w/2+rnd(-2,2), y3=cy+h/2+rnd(-2,2);
     for (let i = 0, n = ri(rnd,3,5); i < n; i++) {
       const dx=rnd(-2,2), dy=rnd(-1,1);
-      const p = svgEl('path', { d:`M${f(x0+dx)},${f(y0+dy)} L${f(x1+dx)},${f(y1+dy)} L${f(x2+dx)},${f(y2+dy)} L${f(x3+dx)},${f(y3+dy)} Z`, fill:'none', stroke:`rgba(28,22,14,${f(rnd(.25,.65))})`, 'stroke-width':f(rnd(1.2,2.8)), 'stroke-linecap':'round' });
+      const colors = [[116,72,72],[160,130,100],[140,110,80],[120,110,105]];
+      const cl = colors[Math.floor(rnd(0,colors.length-0.01))];
+      const p = svgEl('path', { d:`M${f(x0+dx)},${f(y0+dy)} L${f(x1+dx)},${f(y1+dy)} L${f(x2+dx)},${f(y2+dy)} L${f(x3+dx)},${f(y3+dy)} Z`, fill:'none', stroke:`rgba(${cl[0]},${cl[1]},${cl[2]},${f(rnd(.25,.65))})`, 'stroke-width':f(rnd(1.2,2.8)), 'stroke-linecap':'round' });
       prep(p, Math.round((w+h)*2+20), f(rnd(1.2,2.2)), f((r*14+c)*.04+i*.01));
       grp.appendChild(p);
     }
@@ -824,11 +937,13 @@ function buildGrid(g) {
 function buildWaves(g) {
   const rnd = makeRnd(99);
   const grp = svgEl('g', { filter: 'url(#sk-f2)' });
+  const colors = [[116,72,72],[80,110,70],[50,90,55],[100,120,80],[116,72,72],[60,100,60]];
   for (let i = 0; i < 18; i++) {
     const y = 40 + (i/17)*370, amp=rnd(4,14), fr=rnd(.008,.016), ph=rnd(0,Math.PI*2);
     let d = `M 30,${f(y)}`;
     for (let x=30; x<=770; x+=6) d += ` L${x},${f(y+Math.sin(x*fr+ph)*amp+rnd(-1.2,1.2))}`;
-    const p = svgEl('path', { d, fill:'none', stroke:`rgba(30,22,12,${f(rnd(.35,.72))})`, 'stroke-width':f(rnd(1.4,3.2)), 'stroke-linecap':'round' });
+    const cl = colors[Math.floor(rnd(0,colors.length-0.01))];
+    const p = svgEl('path', { d, fill:'none', stroke:`rgba(${cl[0]},${cl[1]},${cl[2]},${f(rnd(.35,.72))})`, 'stroke-width':f(rnd(1.4,3.2)), 'stroke-linecap':'round' });
     prep(p, 760, f(rnd(4.5,7)), f(i*.35));
     grp.appendChild(p);
   }
@@ -883,7 +998,7 @@ function buildWavesWork(g) {
     for (let x = 34; x <= 770; x += 4) d += ` L${x},${f(y + Math.sin(x*fr+ph)*amp)}`;
     const p = svgEl('path', { d, fill:'none', stroke:`rgba(20,20,20,${f(rnd(.2,.55))})`,
       'stroke-width':f(rnd(.7,2.0)), 'stroke-linecap':'round', 'stroke-linejoin':'round' });
-    prep(p, 760, f(rnd(3.5,5.5)), f(i*.28));
+    prep(p, 760, f(rnd(1.5,2.5)), f(i*.12));
     grp.appendChild(p);
   }
   g.appendChild(grp);
@@ -913,9 +1028,14 @@ function buildVertWork(g) {
   requestAnimationFrame(() => grp.querySelectorAll('path').forEach(p => p.style.strokeDashoffset = '0'));
 }
 
-function Card({ title, meta, url }) {
+function Card({ title, meta, url, icon, icon2 }) {
   const inner = (
     <div className="card">
+      {icon && (
+        <div className="card-thumb">
+          <svg viewBox="0 0 32 32" fill="none">{icon}{icon2}</svg>
+        </div>
+      )}
       <div className="card-left">
         <div className="card-title">{title}</div>
         <div className="card-meta">{meta}</div>
@@ -931,6 +1051,7 @@ function App() {
   const [mode, setMode] = useState(() => localStorage.getItem('siteMode') || 'work');
   const [fading, setFading] = useState(false);
   const [heroComplete, setHeroComplete] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-mode', mode);
@@ -980,23 +1101,40 @@ function App() {
               </button>
             </li>
           </ul>
+          <button className={`hamburger${menuOpen ? ' open' : ''}`} onClick={() => setMenuOpen(o => !o)} aria-label="Menu">
+            <span></span><span></span><span></span>
+          </button>
         </div>
       </nav>
+      <div className={`mobile-nav-overlay${menuOpen ? ' open' : ''}${menuOpen ? ' visible' : ''}`}>
+        <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
+        <a href="#writing" onClick={() => setMenuOpen(false)}>Writing</a>
+        <a href="#design" onClick={() => setMenuOpen(false)}>Design</a>
+        <a href="#now" onClick={() => setMenuOpen(false)}>Now</a>
+        <button className="mode-switch" onClick={() => { toggleMode(); setMenuOpen(false); }} style={{marginTop: '1rem'}}>
+          <span className={`ms-option${mode === 'work' ? ' active' : ''}`}>work</span>
+          <span className={`ms-option${mode === 'zen' ? ' active' : ''}`}>zen</span>
+        </button>
+      </div>
 
       <div className="container">
         <HeroSection mode={mode} onHeroComplete={() => setHeroComplete(true)} />
 
-        <SketchAnim key={`sk1-${mode}`} id="sk1" viewBox="0 0 600 600" ratio="1/1" label="Grid Study I"
+        <SketchAnim key={`sk1-${mode}`} id="sk1" viewBox="0 0 600 600" ratio="1/1" label="Grid Study"
           heroComplete={heroComplete}
           filterEl={mode === 'zen' ? <filter id="sk-f1" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".08" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
           buildFn={mode === 'work' ? buildGridWork : buildGrid} />
+
+        <div className="page-break scroll-reveal">
+          <img src={mode === 'work' ? 'pagebreak-work-0.jpg' : 'pagebreak-zen-0.jpg'} alt="" loading="lazy" />
+        </div>
 
         <section id="about" className="scroll-reveal">
           <div className="section-label">About</div>
           {mode === 'work' ? (
             <div className="about-text">
               <p>
-                I'm a product and design leader with a background in wealth and asset management, focused on systems thinking and client experience across complex platforms. I thrive in discovery, using research methods and data to clarify direction, validate hypotheses, and drive strong business outcomes.
+                I've spent my career in product and design in start ups and small companies. I thrive in discovery, using research methods and data to clarify direction, validate hypotheses, and drive strong business outcomes.
               </p>
 
               <div className="about-subhead">Product Philosophy</div>
@@ -1013,22 +1151,27 @@ function App() {
               <p>
                 I grow others through curiosity, respect, and caring personally, with the goal of expanding individual autonomy and modeling behaviors that foster alignment. This approach enables thoughtfully interconnected work that is greater than the sum of its parts.
               </p>
+
             </div>
           ) : (
             <div className="about-text">
-              <p>Interests, creative pursuits, and what I'm like outside of work. Copy coming soon.</p>
+              <p>My professional life keeps me busy and gives me a strong sense of purpose, but I increasingly find myself investing in hobbies.</p>
+              <p>Most days you can find me running and lifting, reading and writing. Other times I'm painting, swimming, scuba diving, or sailing. I love the quiet and I've learned I prefer to walk uphill.</p>
+              <p>I teach and mentor regularly and am always looking for ways to give back. I've lived in eight states with a short stint abroad as well, and I'm currently based in Austin, TX, with my boyfriend and two cats.</p>
             </div>
           )}
         </section>
 
-        {mode === 'work' && (
-          <section id="writing" className="scroll-reveal">
-            <div className="section-label">Writing</div>
-            <div className="cards">
-              {data.writing.map((item, i) => <Card key={i} {...item} />)}
-            </div>
-          </section>
-        )}
+        <section id="writing" className="scroll-reveal">
+          <div className="section-label">Writing</div>
+          <div className="cards">
+            {(mode === 'work' ? data.writing : data.writingZen).map((item, i) => <Card key={i} {...item} />)}
+          </div>
+        </section>
+
+        <div className="page-break scroll-reveal">
+          <img src={mode === 'work' ? 'pagebreak-work-1.jpg' : 'pagebreak-zen-1.jpg'} alt="" loading="lazy" />
+        </div>
 
         <SketchAnim key={`sk2-${mode}`} id="sk2" viewBox="0 0 800 450" ratio="16/9" label="Undulation"
           heroComplete={heroComplete}
@@ -1040,14 +1183,13 @@ function App() {
           <div className="cards">
             {(mode === 'work' ? data.designWork : data.designZen).map((item, i) => <Card key={i} {...item} />)}
           </div>
-          {mode === 'work' && (
-            <p style={{marginTop:'1.5rem', fontFamily:'var(--mono)', fontSize:'0.62rem', color:'var(--muted)', lineHeight:1.6}}>
-              Explorations in Figma — interfaces, concepts, prototypes.
-            </p>
-          )}
         </section>
 
-        <SketchAnim key={`sk3-${mode}`} id="sk3" viewBox="0 0 600 600" ratio="4/3" label="Vertical Field"
+        <div className={`page-break scroll-reveal${mode === 'zen' ? ' page-break-sepia' : ''}`}>
+          <img src={mode === 'work' ? 'pagebreak-work-2.jpg' : 'pagebreak-zen-2.jpg'} alt="" loading="lazy" />
+        </div>
+
+        <SketchAnim key={`sk3-${mode}`} id="sk3" viewBox={mode === 'work' ? "0 100 600 380" : "0 30 600 460"} ratio={mode === 'work' ? "600/380" : "600/460"} label="Vertical Field"
           heroComplete={heroComplete}
           filterEl={mode === 'zen' ? <filter id="sk-f3" x="-4%" y="-4%" width="108%" height="108%"><feTurbulence type="turbulence" baseFrequency=".02 .08" numOctaves="5" seed="12" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter> : null}
           buildFn={mode === 'work' ? buildVertWork : buildVert} />
@@ -1061,36 +1203,48 @@ function App() {
             </div>
             <div className="now-entry">
               <p>In Japan between chapters. Building this portfolio to learn by doing. Tiny experiments.</p>
-              <div className="now-date">March 2026 · Osaka</div>
+              <div className="now-date">March 8, 2026 · Osaka</div>
             </div>
 
-            <div className="about-subhead">What I'm Reading</div>
-            <div className="reading-timeline">
-              {data.reading.map((book, i) => (
-                <div key={i} className="reading-entry">
+          </div>
+
+          <div className="reading-section">
+            <div className="about-subhead" style={{marginTop: 0}}>What I'm Reading</div>
+            <div className="reading-carousel">
+              {data.reading.slice().reverse().map((book, i) => (
+                <a key={i} className="reading-card" href={book.link} target="_blank" rel="noopener noreferrer">
+                  <img className="reading-cover" src={book.cover} alt={book.title} loading="lazy" />
                   <div className="reading-title">{book.title}</div>
                   <div className="reading-author">{book.author}</div>
                   <div className="reading-meta">
                     <span className="reading-date">{book.date}</span>
                     <span className="reading-links">
-                      {book.spotify && <a href={book.spotify} target="_blank" rel="noopener noreferrer">Spotify</a>}
-                      <a href={book.link} target="_blank" rel="noopener noreferrer">{book.linkLabel}</a>
+                      {book.spotify && (
+                        <a href={book.spotify} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>Spotify</a>
+                      )}
+                      <span>{book.linkLabel}</span>
                     </span>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           </div>
+
         </section>
       </div>
 
       <footer>
         <div className="container">
+          <p className="about-text footer-connect">
+            {mode === 'work'
+              ? "I'm always excited to connect with others who are passionate about design, strategy, and building meaningful products. If you're exploring new ideas or opportunities, I'd love to chat."
+              : "I love connecting with people who are curious about learning, art, neuroscience, or navigating change. If you're up for a deep conversation or a good-faith debate, I'd love to chat."}
+          </p>
           <div className="footer-inner">
-            <span className="footer-note">Jacqueline Koerner © 2026</span>
+            <span className="footer-note"><img className="footer-headshot" src={mode === 'work' ? 'headshot-work.jpg' : 'headshot-zen.jpg'} alt="" />Jacqueline Koerner © 2026</span>
             <div className="footer-links">
-              <a href="https://jacquelinekoerner.figma.site" target="_blank" rel="noopener noreferrer">Figma</a>
-              <a href="mailto:koernerjacqueline@gmail.com">Email</a>
+              <a href="mailto:koernerjacqueline@gmail.com"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Email</a>
+              {mode === 'work' && <a href="https://www.linkedin.com/in/jacquelinekoerner/" target="_blank" rel="noopener noreferrer"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>LinkedIn</a>}
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <script>(function(){var m=localStorage.getItem('siteMode')||'work';document.documentElement.setAttribute('data-mode',m);})();</script>
+  <script>(function(){document.documentElement.setAttribute('data-mode','work');})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Split-flap display — Jacqueline Koerner</title>
   <link rel="icon" id="favicon" type="image/svg+xml" href="favicon-work.svg">
@@ -14,7 +14,7 @@
     :root {
       --ink: #1a1a1a;
       --paper: #ffffff;
-      --paper-warm: #ebebeb;
+      --paper-warm: #faf9f7;
       --muted: #888;
       --accent: #2a5298;
       --serif: 'Crimson Pro', Georgia, serif;
@@ -232,19 +232,48 @@
       border-radius: 4px 4px 0 0;
       pointer-events: none;
     }
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0 0.5rem;
+    }
+    .title-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 4px;
+      background: #2a5298;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .title-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+    .title-row h1 {
+      margin: 0;
+    }
+
   </style>
 </head>
 <body>
   <div class="container">
     <div class="top-bar">
       <a href="index.html" class="back">← Back to portfolio</a>
-      <button class="mode-switch" id="mode-btn" aria-label="Toggle work/zen mode">
-        <span class="ms-opt" data-m="work">work</span>
-        <span class="ms-opt" data-m="zen">zen</span>
-      </button>
     </div>
 
-    <h1>Split-flap display</h1>
+    <div class="title-row">
+      <div class="title-icon">
+        <svg viewBox="0 0 32 32" fill="none">
+          <rect x="6" y="8" width="20" height="16" rx="2" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5"/>
+          <line x1="6" y1="16" x2="26" y2="16" stroke="rgba(255,255,255,0.85)" stroke-width="1.5"/>
+          <text x="16" y="14" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="7" font-family="serif">A</text>
+        </svg>
+      </div>
+      <h1>Split-flap display</h1>
+    </div>
     <p class="subtitle">An airport departure board, rendered in code</p>
     <p class="meta">Design · March 2026</p>
 
@@ -265,27 +294,7 @@
   </div>
 
 <script>
-  /* ── Mode toggle ── */
-  (function() {
-    var html = document.documentElement;
-    var btn  = document.getElementById('mode-btn');
-
-    function setMode(m) {
-      html.setAttribute('data-mode', m);
-      localStorage.setItem('siteMode', m);
-      btn.querySelectorAll('.ms-opt').forEach(function(el) {
-        el.classList.toggle('active', el.getAttribute('data-m') === m);
-      });
-      var fav = document.getElementById('favicon');
-      if (fav) fav.href = 'favicon-' + m + '.svg';
-    }
-
-    setMode(html.getAttribute('data-mode') || 'work');
-
-    btn.addEventListener('click', function() {
-      setMode(html.getAttribute('data-mode') === 'work' ? 'zen' : 'work');
-    });
-  })();
+  (function(){var fav=document.getElementById('favicon');if(fav)fav.href='favicon-work.svg';})();
 
   /* ── Layout ── */
   const COLS  = 7;

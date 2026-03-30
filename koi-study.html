@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <script>(function(){var m=localStorage.getItem('siteMode')||'work';document.documentElement.setAttribute('data-mode',m);})();</script>
+  <script>(function(){document.documentElement.setAttribute('data-mode','zen');})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Koi Study — Jacqueline Koerner</title>
   <link rel="icon" id="favicon" type="image/svg+xml" href="favicon-work.svg">
@@ -14,7 +14,7 @@
     :root {
       --ink: #1a1a1a;
       --paper: #ffffff;
-      --paper-warm: #ebebeb;
+      --paper-warm: #faf9f7;
       --muted: #888;
       --accent: #2a5298;
       --serif: 'Crimson Pro', Georgia, serif;
@@ -32,6 +32,7 @@
     }
 
     [data-mode="zen"] body { background: var(--paper-warm); }
+    [data-mode="zen"] { --accent: #003314; }
 
     /* Noise texture — preserved from original */
     body::after {
@@ -172,6 +173,36 @@
       white-space: nowrap;
       margin-left: 1.5rem;
     }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0 0.5rem;
+    }
+    .title-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 4px;
+      background: #003314;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .title-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+    .title-row h1 {
+      margin: 0;
+    }
+
+    @media (pointer: coarse) {
+      body { cursor: auto; }
+      a, button { cursor: auto; }
+      #site-cursor { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -180,13 +211,17 @@
 <div class="container">
   <div class="top-bar">
     <a href="index.html" class="back">← Back to portfolio</a>
-    <button class="mode-switch" id="mode-btn" aria-label="Toggle work/zen mode">
-      <span class="ms-opt" data-m="work">work</span>
-      <span class="ms-opt" data-m="zen">zen</span>
-    </button>
   </div>
 
-  <h1>Koi Study</h1>
+  <div class="title-row">
+    <div class="title-icon">
+      <svg viewBox="0 0 32 32" fill="none">
+        <path d="M4 20c4-4 8-2 12 0s8 4 12 0" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M4 14c4-4 8-2 12 0s8 4 12 0" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>Koi Study</h1>
+  </div>
   <p class="subtitle">An ink study in nine movements</p>
   <p class="meta">Design · 2026</p>
 </div>
@@ -325,33 +360,13 @@
 
 <div class="container">
   <div class="caption">
-    <span class="caption-note">Move your cursor to lead them.</span>
+    <span class="caption-note">Move your cursor to lead them. On mobile, tap or drag.</span>
     <span class="caption-tag">KOI — 04</span>
   </div>
 </div>
 
 <script>
-  /* ── Mode toggle ── */
-  (function() {
-    var html = document.documentElement;
-    var btn  = document.getElementById('mode-btn');
-
-    function setMode(m) {
-      html.setAttribute('data-mode', m);
-      localStorage.setItem('siteMode', m);
-      btn.querySelectorAll('.ms-opt').forEach(function(el) {
-        el.classList.toggle('active', el.getAttribute('data-m') === m);
-      });
-      var fav = document.getElementById('favicon');
-      if (fav) fav.href = 'favicon-' + m + '.svg';
-    }
-
-    setMode(html.getAttribute('data-mode') || 'work');
-
-    btn.addEventListener('click', function() {
-      setMode(html.getAttribute('data-mode') === 'work' ? 'zen' : 'work');
-    });
-  })();
+  (function(){var fav=document.getElementById('favicon');if(fav)fav.href='favicon-zen.svg';})();
 
   /* ── Site cursor ── */
   const siteCursor = document.getElementById('site-cursor');
@@ -499,6 +514,17 @@
     cur.y = (e.clientY - r.top)  / r.height * SVG_H;
   });
   svgEl.addEventListener('mouseleave', () => { cur.x = cur.y = -9999; });
+
+  /* ── Touch support for mobile ── */
+  function touchToSVG(e) {
+    const t = e.touches[0];
+    const r = svgEl.getBoundingClientRect();
+    cur.x = (t.clientX - r.left) / r.width  * SVG_W;
+    cur.y = (t.clientY - r.top)  / r.height * SVG_H;
+  }
+  svgEl.addEventListener('touchstart', e => { touchToSVG(e); e.preventDefault(); }, { passive: false });
+  svgEl.addEventListener('touchmove',  e => { touchToSVG(e); e.preventDefault(); }, { passive: false });
+  svgEl.addEventListener('touchend',   () => { cur.x = cur.y = -9999; });
 
   /* ── Animation loop ── */
   let prev = null;

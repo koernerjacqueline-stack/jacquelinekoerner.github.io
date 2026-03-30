@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <script>(function(){var m=localStorage.getItem('siteMode')||'work';document.documentElement.setAttribute('data-mode',m);})();</script>
+  <script>(function(){document.documentElement.setAttribute('data-mode','work');})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Nobody Asked for Denim Ice Cream — Jacqueline Koerner</title>
   <link rel="icon" id="favicon" type="image/svg+xml" href="favicon-work.svg">
@@ -14,7 +14,7 @@
     :root {
       --ink: #1a1a1a;
       --paper: #ffffff;
-      --paper-warm: #ebebeb;
+      --paper-warm: #faf9f7;
       --muted: #888;
       --accent: #2a5298;
       --serif: 'Crimson Pro', Georgia, serif;
@@ -145,21 +145,50 @@
       margin-top: 1rem;
       font-family: var(--sans);
     }
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0 0.5rem;
+    }
+    .title-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 4px;
+      background: #2a5298;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .title-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+    .title-row h1 {
+      margin: 0;
+    }
+
   </style>
 </head>
 <body>
   <div class="container">
     <div class="top-bar">
       <a href="index.html" class="back">← Back to portfolio</a>
-      <button class="mode-switch" id="mode-btn" aria-label="Toggle work/zen mode">
-        <span class="ms-opt" data-m="work">work</span>
-        <span class="ms-opt" data-m="zen">zen</span>
-      </button>
     </div>
 
-    <h1>Nobody Asked for Denim Ice Cream</h1>
+    <div class="title-row">
+      <div class="title-icon">
+        <svg viewBox="0 0 32 32" fill="none">
+          <path d="M10 4h12v6c0 2-1 4-2 6l1 12H11l1-12c-1-2-2-4-2-6Z" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M10 4h12" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M13 16h6" stroke="rgba(255,255,255,0.85)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+      </div>
+      <h1>Nobody Asked for Denim Ice Cream</h1>
+    </div>
     <p class="subtitle">A ¥500 sign and a very blue cone in Enoshima</p>
-    <p class="meta">Product observations · Enoshima · March 2026</p>
+    <p class="meta">Product observations · Enoshima · March 11, 2026</p>
 
     <div class="about-text">
       <p>
@@ -221,28 +250,7 @@
     <div style="height: 6rem;"></div>
   </div>
 
-<script>
-  (function() {
-    var html = document.documentElement;
-    var btn  = document.getElementById('mode-btn');
-
-    function setMode(m) {
-      html.setAttribute('data-mode', m);
-      localStorage.setItem('siteMode', m);
-      btn.querySelectorAll('.ms-opt').forEach(function(el) {
-        el.classList.toggle('active', el.getAttribute('data-m') === m);
-      });
-      var fav = document.getElementById('favicon');
-      if (fav) fav.href = 'favicon-' + m + '.svg';
-    }
-
-    setMode(html.getAttribute('data-mode') || 'work');
-
-    btn.addEventListener('click', function() {
-      setMode(html.getAttribute('data-mode') === 'work' ? 'zen' : 'work');
-    });
-  })();
-</script>
+<script>(function(){var fav=document.getElementById('favicon');if(fav)fav.href='favicon-work.svg';})();</script>
 
 </body>
 </html>
