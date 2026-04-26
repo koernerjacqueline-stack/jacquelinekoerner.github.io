@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <script>(function(){var m=localStorage.getItem('siteMode')||'work';document.documentElement.setAttribute('data-mode',m);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>First Principles in the Field — Jacqueline Koerner</title>
+  <link rel="icon" id="favicon" type="image/svg+xml" href="favicon-work.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a1a;
+      --paper: #ffffff;
+      --paper-warm: #ebebeb;
+      --muted: #888;
+      --accent: #2a5298;
+      --serif: 'Crimson Pro', Georgia, serif;
+      --sans: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      min-height: 100vh;
+      line-height: 1.7;
+      transition: background-color 0.5s ease;
+    }
+
+    [data-mode="zen"] body { background: var(--paper-warm); }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 2.5rem 0 0;
+    }
+
+    .back {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back:hover { color: var(--accent); }
+
+    .mode-switch {
+      display: flex;
+      background: rgba(0,0,0,0.06);
+      border-radius: 4px;
+      padding: 2px;
+      border: none;
+      cursor: pointer;
+      gap: 0;
+      font-family: inherit;
+    }
+    .ms-opt {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 3px 10px;
+      border-radius: 3px;
+      transition: background 0.2s, color 0.2s;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .ms-opt.active {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-family: var(--serif);
+      font-weight: 300;
+      margin: 3rem 0 0.5rem;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .meta {
+      font-size: 0.72rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    .about-text {
+      font-size: 1.1rem;
+      font-family: var(--serif);
+      line-height: 1.8;
+    }
+    .about-text p + p { margin-top: 1.2rem; }
+
+    .about-subhead {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 2.5rem 0 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a href="index.html" class="back">← Back to portfolio</a>
+      <button class="mode-switch" id="mode-btn" aria-label="Toggle work/zen mode">
+        <span class="ms-opt" data-m="work">work</span>
+        <span class="ms-opt" data-m="zen">zen</span>
+      </button>
+    </div>
+
+    <h1>First Principles in the Field</h1>
+    <p class="subtitle">Two days, in person, and in context</p>
+    <p class="meta">Product observations · April 2026</p>
+
+    <div class="about-text">
+      <p>
+        In week three of my new role as director of product, I traveled to a property management company's office to observe operations firsthand. I sat with client service teams, the people whose jobs depend on the software it's my job to build and improve. They showed me where they got confused, how they were measured, and how they worked around the tools when the tools weren't enough.
+      </p>
+      <p>
+        In one shadowing session, a team member walked me through how she matched vendors to maintenance requests. She pulled up a browser tab already loaded with the phrase "what metro area is closest to ____." The system didn't surface geographic context, so she built her own. That's a workaround, and it's also feature creation and validation in one gesture. The signal isn't just in what people ask for. It's in what they quietly invent.
+      </p>
+
+      <div class="about-subhead">Redirecting capacity</div>
+      <p>
+        What became clear across that visit is that property managers spend significant time on routine client inquiries: Repetitive, formulaic, often unanswered after hours. The opportunity isn't to eliminate that work, it's to redirect it. Chat and voice agents, especially when empowered by tools and smart logic, can handle that volume faster and more consistently than any inbox, freeing teams for the work that actually requires judgment and care.
+      </p>
+      <p>
+        Collections, evictions, maintenance failures: These touch where people live, which is among the most concrete expressions of stability in a person's life. Good automation doesn't subtract from that. It protects the capacity to meet it with attention.
+      </p>
+
+      <div class="about-subhead">The responsibility in the room</div>
+      <p>
+        The strategic case for AI in client experience is clear, and the north stars align: Improving margin and improving the client experience aren't in tension. Resolution builds trust and reduces contact volume. Friction generates more messages, more escalations, higher cost. The flywheel runs both ways.
+      </p>
+      <p>
+        But the same solution can be very different depending on how it's built. An agentic response can be meaningfully faster and more accurate than waiting for a human to be available, or it can be another maze to navigate before reaching someone who can actually help. That difference is a design decision, made before a single user interaction occurs.
+      </p>
+      <p>
+        Saving someone time is good. Making someone feel heard is better. As I build systems that respond on behalf of humans, that's the principle I'm optimizing for, and the one I'm confident produces outsized impact when retained.
+      </p>
+    </div>
+
+    <div style="height: 6rem;"></div>
+  </div>
+
+<script>
+  (function() {
+    var html = document.documentElement;
+    var btn  = document.getElementById('mode-btn');
+
+    function setMode(m) {
+      html.setAttribute('data-mode', m);
+      localStorage.setItem('siteMode', m);
+      btn.querySelectorAll('.ms-opt').forEach(function(el) {
+        el.classList.toggle('active', el.getAttribute('data-m') === m);
+      });
+      var fav = document.getElementById('favicon');
+      if (fav) fav.href = 'favicon-' + m + '.svg';
+    }
+
+    setMode(html.getAttribute('data-mode') || 'work');
+
+    btn.addEventListener('click', function() {
+      setMode(html.getAttribute('data-mode') === 'work' ? 'zen' : 'work');
+    });
+  })();
+</script>
+
+</body>
+</html>
